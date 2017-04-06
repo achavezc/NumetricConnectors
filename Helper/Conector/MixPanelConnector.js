@@ -33,7 +33,17 @@ function updateRowsMixPanel(inputMixPanel){
 			utils.GenerateRowsFromMixPanel(row,JsonResult);
 	}
 	
-	NumetricCon.updateRowsDataSetNumetric(datasetsMixPanel.datasetMixPanelEventId.id,JsonResult,rowsCount);
+	var lstBatch = {};
+	lstBatch["rows"] = [];
+	for(i=0; i<JsonResult["rows"].length; i++){
+		lstBatch["rows"].push(JsonResult["rows"][i]);
+		if( (i % 1000) == 0){
+			console.log("demo");
+			NumetricCon.updateRowsDataSetNumetric(datasetsMixPanel.datasetMixPanelEventId.id,lstBatch,rowsCount);
+			lstBatch["rows"] = [];
+		}
+	}
+	//NumetricCon.updateRowsDataSetNumetric(datasetsMixPanel.datasetMixPanelEventId.id,JsonResult,rowsCount);
 }
 
 var generateDataSetMixPanelAux = function(inputMixPanel){

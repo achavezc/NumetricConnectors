@@ -62,9 +62,7 @@ var updateRowsDataSetNumetric = function(datasetId,data,rowsCount){
 	var conf = new config(datasetId);
 	var resultEvent = {};
     resultEvent.Result = {}
-    resultEvent.Result.Success = false;
-    console.log(rowsCount);
-  
+    resultEvent.Result.Success = false;    
 	return rp(conf.parameters(data).optionsUpdateRowsDataSet).then(response =>{
      		 resultEvent.Response  = response;
         	 resultEvent.Result.Success = true;
