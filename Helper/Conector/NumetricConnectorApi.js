@@ -64,19 +64,19 @@ var updateRowsDataSetNumetric = function(datasetId,data,rowsCount){
     resultEvent.Result = {}
     resultEvent.Result.Success = false;
     console.log(rowsCount);
-  /*
+  
 	return rp(conf.parameters(data).optionsUpdateRowsDataSet).then(response =>{
      		 resultEvent.Response  = response;
         	 resultEvent.Result.Success = true;
-			// console.log(response);
+			 console.log(response);
 		     return resultEvent;
 	}).catch(function(err){ 
-			//console.log(err);
+			console.log(err);
 			resultEvent.Result.Success = false;
         	resultEvent.Result.Error = err;
         	return resultEvent;
 	});
-	*/
+	
 }
 
 var getRowsDataSetNumetric = function(datasetId){
