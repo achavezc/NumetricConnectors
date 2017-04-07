@@ -2,6 +2,7 @@
 
 const config = require("../../Config/Config")
 const rp = require('request-promise')
+const utils = require("./../../Helper/Util")
 //const seq = require("../../sequence").Sequence
 
 var getDataSetNumetric = function(){
@@ -47,11 +48,13 @@ var generateDataSetNumetric = function(data){
     resultEvent.Result.Success = false;
 
 	return rp(conf.parameters(data).optionsCreateDataSet).then(response =>{
+		     console.log(response);
      		 resultEvent.Response  = response;
         	 resultEvent.Result.Success = true;
 		     return resultEvent;
 	})
 	.catch(function(err){ 
+		    utils.WriteFileTxt(JSON.stringify(err));
 			resultEvent.Result.Success = false;
         	resultEvent.Result.Error = err;
         	return resultEvent;
@@ -59,6 +62,24 @@ var generateDataSetNumetric = function(data){
 }
 
 var updateRowsDataSetNumetric = function(datasetId,data){
+	/*
+	utils.WriteFileTxt("\r\n");
+	utils.WriteFileTxt("\r\n");
+	utils.WriteFileTxt("\r\n");
+	utils.WriteFileTxt("\r\n");
+	utils.WriteFileTxt("\r\n");
+	utils.WriteFileTxt("\r\n");
+	utils.WriteFileTxt("\r\n");
+	utils.WriteFileTxt(JSON.stringify(data));
+	utils.WriteFileTxt("\r\n");
+	utils.WriteFileTxt("\r\n");
+	utils.WriteFileTxt("\r\n");
+	utils.WriteFileTxt("\r\n");
+	utils.WriteFileTxt("\r\n");
+	utils.WriteFileTxt("\r\n");
+	utils.WriteFileTxt("\r\n");
+	*/
+
 	console.log(datasetId);
 	var conf = new config(datasetId);
 	var resultEvent = {};

@@ -7,7 +7,7 @@ const NumetricCon = require("../DataConnectorApi/NumetricDataConnectorApi/Numetr
 
 
 var NumetricShopifyFormat = function(inputData,namePk,fieldsName){
-	return utils.GenerateDataSetsNumetricFromShopify(inputData,namePk,fieldsName);
+	return utils.GenerateDataSetsNumetricFromShopify(inputData,"Shopify",namePk,fieldsName);
 }
 
 function getRowsShopify(inputShopify,jsonListRows,namePrincipalList){ //namesSecondaryList
@@ -119,6 +119,9 @@ var getRowsShopifyCustomer = function(inputsShopify){
 	//JsonResult["addresses"]["rows"]=[];
 
 	getRowsShopify(inputsShopify[nameParent],JsonResult,nameParent); //namesDatasetChild
+
+	//utils.WriteFileTxt(JSON.stringify(JsonResult));
+	/*
 	for(var property in JsonResult){
 		switch (property) {
 			case 'customers'   : datasetId = datasetsShopify.datasetCustomerId.id; break;
@@ -126,7 +129,7 @@ var getRowsShopifyCustomer = function(inputsShopify){
 			case 'customers_addresses' : datasetId = datasetsShopify.datasetCustomerAddressId.id; break;
 		}
 		NumetricCon.updateRowsDataSetNumetric(datasetId,JsonResult[property]);
-	}
+	}*/
 }
 
 var getRowsShopifyTransaction = function(inputsShopify){
@@ -162,7 +165,7 @@ var getRowsShopifyArticle = function(inputsShopify){
 var getRowsShopifyOrder = function(inputsShopify){
 	var datasetId = "";
 	var JsonResult = {};
-	var namesDatasetChild =  ["discount_codes","note_attributes","tax_lines","line_items","properties"
+	/*var namesDatasetChild =  ["discount_codes","note_attributes","tax_lines","line_items","properties"
 							 ,"shipping_lines","fulfillments","refunds","refund_line_items","transactions"];
 
 	JsonResult["orders"] = {};
@@ -187,10 +190,22 @@ var getRowsShopifyOrder = function(inputsShopify){
 	JsonResult["refund_line_items"] = {};
 	JsonResult["refund_line_items"]["rows"]=[];
 	JsonResult["transactions"] = {};
-	JsonResult["transactions"]["rows"]=[];
+	JsonResult["transactions"]["rows"]=[];*/
 
-	getRowsShopify(inputsShopify,JsonResult,"orders",namesDatasetChild);
-	for(var property in JsonResult){
+	var props = Object.keys(inputsShopify);
+	var nameParent;
+	if(props.length>0){
+		nameParent = props[0]; 
+	}
+	JsonResult[nameParent] = {};
+	JsonResult[nameParent]["rows"]=[];
+
+
+	getRowsShopify(inputsShopify[nameParent],JsonResult,nameParent); //namesDatasetChild
+
+	utils.WriteFileTxt(JSON.stringify(JsonResult));
+
+	/*for(var property in JsonResult){
 		switch (property) {
 			case 'orders'				: datasetId = datasetsShopify.datasetOrderId.id; break;
 			case 'discount_codes' 		: datasetId = datasetsShopify.datasetOrderDiscountCodeId.id; break;
@@ -204,6 +219,26 @@ var getRowsShopifyOrder = function(inputsShopify){
 			case 'refund_line_items'	: datasetId = datasetsShopify.datasetOrderRefundsLineItemId.id; break;
 			case 'transactions'			: datasetId = datasetsShopify.datasetOrderRefundsTransactionId.id; break;
 		}
+		NumetricCon.updateRowsDataSetNumetric(datasetId,JsonResult[property]);
+	}*/
+}
+
+//METODO FINAL QUE USARE PARA CARGAR CUALQUIER DATA A SU DATASET CORRESPONDIENTE EN NUMETRIC
+var sendRowsShopifyToNumetric = function(inputsShopify){
+	var datasetId = "";
+	var JsonResult = {};
+	var props = Object.keys(inputsShopify);
+	var nameParent;
+	if(props.length>0){
+		nameParent = props[0]; 
+	}
+	JsonResult[nameParent] = {};
+	JsonResult[nameParent]["rows"]=[];
+
+	getRowsShopify(inputsShopify[nameParent],JsonResult,nameParent); 
+
+	for(var property in JsonResult){
+		datasetId = datasetsShopify[property].id;
 		NumetricCon.updateRowsDataSetNumetric(datasetId,JsonResult[property]);
 	}
 }

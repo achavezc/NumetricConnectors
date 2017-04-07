@@ -7,7 +7,7 @@ const inputsShopify = require("./SampleData/exampleDataShopify")
 const config = require("./Config/Config")
 //borrar luego esta constante
 const utils = require("./Helper/Util")
-const datasetsShopify = require("./Model/datasetsShopify")
+//const datasetsShopify = require("./Model/datasetsShopify")
 
 var conf = new config();
 
@@ -22,9 +22,37 @@ ShopifyData.getTimeZone(function(result){
 		  console.log(result);
 });
 */
-/*ShopifyData.getOrders(lastUpdated,function(result){	
-		  console.log(result);
-});*/
+
+
+/*
+NumetricCon.getDataSetNumetric().then(result=>{ 
+ utils.WriteFileTxt(JSON.stringify(result));
+})
+*/
+
+ShopifyData.getCustomers(lastUpdated,function(resultCustomer){	
+	if(resultCustomer.Result.Success){
+		
+		
+		//utils.WriteFileTxt(JSON.stringify(result.Result.Data));
+		
+		var datasetShopify = ShopifyCon.NumetricShopifyFormat(resultCustomer.Result.Data,"id","customers");
+		
+	 	utils.WriteFileTxt(JSON.stringify(datasetShopify.DataSetList[0]));
+		
+		
+		
+		NumetricCon.generateDataSetNumetric(datasetShopify.DataSetList[0]).then(result=>{
+					//console.log(result); 
+					utils.WriteFileTxt(JSON.stringify(resultCustomer.Result.Data));
+					ShopifyCon.getRowsShopifyCustomer(resultCustomer.Result.Data);
+		});
+
+			
+	}
+});
+
+
 
 
 
@@ -44,7 +72,9 @@ MixPanelData.getEvents(lastUpdated,function(result){
 //updateRowsMixPanel(iMp.datamp);
 //updateRowsMixPanel(iMp.inputMixPanel);
 
-var iS = new inputsShopify(); 
+//andy
+//var iS = new inputsShopify(); 
+
 //Grabar datos en datasetEvent
 //getRowsShopifyEvent(iS.inputEvent.events);
 //Grabar datos en datasetCustomCollection
@@ -53,7 +83,9 @@ var iS = new inputsShopify();
 //getRowsShopifyComment(iS.inputComment.comments);
 //Grabar datos en datasetProduct
 //getRowsShopifyProduct(iS.inputProduct.products);
-ShopifyCon.getRowsShopifyCustomer(iS.inputCustomer);
+
+//andy
+//ShopifyCon.getRowsShopifyCustomer(iS.inputCustomer);
 
 //generar data set
 //MixPanel

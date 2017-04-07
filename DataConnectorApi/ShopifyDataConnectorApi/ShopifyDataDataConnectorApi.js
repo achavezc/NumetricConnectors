@@ -1,6 +1,7 @@
 
 const Shopify = require('./shopify-api-node');
 const config = require("./../../Config/Config")
+const utils = require("./../../Helper/Util")
 var conf = new config();
 
 
@@ -152,14 +153,18 @@ var getProducts = function getProducts(lastUpdated) {
     });
 }
 
-var getCustomers = function getCustomers(lastUpdated) {
+var getCustomers = function getCustomers(lastUpdated,callback) {
     var resultEvent = {};
     resultEvent.Result = {}
     resultEvent.Result.Success = false;
+    //console.log(resultEvent);
     var date = toTimeZone(lastUpdated.created_at_min,lastUpdated.timezone);
     shopify.customer.list({ created_at_min: date})
     .then(function(customers) {
-        resultEvent.Result.Data  = JSON.stringify(customers);
+       
+        resultEvent.Result.Data = {};
+        resultEvent.Result.Data.customers = [];
+        resultEvent.Result.Data.customers = customers;
         resultEvent.Result.Success = true;
         callback(resultEvent);
     })

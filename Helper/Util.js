@@ -25,14 +25,16 @@ var isJsonObject = function(jsonProperty){
 var ObtenerTipoDatoJsonObject = function (jsonObject){
 var classNameOfThing = '';
 
-if(jsonObject==null){
-	classNameOfThing = 'null';
-}else if(isDate(jsonObject)){
-	classNameOfThing = 'datetime';
-}else if(isFloat(jsonObject)){
-	classNameOfThing = 'double';
-}else{
-	classNameOfThing = typeof jsonObject;
+classNameOfThing = typeof jsonObject;
+
+if(classNameOfThing == 'object' || classNameOfThing == 'string'){
+	if(jsonObject==null){
+		classNameOfThing = 'null';
+	}else if(isDate(jsonObject) && jsonObject.toString().indexOf('T') !==-1){ //UTC date
+		classNameOfThing = 'datetime';
+	}else if(isFloat(jsonObject)){
+		classNameOfThing = 'double';
+	}
 }
 
 switch (classNameOfThing) {
@@ -95,6 +97,18 @@ var GetDefaultValue = function (type) {
     } catch (e) { return {}; }
 }
 
+var formatField = function(NameField,ValueField){
+	var BodyJson = {};
+	var dataType = ObtenerTipoDatoJsonObject(ValueField);
+	var defaultValue = GetDefaultValue(dataType);
+	BodyJson = CreateProp(BodyJson,"field",NameField);
+	BodyJson = CreateProp(BodyJson,"displayName",NameField);
+	BodyJson = CreateProp(BodyJson,"autocomplete",false);
+	BodyJson = CreateProp(BodyJson,"type",dataType);
+	if(dataType !=='string'){BodyJson = CreateProp(BodyJson,"default",defaultValue)};
+	return BodyJson;
+}
+
 var GenerarFieldListDataSetNumetric = function (inputJson,fieldsName, baseJson,fkName,fkValue){
 
 
@@ -105,8 +119,22 @@ var foreignKeyName='';
 var foreignKeyValue=null;
 var props = Object.keys(inputJson);
 	if(props.length>0){
-		foreignKeyName = fieldsName+props[0];
-		foreignKeyValue = inputJson[props[0]]; 
+		if(fkName !==null && fkValue !== null){ //if is different of null is a child
+			if(!isInclude(props,"id") || !isInclude(props,"id_"+fieldsName)){ //search if not contains a common primary key
+				var pkName = "id";
+				var pkValue = fkValue+inputJson[props[0]]
+		    	baseJson[fieldsNameActual].push(formatField(pkName,pkValue));
+		    	foreignKeyName = fieldsName+pkName;
+				foreignKeyValue = pkValue;
+			}else{
+				foreignKeyName = fieldsName+props[0];
+				foreignKeyValue = inputJson[props[0]];	
+			}
+		}
+		else{
+			foreignKeyName = fieldsName+props[0];
+			foreignKeyValue = inputJson[props[0]]; 
+		}
 	}
 
 
@@ -122,16 +150,8 @@ var props = Object.keys(inputJson);
 	    		GenerarFieldListDataSetNumetric(inputJson[prop][0],fieldsName+"_"+prop,baseJson,foreignKeyName,foreignKeyValue);
 	    		}else{
 	    			//if is a simple list of values then transform stringify
-	    			var BodyJson = {};
 	    			var newValueProperty = JSON.stringify(inputJson[prop]);
-			    	var dataType = ObtenerTipoDatoJsonObject(newValueProperty);
-			    	var defaultValue = GetDefaultValue(dataType);
-			    	BodyJson = CreateProp(BodyJson,"field",prop);
-			    	BodyJson = CreateProp(BodyJson,"displayName",prop);
-			    	BodyJson = CreateProp(BodyJson,"autocomplete",false);
-			    	BodyJson = CreateProp(BodyJson,"type",dataType);
-			    	if(dataType !=='string'||dataType !=='datetime'){BodyJson = CreateProp(BodyJson,"default",defaultValue)};
-			    	baseJson[fieldsNameActual].push(BodyJson);
+			    	baseJson[fieldsNameActual].push(formatField(prop,newValueProperty));
 	    		}
 	    	}
 	    } else if(isJsonObject(inputJson[prop])){
@@ -139,33 +159,16 @@ var props = Object.keys(inputJson);
 	    	GenerarFieldListDataSetNumetric(inputJson[prop],fieldsName+"_"+prop,baseJson,foreignKeyName,foreignKeyValue);
 	    }
 	    else {
-	    	var BodyJson = {};
-	    	var dataType = ObtenerTipoDatoJsonObject(inputJson[prop]);
-	    	var defaultValue = GetDefaultValue(dataType);
-	    	BodyJson = CreateProp(BodyJson,"field",prop);
-	    	BodyJson = CreateProp(BodyJson,"displayName",prop);
-	    	BodyJson = CreateProp(BodyJson,"autocomplete",false);
-	    	BodyJson = CreateProp(BodyJson,"type",dataType);
-	    	if(dataType !=='string'||dataType !=='datetime'){BodyJson = CreateProp(BodyJson,"default",defaultValue)};
-	    	baseJson[fieldsNameActual].push(BodyJson);
+	    	baseJson[fieldsNameActual].push(formatField(prop,inputJson[prop]));
 	    }
 	}
 
-if(fkName !==null && fkValue !== null){
-	var BodyJson = {};
-	    	var dataType = ObtenerTipoDatoJsonObject(fkValue);
-	    	var defaultValue = GetDefaultValue(dataType);
-	    	BodyJson = CreateProp(BodyJson,"field",fkName);
-	    	BodyJson = CreateProp(BodyJson,"displayName",fkName);
-	    	BodyJson = CreateProp(BodyJson,"autocomplete",false);
-	    	BodyJson = CreateProp(BodyJson,"type",dataType);
-	    	if(dataType !=='string'){BodyJson = CreateProp(BodyJson,"default",defaultValue)};
-	    	baseJson[fieldsNameActual].push(BodyJson);
+	if(fkName !==null && fkValue !== null){
+		baseJson[fieldsNameActual].push(formatField(fkName,fkValue));
 	}
-
 }
 
-var GenerateDataSetsNumetricFromShopify = function(inputDataShopify,namePK,fieldsName){
+var GenerateDataSetsNumetricFromShopify = function(inputDataShopify,category,namePK,fieldsName){
 
 var JsonResult = {};
 JsonResult["DataSetList"] = [];
@@ -175,6 +178,8 @@ var props = Object.keys(inputDataShopify);
 if(props.length>0){
 	fieldsName = props[0]; 
 }
+var categories = [];
+categories.push(category);
 //var fieldsName = "Init";
 //var prefixName = "fields";
 var inpuSingleData = inputDataShopify[fieldsName][0];
@@ -191,6 +196,7 @@ GenerarFieldListDataSetNumetric(inpuSingleData,fieldsName,JsonFieldsList,count,n
 		DataSet = CreateProp(DataSet,"name",element); //"DataSet"+count+"_"+
 		DataSet = CreateProp(DataSet,"fields",JsonFieldsList[element]);
 		DataSet = CreateProp(DataSet,"primaryKey",namePK);
+		DataSet = CreateProp(DataSet,"categories",categories); 
 	    DataSet = CreateProp(DataSet,"description","DataSet Shopify Generate Automatic");
 	    JsonResult["DataSetList"].push(DataSet);
 	}
@@ -239,8 +245,22 @@ var GenerateRowsListFromShopify= function(inputDataShopify,jsonListRows,NameList
 
 	var props = Object.keys(inputDataShopify);
 	if(props.length>0){
-		foreignKeyName = NameListRows+props[0];
-		foreignKeyValue = inputDataShopify[props[0]]; 
+		if(fkName !==null && fkValue !== null){ //if is different of null is a child
+			if(!isInclude(props,"id") || !isInclude(props,"id_"+NameListRows)){ //search if not contains a common primary key
+				var pkName = "id";
+				var pkValue = fkValue + inputDataShopify[props[0]];
+				Row = CreateProp(Row,pkName,pkValue);
+				foreignKeyName = NameListRows+pkName;
+				foreignKeyValue = pkValue; 
+			}else{
+			foreignKeyName = NameListRows+props[0];
+			foreignKeyValue = inputDataShopify[props[0]]; 
+			}
+		}
+		else{
+			foreignKeyName = NameListRows+props[0];
+			foreignKeyValue = inputDataShopify[props[0]]; 
+		}
 	}
 
 	for(var property in inputDataShopify){
@@ -253,8 +273,12 @@ var GenerateRowsListFromShopify= function(inputDataShopify,jsonListRows,NameList
 				}
 				else{
 					var newNameListRows = NameListRows+"_"+property;
-					jsonListRows[newNameListRows] = {};
-					jsonListRows[newNameListRows]["rows"]=[];
+					var propsJson = Object.keys(jsonListRows);
+					if(!isInclude(propsJson,newNameListRows)){
+						console.log()
+						jsonListRows[newNameListRows] = {};
+						jsonListRows[newNameListRows]["rows"]=[];
+					}
 					for (var i = 0; i < inputDataShopify[property].length; i++ ){
 						//GenerateRowsListFromShopify(inputDataShopify[property][i],jsonListRows,property,NamesSubList,foreignKeyName,foreignKeyValue);
 						GenerateRowsListFromShopify(inputDataShopify[property][i],jsonListRows,newNameListRows,foreignKeyName,foreignKeyValue);
@@ -264,8 +288,11 @@ var GenerateRowsListFromShopify= function(inputDataShopify,jsonListRows,NameList
 		} else if(isJsonObject(inputDataShopify[property])){
 			//if(isInclude(NamesSubList,property)){
 				var newNameListRows = NameListRows+"_"+property;
-				jsonListRows[newNameListRows] = {};
-				jsonListRows[newNameListRows]["rows"]=[];
+				var propsJson = Object.keys(jsonListRows);
+					if(!isInclude(propsJson,newNameListRows)){
+						jsonListRows[newNameListRows] = {};
+						jsonListRows[newNameListRows]["rows"]=[];
+					}
 				GenerateRowsListFromShopify(inputDataShopify[property],jsonListRows,newNameListRows,foreignKeyName,foreignKeyValue);
 			//}
 		}
