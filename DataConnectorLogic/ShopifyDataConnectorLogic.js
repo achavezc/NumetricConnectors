@@ -3,20 +3,20 @@
 const config = require("../Config/Config")
 const utils = require("../Helper/Util")
 const datasetsShopify = require("../Model/datasetsShopify")
+const NumetricCon = require("../DataConnectorApi/NumetricDataConnectorApi/NumetricDataConnectorApi")
 
 
-
-var NumetricShopifyFormat = function(inputData){
-	return utils.GenerateDataSetsNumetricFromShopify(inputData);
+var NumetricShopifyFormat = function(inputData,namePk,fieldsName){
+	return utils.GenerateDataSetsNumetricFromShopify(inputData,namePk,fieldsName);
 }
 
-function getRowsShopify(inputShopify,jsonListRows,namePrincipalList,namesSecondaryList){
+function getRowsShopify(inputShopify,jsonListRows,namePrincipalList){ //namesSecondaryList
 	if(utils.isArray(inputShopify)){
 			for (var i = 0; i < inputShopify.length; i++ ){
-				utils.GenerateRowsListFromShopify(inputShopify[i],jsonListRows,namePrincipalList,namesSecondaryList);
+				utils.GenerateRowsListFromShopify(inputShopify[i],jsonListRows,namePrincipalList,null,null); //namesSecondaryList
 			}
 		} else {
-				utils.GenerateRowsListFromShopify(inputShopify,jsonListRows,namePrincipalList,namesSecondaryList);
+				utils.GenerateRowsListFromShopify(inputShopify,jsonListRows,namePrincipalList,null,null); //namesSecondaryList
 		}
 }
 
@@ -107,16 +107,23 @@ var getRowsShopifySmartCollection = function(inputsShopify){
 var getRowsShopifyCustomer = function(inputsShopify){
 	var datasetId = "";
 	var JsonResult = {};
-	var namesDatasetChild =  ["addresses"];
-	JsonResult["customers"] = {};
-	JsonResult["customers"]["rows"]=[];
-	JsonResult["addresses"] = {};
-	JsonResult["addresses"]["rows"]=[];
-	getRowsShopify(inputsShopify,JsonResult,"customers",namesDatasetChild);
+	//var namesDatasetChild =  ["addresses"];
+	var props = Object.keys(inputsShopify);
+	var nameParent;
+	if(props.length>0){
+		nameParent = props[0]; 
+	}
+	JsonResult[nameParent] = {};
+	JsonResult[nameParent]["rows"]=[];
+	//JsonResult["addresses"] = {};
+	//JsonResult["addresses"]["rows"]=[];
+
+	getRowsShopify(inputsShopify[nameParent],JsonResult,nameParent); //namesDatasetChild
 	for(var property in JsonResult){
 		switch (property) {
 			case 'customers'   : datasetId = datasetsShopify.datasetCustomerId.id; break;
-			case 'addresses' : datasetId = datasetsShopify.datasetCustomerAddressId.id; break;
+			case 'customers_default_address' : datasetId = datasetsShopify.datasetCustomerDefaultAddressId.id; break;
+			case 'customers_addresses' : datasetId = datasetsShopify.datasetCustomerAddressId.id; break;
 		}
 		NumetricCon.updateRowsDataSetNumetric(datasetId,JsonResult[property]);
 	}

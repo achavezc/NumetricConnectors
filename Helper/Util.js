@@ -3,15 +3,47 @@
 
 const fs = require('fs')
 
+
+var isFloat = function(jsonProperty){
+	return (!isNaN(jsonProperty) && jsonProperty.toString().indexOf('.') !== -1)
+}
+
+var isDate = function(jsonProperty){
+	return !isNaN(Date.parse(jsonProperty))
+	//return Date.parse(jsonProperty)!==NaN
+}
+
+var isJsonObject = function(jsonProperty){
+	if(jsonProperty !== null){
+	var objectConstructor = {}.constructor;
+	return jsonProperty.constructor === objectConstructor
+	}else{
+		return false;
+	}
+}
+
 var ObtenerTipoDatoJsonObject = function (jsonObject){
-var classNameOfThing = typeof jsonObject;
+var classNameOfThing = '';
+
+if(jsonObject==null){
+	classNameOfThing = 'null';
+}else if(isDate(jsonObject)){
+	classNameOfThing = 'datetime';
+}else if(isFloat(jsonObject)){
+	classNameOfThing = 'double';
+}else{
+	classNameOfThing = typeof jsonObject;
+}
+
 switch (classNameOfThing) {
         case 'boolean'   : return classNameOfThing;
         case 'function'  : return function () {};
-        case 'null'      : return null;
+        case 'null'      : return "string";
         case 'number'    : return "integer";
         case 'object'    : return "objeto";//{};
         case 'string'    : return classNameOfThing;
+        case 'datetime'  : return classNameOfThing;
+        case 'double'    : return classNameOfThing;
         case 'symbol'    : return Symbol();
         case 'undefined' : return void 0;
         default : return "noc";
@@ -41,9 +73,11 @@ var GetDefaultValue = function (type) {
         case 'boolean'   : return false;
         case 'function'  : return function () {};
         case 'null'      : return null;
-        case 'integer'    : return 0;
+        case 'integer'   : return 0;
         case 'object'    : return {};
         case 'string'    : return "";
+        case 'datetime'  : return "";
+        case 'double'    : return 0;
         case 'symbol'    : return Symbol();
         case 'undefined' : return void 0;
         default : return "";
@@ -61,11 +95,20 @@ var GetDefaultValue = function (type) {
     } catch (e) { return {}; }
 }
 
-var GenerarFieldListDataSetNumetric = function (inputJson,fieldsName, baseJson){
+var GenerarFieldListDataSetNumetric = function (inputJson,fieldsName, baseJson,fkName,fkValue){
 
 
 var fieldsNameActual = fieldsName; //prefixName +
 baseJson[fieldsNameActual] = []; // empty Array, which you can push() values into
+
+var foreignKeyName='';
+var foreignKeyValue=null;
+var props = Object.keys(inputJson);
+	if(props.length>0){
+		foreignKeyName = fieldsName+props[0];
+		foreignKeyValue = inputJson[props[0]]; 
+	}
+
 
 	for ( var prop in inputJson ) {
 
@@ -73,12 +116,27 @@ baseJson[fieldsNameActual] = []; // empty Array, which you can push() values int
 	    	//se usuara para cuando se obtenga los rows
 	    	//for (var i = 0; i < inputJson[prop].length; i++ ){GenerarFieldListDataSetNumetric(inputJson[prop][i],fieldsName,baseJson,count);}
 	    	if(inputJson[prop].length>0){
-	    		if(ObtenerTipoDatoJsonObject(inputJson[prop][0])=="objeto"){
+	    		if(isJsonObject(inputJson[prop][0])){
 	    		//count++;
 	    		//arguments.callee(inputJson[prop][0],fieldsName,baseJson,count);
-	    		GenerarFieldListDataSetNumetric(inputJson[prop][0],fieldsName+"_"+prop,baseJson);
+	    		GenerarFieldListDataSetNumetric(inputJson[prop][0],fieldsName+"_"+prop,baseJson,foreignKeyName,foreignKeyValue);
+	    		}else{
+	    			//if is a simple list of values then transform stringify
+	    			var BodyJson = {};
+	    			var newValueProperty = JSON.stringify(inputJson[prop]);
+			    	var dataType = ObtenerTipoDatoJsonObject(newValueProperty);
+			    	var defaultValue = GetDefaultValue(dataType);
+			    	BodyJson = CreateProp(BodyJson,"field",prop);
+			    	BodyJson = CreateProp(BodyJson,"displayName",prop);
+			    	BodyJson = CreateProp(BodyJson,"autocomplete",false);
+			    	BodyJson = CreateProp(BodyJson,"type",dataType);
+			    	if(dataType !=='string'||dataType !=='datetime'){BodyJson = CreateProp(BodyJson,"default",defaultValue)};
+			    	baseJson[fieldsNameActual].push(BodyJson);
 	    		}
 	    	}
+	    } else if(isJsonObject(inputJson[prop])){
+	    	//if is an JsonObject try generate a particular dataset for him
+	    	GenerarFieldListDataSetNumetric(inputJson[prop],fieldsName+"_"+prop,baseJson,foreignKeyName,foreignKeyValue);
 	    }
 	    else {
 	    	var BodyJson = {};
@@ -88,28 +146,49 @@ baseJson[fieldsNameActual] = []; // empty Array, which you can push() values int
 	    	BodyJson = CreateProp(BodyJson,"displayName",prop);
 	    	BodyJson = CreateProp(BodyJson,"autocomplete",false);
 	    	BodyJson = CreateProp(BodyJson,"type",dataType);
-	    	if(dataType !=='string'){BodyJson = CreateProp(BodyJson,"default",defaultValue)};
+	    	if(dataType !=='string'||dataType !=='datetime'){BodyJson = CreateProp(BodyJson,"default",defaultValue)};
 	    	baseJson[fieldsNameActual].push(BodyJson);
 	    }
 	}
+
+if(fkName !==null && fkValue !== null){
+	var BodyJson = {};
+	    	var dataType = ObtenerTipoDatoJsonObject(fkValue);
+	    	var defaultValue = GetDefaultValue(dataType);
+	    	BodyJson = CreateProp(BodyJson,"field",fkName);
+	    	BodyJson = CreateProp(BodyJson,"displayName",fkName);
+	    	BodyJson = CreateProp(BodyJson,"autocomplete",false);
+	    	BodyJson = CreateProp(BodyJson,"type",dataType);
+	    	if(dataType !=='string'){BodyJson = CreateProp(BodyJson,"default",defaultValue)};
+	    	baseJson[fieldsNameActual].push(BodyJson);
+	}
+
 }
 
-var GenerateDataSetsNumetricFromShopify = function(inputDataShopify,namePK){
+var GenerateDataSetsNumetricFromShopify = function(inputDataShopify,namePK,fieldsName){
 
 var JsonResult = {};
 JsonResult["DataSetList"] = [];
 var JsonFieldsList = {};
-var fieldsName = "Init";
+var fieldsName;
+var props = Object.keys(inputDataShopify);
+if(props.length>0){
+	fieldsName = props[0]; 
+}
+//var fieldsName = "Init";
 //var prefixName = "fields";
+var inpuSingleData = inputDataShopify[fieldsName][0];
+
 var count =0;
 
-GenerarFieldListDataSetNumetric(inputDataShopify,fieldsName,JsonFieldsList,count);
+//inputDataShopify
+GenerarFieldListDataSetNumetric(inpuSingleData,fieldsName,JsonFieldsList,count,null,null);
 
 
 	for(var element in JsonFieldsList){
 		var DataSet = {};
 		count++;
-		DataSet = CreateProp(DataSet,"name","DataSet"+count+"_"+element);
+		DataSet = CreateProp(DataSet,"name",element); //"DataSet"+count+"_"+
 		DataSet = CreateProp(DataSet,"fields",JsonFieldsList[element]);
 		DataSet = CreateProp(DataSet,"primaryKey",namePK);
 	    DataSet = CreateProp(DataSet,"description","DataSet Shopify Generate Automatic");
@@ -152,21 +231,53 @@ var GenerateRowsFromMixPanel = function(inputDataMixPanel,jsonRows){
 		jsonRows["rows"].push(Row);
 }
 
-var GenerateRowsListFromShopify= function(inputDataShopify,jsonListRows,NameListRows, NamesSubList){
+var GenerateRowsListFromShopify= function(inputDataShopify,jsonListRows,NameListRows,fkName,fkValue){
+	//NamesSubList
 	var Row = {};
+	var foreignKeyName='';
+	var foreignKeyValue=null;
+
+	var props = Object.keys(inputDataShopify);
+	if(props.length>0){
+		foreignKeyName = NameListRows+props[0];
+		foreignKeyValue = inputDataShopify[props[0]]; 
+	}
 
 	for(var property in inputDataShopify){
 
 		if(isArray(inputDataShopify[property])){
-			if(isInclude(NamesSubList,property)){
-				for (var i = 0; i < inputDataShopify[property].length; i++ ){
-					GenerateRowsListFromShopify(inputDataShopify[property][i],jsonListRows,property,NamesSubList);
+			//if(isInclude(NamesSubList,property)){
+
+				if(inputDataShopify[property].length>0 && !isJsonObject(inputDataShopify[property][0])){
+					Row = CreateProp(Row,property,JSON.stringify(inputDataShopify[property]));
 				}
-			}
-		}else{
+				else{
+					var newNameListRows = NameListRows+"_"+property;
+					jsonListRows[newNameListRows] = {};
+					jsonListRows[newNameListRows]["rows"]=[];
+					for (var i = 0; i < inputDataShopify[property].length; i++ ){
+						//GenerateRowsListFromShopify(inputDataShopify[property][i],jsonListRows,property,NamesSubList,foreignKeyName,foreignKeyValue);
+						GenerateRowsListFromShopify(inputDataShopify[property][i],jsonListRows,newNameListRows,foreignKeyName,foreignKeyValue);
+					}
+				}
+			//}
+		} else if(isJsonObject(inputDataShopify[property])){
+			//if(isInclude(NamesSubList,property)){
+				var newNameListRows = NameListRows+"_"+property;
+				jsonListRows[newNameListRows] = {};
+				jsonListRows[newNameListRows]["rows"]=[];
+				GenerateRowsListFromShopify(inputDataShopify[property],jsonListRows,newNameListRows,foreignKeyName,foreignKeyValue);
+			//}
+		}
+		else{
 			Row = CreateProp(Row,property,inputDataShopify[property]);
 		}
 	}
+
+	if(fkName !==null && fkValue !== null){
+		Row = CreateProp(Row,fkName,fkValue);
+	}
+
 	jsonListRows[NameListRows].rows.push(Row);
 }
 

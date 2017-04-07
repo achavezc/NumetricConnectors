@@ -627,7 +627,7 @@ datasetProduct:{
     },
     datasetSmartCollectionId:{ id: 'c0e355f1-2597-41c5-9d37-6146970f182c' },
     datasetCustomer:{
-      "name": "Customer",
+      "name": "customers",
       "fields": [
         {
           "field": "id",
@@ -677,8 +677,7 @@ datasetProduct:{
           "field": "orders_count",
           "displayName": "orders_count",
           "autocomplete": false,
-          "type": "integer",
-          "default": 0
+          "type": "datetime"
         },
         {
           "field": "state",
@@ -741,16 +740,16 @@ datasetProduct:{
           "field": "last_order_name",
           "displayName": "last_order_name",
           "autocomplete": false,
-          "type": "string"
+          "type": "datetime"
         }
       ],
       "primaryKey": "id",
       "categories": ["Shopify"],
       "description": "Shopify Customers"
     },
-    datasetCustomerId:{ id: '0feb912e-5b64-4964-be08-8b84a1d9f376' },
-    datasetCustomerAddress:{
-      "name": "CustomerAddress",
+    datasetCustomerId:{ id: '02c506fe-96e8-42c1-b672-94db089fc68d' },
+    datasetCustomerDefaultAddress:{
+      "name": "customers_default_address",
       "fields": [
         {
           "field": "id",
@@ -781,7 +780,8 @@ datasetProduct:{
           "field": "address1",
           "displayName": "address1",
           "autocomplete": false,
-          "type": "string"
+          "type": "datetime",
+          "default": ""
         },
         {
           "field": "address2",
@@ -811,7 +811,8 @@ datasetProduct:{
           "field": "zip",
           "displayName": "zip",
           "autocomplete": false,
-          "type": "string"
+          "type": "datetime",
+          "default": ""
         },
         {
           "field": "phone",
@@ -849,13 +850,134 @@ datasetProduct:{
           "autocomplete": false,
           "type": "boolean",
           "default": false
+        },
+        {
+          "field": "customersid",
+          "displayName": "customersid",
+          "autocomplete": false,
+          "type": "integer",
+          "default": 0
         }
       ],
       "primaryKey": "id",
       "categories": ["Shopify"],
+      "description": "Shopify Customer Default Address"
+    },
+    datasetCustomerDefaultAddressId:{ id: 'c9dde350-1a4e-4d3f-a51c-7c7ef3b8f12d' },
+    datasetCustomerAddress:{
+      "name": "customers_addresses",
+      "fields": [
+        {
+          "field": "id",
+          "displayName": "id",
+          "autocomplete": false,
+          "type": "integer",
+          "default": 0
+        },
+        {
+          "field": "first_name",
+          "displayName": "first_name",
+          "autocomplete": false,
+          "type": "string"
+        },
+        {
+          "field": "last_name",
+          "displayName": "last_name",
+          "autocomplete": false,
+          "type": "string"
+        },
+        {
+          "field": "company",
+          "displayName": "company",
+          "autocomplete": false,
+          "type": "string"
+        },
+        {
+          "field": "address1",
+          "displayName": "address1",
+          "autocomplete": false,
+          "type": "datetime"
+        },
+        {
+          "field": "address2",
+          "displayName": "address2",
+          "autocomplete": false,
+          "type": "string"
+        },
+        {
+          "field": "city",
+          "displayName": "city",
+          "autocomplete": false,
+          "type": "string"
+        },
+        {
+          "field": "province",
+          "displayName": "province",
+          "autocomplete": false,
+          "type": "string"
+        },
+        {
+          "field": "country",
+          "displayName": "country",
+          "autocomplete": false,
+          "type": "string"
+        },
+        {
+          "field": "zip",
+          "displayName": "zip",
+          "autocomplete": false,
+          "type": "datetime"
+        },
+        {
+          "field": "phone",
+          "displayName": "phone",
+          "autocomplete": false,
+          "type": "string"
+        },
+        {
+          "field": "name",
+          "displayName": "name",
+          "autocomplete": false,
+          "type": "string"
+        },
+        {
+          "field": "province_code",
+          "displayName": "province_code",
+          "autocomplete": false,
+          "type": "string"
+        },
+        {
+          "field": "country_code",
+          "displayName": "country_code",
+          "autocomplete": false,
+          "type": "string"
+        },
+        {
+          "field": "country_name",
+          "displayName": "country_name",
+          "autocomplete": false,
+          "type": "string"
+        },
+        {
+          "field": "default",
+          "displayName": "default",
+          "autocomplete": false,
+          "type": "boolean",
+          "default": false
+        },
+        {
+          "field": "customersid",
+          "displayName": "customersid",
+          "autocomplete": false,
+          "type": "integer",
+          "default": 0
+        }
+      ],
+      "categories": ["Shopify"],
+      "primaryKey": "id",
       "description": "Shopify Customer Address"
     },
-    datasetCustomerAddressId:{ id: 'a28573b0-aa68-45d9-ae6f-8e15b7c81933' },
+    datasetCustomerAddressId:{ id: '4f1e76e8-bda3-4108-b36f-87a31878d2b7' },
     datasetTransaction:{
       "name": "Transaction",
       "fields": [

@@ -5,6 +5,9 @@ const ShopifyData = require("./DataConnectorApi/ShopifyDataConnectorApi/ShopifyD
 const inputsMixPanel = require("./SampleData/exampleDataMixPanel")
 const inputsShopify = require("./SampleData/exampleDataShopify")
 const config = require("./Config/Config")
+//borrar luego esta constante
+const utils = require("./Helper/Util")
+const datasetsShopify = require("./Model/datasetsShopify")
 
 var conf = new config();
 
@@ -19,9 +22,9 @@ ShopifyData.getTimeZone(function(result){
 		  console.log(result);
 });
 */
-ShopifyData.getOrders(lastUpdated,function(result){	
+/*ShopifyData.getOrders(lastUpdated,function(result){	
 		  console.log(result);
-});
+});*/
 
 
 
@@ -41,7 +44,7 @@ MixPanelData.getEvents(lastUpdated,function(result){
 //updateRowsMixPanel(iMp.datamp);
 //updateRowsMixPanel(iMp.inputMixPanel);
 
-//var iS = new inputsShopify(); 
+var iS = new inputsShopify(); 
 //Grabar datos en datasetEvent
 //getRowsShopifyEvent(iS.inputEvent.events);
 //Grabar datos en datasetCustomCollection
@@ -50,6 +53,7 @@ MixPanelData.getEvents(lastUpdated,function(result){
 //getRowsShopifyComment(iS.inputComment.comments);
 //Grabar datos en datasetProduct
 //getRowsShopifyProduct(iS.inputProduct.products);
+ShopifyCon.getRowsShopifyCustomer(iS.inputCustomer);
 
 //generar data set
 //MixPanel
@@ -61,10 +65,12 @@ var datasetmixpanel = utils.GenerateDataSetsNumetricFromMixPanel(finalFormatMixP
 generateDataSetNumetric(datasetmixpanel.DataSetList[0]);
 */
 //Shopify
-//var datasetshopify = utils.GenerateDataSetsNumetricFromShopify(iS.inputOrder.orders[0],"id");
+//var datasetshopify = ShopifyCon.NumetricShopifyFormat(iS.inputOrder.orders[0],"id","orders");
+//var datasetshopify = ShopifyCon.NumetricShopifyFormat(iS.inputCustomer.customers[0],"id","customers");
+//var datasetshopify = ShopifyCon.NumetricShopifyFormat(iS.inputCustomer,"id","customers");
 //utils.WriteFileTxt(JSON.stringify(datasetshopify));
 //console.log(datasetshopify);
-//generateDataSetNumetric(datasetsShopify.datasetOrderRefundsTransaction);
-
+//NumetricCon.generateDataSetNumetric(datasetsShopify.datasetCustomer).then(result=>{console.log(result); });
+//NumetricCon.getDataSetNumetric().then(result=>{console.log(result); });
 //MixPanelCon.generateDataSetMixPanel();
 //MixPanelCon.testPreserveValue();

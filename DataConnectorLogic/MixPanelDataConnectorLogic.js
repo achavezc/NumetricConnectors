@@ -9,7 +9,7 @@ const datasetsMixPanel = require("../Model/datasetsMixPanel")
 
 function NumetricMixPanelFormat(inputData){
 	var conf = new config();
- var result = mapper.transform(inputData, conf.parameters().plantillaJsonDestino, conf.operations);
+ var result = mapper.transform(inputData, conf.parameters().plantillaJsonDestino, conf.parameters().operations);
  return result[""];
 }
 

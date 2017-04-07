@@ -13,6 +13,25 @@
     "i": "^0.3.5",
     "json2json-transform": "0.0.1",
     "request": "^2.81.0",
-    "request-promise": "^4.2.0"
+    "request-promise": "^4.2.0",
+    "got": "^6.7.1",
+    "lodash": "^4.6.0",
+    "lodash.assign": "^4.2.0",
+    "lodash.camelcase": "^4.3.0",
+    "lodash.defaults": "^4.2.0",
+    "moment": "^2.18.1",
+    "moment-timezone": "^0.5.12",
+    "qs": "^6.1.0",
+    "react-moment": "^0.2.2",
+    "valvelet": "^1.1.1"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "check-dependencies": "^1.0.1",
+    "eslint": "^3.0.1",
+    "istanbul": "^0.4.2",
+    "mocha": "^3.0.1",
+    "nock": "^9.0.0",
+    "pre-commit": "^1.1.2"
   }
 }
