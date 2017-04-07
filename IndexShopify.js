@@ -48,6 +48,16 @@ ShopifyData.getCustomers(lastUpdated,function(resultCustomer){
 					ShopifyCon.getRowsShopifyCustomer(resultCustomer.Result.Data);
 		});
 
+		NumetricCon.generateDataSetNumetric(datasetShopify.DataSetList[1]).then(result=>{
+					//console.log(result); 
+					utils.WriteFileTxt(JSON.stringify(resultCustomer.Result.Data));
+					ShopifyCon.getRowsShopifyCustomer(resultCustomer.Result.Data);
+		});
+		NumetricCon.generateDataSetNumetric(datasetShopify.DataSetList[2]).then(result=>{
+					//console.log(result); 
+					utils.WriteFileTxt(JSON.stringify(resultCustomer.Result.Data));
+					ShopifyCon.getRowsShopifyCustomer(resultCustomer.Result.Data);
+		});
 			
 	}
 });

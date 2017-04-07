@@ -121,7 +121,7 @@ var getRowsShopifyCustomer = function(inputsShopify){
 	getRowsShopify(inputsShopify[nameParent],JsonResult,nameParent); //namesDatasetChild
 
 	//utils.WriteFileTxt(JSON.stringify(JsonResult));
-	/*
+	
 	for(var property in JsonResult){
 		switch (property) {
 			case 'customers'   : datasetId = datasetsShopify.datasetCustomerId.id; break;
@@ -129,7 +129,7 @@ var getRowsShopifyCustomer = function(inputsShopify){
 			case 'customers_addresses' : datasetId = datasetsShopify.datasetCustomerAddressId.id; break;
 		}
 		NumetricCon.updateRowsDataSetNumetric(datasetId,JsonResult[property]);
-	}*/
+	}
 }
 
 var getRowsShopifyTransaction = function(inputsShopify){
