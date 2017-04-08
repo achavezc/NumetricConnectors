@@ -7,6 +7,9 @@ const inputsShopify = require("./SampleData/exampleDataShopify")
 const config = require("./Config/Config")
 //borrar luego esta constante
 const utils = require("./Helper/Util")
+var async = require("async");
+var forEach = require('async-foreach').forEach;
+
 //const datasetsShopify = require("./Model/datasetsShopify")
 
 var conf = new config();
@@ -30,6 +33,7 @@ NumetricCon.getDataSetNumetric().then(result=>{
 })
 */
 
+
 ShopifyData.getCustomers(lastUpdated,function(resultCustomer){	
 	if(resultCustomer.Result.Success){
 		
@@ -37,10 +41,85 @@ ShopifyData.getCustomers(lastUpdated,function(resultCustomer){
 		//utils.WriteFileTxt(JSON.stringify(result.Result.Data));
 		
 		var datasetShopify = ShopifyCon.NumetricShopifyFormat(resultCustomer.Result.Data,"id","customers");
+		var lstIds = [];
 		
-	 	//utils.WriteFileTxt(JSON.stringify(datasetShopify.DataSetList[0]));
+
 		
+		NumetricCon.generateDataSetNumetric(datasetShopify.DataSetList[0]).then(resultCustomer=>{
+					resultCustomer.Result.datasetCustomerId = resultCustomer.Response.id; 
+						NumetricCon.generateDataSetNumetric(datasetShopify.DataSetList[1]).then(resultDefaultAddres=>{
+									resultCustomer.Result.datasetCustomerDefaultAddressId = resultDefaultAddres.Response.id; 
+									NumetricCon.generateDataSetNumetric(datasetShopify.DataSetList[2]).then(resultAdress=>{
+												resultCustomer.Result.datasetCustomerAddressId = resultAdress.Response.id; 
+												ShopifyCon.getRowsShopifyCustomer(resultCustomer.Result.Data);
+												
+									});
+						});
+				
+		});
+
+		/*
+				forEach(datasetShopify.DataSetList, function(item, index, arr) {
+					
+					NumetricCon.generateDataSetNumetric(datasetShopify.DataSetList[index]).then(result=>{
+							//console.log(result); 
+							//utils.WriteFileTxt(JSON.stringify(resultCustomer.Result.Data));
+							//ShopifyCon.getRowsShopifyCustomer(resultCustomer.Result.Data,result.Response.id);
+							console.log(result);
+							lstIds.push(result.Response.id);
+							//callback();
+					});
+					
+				}, function done() {
+					utils.WriteFileTxt(JSON.stringify(lstIds))
+				})
+			*/
+		//utils.WriteFileTxt(JSON.stringify(lstIds));
+		/*for(var i=0; i<datasetShopify.DataSetList.length; i++){
+			NumetricCon.generateDataSetNumetric(datasetShopify.DataSetList[i]).then(result=>{
+					//console.log(result); 
+					//utils.WriteFileTxt(JSON.stringify(resultCustomer.Result.Data));
+					//ShopifyCon.getRowsShopifyCustomer(resultCustomer.Result.Data,result.Response.id);
+					lstIds.push(result.Response.id);
+			});
+		}*/
+
+/*
+		async.eachSeries(datasetShopify.DataSetList, function (prime, callback) {
+
+				NumetricCon.generateDataSetNumetric(prime,callbackDataSet).then(resultDataSet=>{
+						console.log(resultDataSet); 
+						//utils.WriteFileTxt(JSON.stringify(resultCustomer.Result.Data));
+						//ShopifyCon.getRowsShopifyCustomer(resultCustomer.Result.Data,result.Response.id);
+						lstIds.push(resultDataSet.Response.id);
+						callbackDataSet();
+				});
+				
+				//lstIds.push(prime.Response.id);
+				callback();
+				}, function (err) {
+				console.log(err); 
+			
+				}
+
 		
+		);
+		*/
+		/*
+		async.eachSeries(datasetShopify.DataSetList, NumetricCon.generateDataSetNumetric(item, callback).then(resultDataSet=>{
+			    console.log(item); 
+				if (inCache(item)) {
+					callback(null, cache[item]); // if many items are cached, you'll overflow
+				} else {
+					doSomeIO(item, callback);
+				}
+			})
+		
+		);*/
+
+
+
+		/*
 		
 		NumetricCon.generateDataSetNumetric(datasetShopify.DataSetList[0]).then(result=>{
 					//console.log(result); 
@@ -51,13 +130,14 @@ ShopifyData.getCustomers(lastUpdated,function(resultCustomer){
 		NumetricCon.generateDataSetNumetric(datasetShopify.DataSetList[1]).then(result=>{
 					//console.log(result); 
 					//utils.WriteFileTxt(JSON.stringify(resultCustomer.Result.Data));
-					ShopifyCon.getRowsShopifyCustomer(resultCustomer.Result.Data,result.Response.id);
+					//ShopifyCon.getRowsShopifyCustomer(resultCustomer.Result.Data,result.Response.id);
 		});
 		NumetricCon.generateDataSetNumetric(datasetShopify.DataSetList[2]).then(result=>{
 					//console.log(result); 
 					//utils.WriteFileTxt(JSON.stringify(result.Response.id));
-					ShopifyCon.getRowsShopifyCustomer(resultCustomer.Result.Data,result.Response.id);
+					//ShopifyCon.getRowsShopifyCustomer(resultCustomer.Result.Data,result.Response.id);
 		});
+		*/
 			
 	}
 });
