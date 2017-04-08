@@ -56,13 +56,11 @@ ShopifyData.getCustomers(lastUpdated,function(resultCustomer){
 		NumetricCon.generateDataSetNumetric(datasetShopify.DataSetList[2]).then(result=>{
 					//console.log(result); 
 					//utils.WriteFileTxt(JSON.stringify(result.Response.id));
-					result.Response.id
 					ShopifyCon.getRowsShopifyCustomer(resultCustomer.Result.Data,result.Response.id);
 		});
 			
 	}
 });
-
 
 
 

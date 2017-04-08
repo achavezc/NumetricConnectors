@@ -18,11 +18,14 @@ rp(options).then(response =>{
 'use strict';
 const rp = require('request-promise');
 
-var lstDatasets = ["4f1f6349-c0ca-4b53-9f86-08440dd8f5ae"];
-for(var i=0 ; i<lstDatasets.length; i++){
+
+NumetricCon.getDataSetNumetric().then(result=>{ 
+ //utils.WriteFileTxt(JSON.stringify(result));
+
+ for(var i=0 ; i<result.Response.length; i++){
     const options = {
         method: 'DELETE',
-        uri: 'https://api-qa.numetric.com/v2/dataset/'+ lstDatasets[i] ,
+        uri: 'https://api-qa.numetric.com/v2/dataset/'+ result.Response[i].id ,
         headers: {
             Authorization: 'rJuUQBduBXsQGUN9AWmeUgC1SmYBKWISj8FTVrNzjZM%3D'
         },
@@ -32,3 +35,5 @@ for(var i=0 ; i<lstDatasets.length; i++){
         console.log(response);
     });
 }
+
+})
