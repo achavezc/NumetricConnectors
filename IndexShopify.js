@@ -33,7 +33,114 @@ NumetricCon.getDataSetNumetric().then(result=>{
 })
 */
 
+ShopifyData.getCustomers(lastUpdated,function(resultCustomer){	
+	if(resultCustomer.Result.Success){
+		
+		
+		//utils.WriteFileTxt(JSON.stringify(result.Result.Data));
+		
+		var datasetShopify = ShopifyCon.NumetricShopifyFormat(resultCustomer.Result.Data,"id","customers");
+		var lstIds = [];
+		var datos = resultCustomer.Result.Data;
 
+		
+		NumetricCon.generateDataSetNumetric(datasetShopify.DataSetList[0]).then(resultCustomer=>{
+					resultCustomer.Result.datasetCustomerId = resultCustomer.Response.id; 
+						NumetricCon.generateDataSetNumetric(datasetShopify.DataSetList[1]).then(resultDefaultAddres=>{
+									resultCustomer.Result.datasetCustomerDefaultAddressId = resultDefaultAddres.Response.id; 
+									NumetricCon.generateDataSetNumetric(datasetShopify.DataSetList[2]).then(resultAdress=>{
+												resultCustomer.Result.datasetCustomerAddressId = resultAdress.Response.id; 
+												resultCustomer.Result.Data = datos;
+												ShopifyCon.getRowsShopifyCustomer(resultCustomer.Result);
+												
+									});
+						});
+				
+		});
+
+		/*
+				forEach(datasetShopify.DataSetList, function(item, index, arr) {
+					
+					NumetricCon.generateDataSetNumetric(datasetShopify.DataSetList[index]).then(result=>{
+							//console.log(result); 
+							//utils.WriteFileTxt(JSON.stringify(resultCustomer.Result.Data));
+							//ShopifyCon.getRowsShopifyCustomer(resultCustomer.Result.Data,result.Response.id);
+							console.log(result);
+							lstIds.push(result.Response.id);
+							//callback();
+					});
+					
+				}, function done() {
+					utils.WriteFileTxt(JSON.stringify(lstIds))
+				})
+			*/
+		//utils.WriteFileTxt(JSON.stringify(lstIds));
+		/*for(var i=0; i<datasetShopify.DataSetList.length; i++){
+			NumetricCon.generateDataSetNumetric(datasetShopify.DataSetList[i]).then(result=>{
+					//console.log(result); 
+					//utils.WriteFileTxt(JSON.stringify(resultCustomer.Result.Data));
+					//ShopifyCon.getRowsShopifyCustomer(resultCustomer.Result.Data,result.Response.id);
+					lstIds.push(result.Response.id);
+			});
+		}*/
+
+/*
+		async.eachSeries(datasetShopify.DataSetList, function (prime, callback) {
+
+				NumetricCon.generateDataSetNumetric(prime,callbackDataSet).then(resultDataSet=>{
+						console.log(resultDataSet); 
+						//utils.WriteFileTxt(JSON.stringify(resultCustomer.Result.Data));
+						//ShopifyCon.getRowsShopifyCustomer(resultCustomer.Result.Data,result.Response.id);
+						lstIds.push(resultDataSet.Response.id);
+						callbackDataSet();
+				});
+				
+				//lstIds.push(prime.Response.id);
+				callback();
+				}, function (err) {
+				console.log(err); 
+			
+				}
+
+		
+		);
+		*/
+		/*
+		async.eachSeries(datasetShopify.DataSetList, NumetricCon.generateDataSetNumetric(item, callback).then(resultDataSet=>{
+			    console.log(item); 
+				if (inCache(item)) {
+					callback(null, cache[item]); // if many items are cached, you'll overflow
+				} else {
+					doSomeIO(item, callback);
+				}
+			})
+		
+		);*/
+
+
+
+		/*
+		
+		NumetricCon.generateDataSetNumetric(datasetShopify.DataSetList[0]).then(result=>{
+					//console.log(result); 
+					//utils.WriteFileTxt(JSON.stringify(resultCustomer.Result.Data));
+					ShopifyCon.getRowsShopifyCustomer(resultCustomer.Result.Data,result.Response.id);
+		});
+
+		NumetricCon.generateDataSetNumetric(datasetShopify.DataSetList[1]).then(result=>{
+					//console.log(result); 
+					//utils.WriteFileTxt(JSON.stringify(resultCustomer.Result.Data));
+					//ShopifyCon.getRowsShopifyCustomer(resultCustomer.Result.Data,result.Response.id);
+		});
+		NumetricCon.generateDataSetNumetric(datasetShopify.DataSetList[2]).then(result=>{
+					//console.log(result); 
+					//utils.WriteFileTxt(JSON.stringify(result.Response.id));
+					//ShopifyCon.getRowsShopifyCustomer(resultCustomer.Result.Data,result.Response.id);
+		});
+		*/
+			
+	}
+});
 
 
 
@@ -56,7 +163,7 @@ MixPanelData.getEvents(lastUpdated,function(result){
 //updateRowsMixPanel(iMp.inputMixPanel);
 
 //andy
-var iS = new inputsShopify(); 
+//var iS = new inputsShopify(); 
 
 //Grabar datos en datasetEvent
 //getRowsShopifyEvent(iS.inputEvent.events);
@@ -67,7 +174,7 @@ var iS = new inputsShopify();
 //Grabar datos en datasetProduct
 //getRowsShopifyProduct(iS.inputProduct.products);
 
-ShopifyCon.getRowsShopifyOrder(iS.inputOrder);
+//ShopifyCon.getRowsShopifyOrder(iS.inputOrder);
 
 //andy
 //ShopifyCon.getRowsShopifyCustomer(iS.inputCustomer);
