@@ -86,13 +86,14 @@ var updateRowsDataSetNumetric = function(datasetId,data){
     resultEvent.Result = {}
     resultEvent.Result.Success = false;    
 
+	/*
 	var lstBatch = {};
 	lstBatch["rows"] = [];
 	var count = 1
 	for(var i=0; i<data["rows"].length; i++){
 		lstBatch["rows"].push(data["rows"][i]);
 		if( (i % 1000) == 0){
-			console.log(count);
+			//console.log(count);
 			rp(conf.parameters(lstBatch).optionsUpdateRowsDataSet).then(response =>{
 				resultEvent.Response  = response;
 				resultEvent.Result.Success = true;
@@ -108,7 +109,8 @@ var updateRowsDataSetNumetric = function(datasetId,data){
 			count++
 		}
 	}
-	/*
+	*/
+	
 	return rp(conf.parameters(data).optionsUpdateRowsDataSet).then(response =>{
      		 resultEvent.Response  = response;
         	 resultEvent.Result.Success = true;
@@ -120,7 +122,7 @@ var updateRowsDataSetNumetric = function(datasetId,data){
         	resultEvent.Result.Error = err;
         	return resultEvent;
 	});
-	*/
+	
 	
 }
 
