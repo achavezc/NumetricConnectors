@@ -42,7 +42,7 @@ ShopifyData.getCustomers(lastUpdated,function(resultCustomer){
 		
 		var datasetShopify = ShopifyCon.NumetricShopifyFormat(resultCustomer.Result.Data,"id","customers");
 		var lstIds = [];
-		
+		var datos = resultCustomer.Result.Data;
 
 		
 		NumetricCon.generateDataSetNumetric(datasetShopify.DataSetList[0]).then(resultCustomer=>{
@@ -51,7 +51,8 @@ ShopifyData.getCustomers(lastUpdated,function(resultCustomer){
 									resultCustomer.Result.datasetCustomerDefaultAddressId = resultDefaultAddres.Response.id; 
 									NumetricCon.generateDataSetNumetric(datasetShopify.DataSetList[2]).then(resultAdress=>{
 												resultCustomer.Result.datasetCustomerAddressId = resultAdress.Response.id; 
-												ShopifyCon.getRowsShopifyCustomer(resultCustomer.Result.Data);
+												resultCustomer.Result.Data = datos;
+												ShopifyCon.getRowsShopifyCustomer(resultCustomer.Result);
 												
 									});
 						});
