@@ -17,7 +17,7 @@ rp(options).then(response =>{
 
 'use strict';
 const rp = require('request-promise');
-
+const NumetricCon = require("./DataConnectorApi/NumetricDataConnectorApi/NumetricDataConnectorApi")
 
 NumetricCon.getDataSetNumetric().then(result=>{ 
  //utils.WriteFileTxt(JSON.stringify(result));
