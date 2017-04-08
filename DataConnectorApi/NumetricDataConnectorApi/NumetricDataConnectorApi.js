@@ -48,13 +48,13 @@ var generateDataSetNumetric = function(data){
     resultEvent.Result.Success = false;
 
 	return rp(conf.parameters(data).optionsCreateDataSet).then(response =>{
-		     console.log(response);
+		    
      		 resultEvent.Response  = response;
         	 resultEvent.Result.Success = true;
 		     return resultEvent;
 	})
 	.catch(function(err){ 
-		    utils.WriteFileTxt(JSON.stringify(err));
+		    
 			resultEvent.Result.Success = false;
         	resultEvent.Result.Error = err;
         	return resultEvent;

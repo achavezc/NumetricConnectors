@@ -104,8 +104,8 @@ var getRowsShopifySmartCollection = function(inputsShopify){
 	}
 }
 
-var getRowsShopifyCustomer = function(inputsShopify){
-	var datasetId = "";
+var getRowsShopifyCustomer = function(inputsShopify,datasetId){
+	//var datasetId = "";
 	var JsonResult = {};
 	//var namesDatasetChild =  ["addresses"];
 	var props = Object.keys(inputsShopify);
@@ -123,11 +123,13 @@ var getRowsShopifyCustomer = function(inputsShopify){
 	//utils.WriteFileTxt(JSON.stringify(JsonResult));
 	
 	for(var property in JsonResult){
+		/*
 		switch (property) {
 			case 'customers'   : datasetId = datasetsShopify.datasetCustomerId.id; break;
 			case 'customers_default_address' : datasetId = datasetsShopify.datasetCustomerDefaultAddressId.id; break;
 			case 'customers_addresses' : datasetId = datasetsShopify.datasetCustomerAddressId.id; break;
 		}
+		*/
 		NumetricCon.updateRowsDataSetNumetric(datasetId,JsonResult[property]);
 	}
 }

@@ -38,25 +38,26 @@ ShopifyData.getCustomers(lastUpdated,function(resultCustomer){
 		
 		var datasetShopify = ShopifyCon.NumetricShopifyFormat(resultCustomer.Result.Data,"id","customers");
 		
-	 	utils.WriteFileTxt(JSON.stringify(datasetShopify.DataSetList[0]));
+	 	//utils.WriteFileTxt(JSON.stringify(datasetShopify.DataSetList[0]));
 		
 		
 		
 		NumetricCon.generateDataSetNumetric(datasetShopify.DataSetList[0]).then(result=>{
 					//console.log(result); 
-					utils.WriteFileTxt(JSON.stringify(resultCustomer.Result.Data));
-					ShopifyCon.getRowsShopifyCustomer(resultCustomer.Result.Data);
+					//utils.WriteFileTxt(JSON.stringify(resultCustomer.Result.Data));
+					ShopifyCon.getRowsShopifyCustomer(resultCustomer.Result.Data,result.Response.id);
 		});
 
 		NumetricCon.generateDataSetNumetric(datasetShopify.DataSetList[1]).then(result=>{
 					//console.log(result); 
-					utils.WriteFileTxt(JSON.stringify(resultCustomer.Result.Data));
-					ShopifyCon.getRowsShopifyCustomer(resultCustomer.Result.Data);
+					//utils.WriteFileTxt(JSON.stringify(resultCustomer.Result.Data));
+					ShopifyCon.getRowsShopifyCustomer(resultCustomer.Result.Data,result.Response.id);
 		});
 		NumetricCon.generateDataSetNumetric(datasetShopify.DataSetList[2]).then(result=>{
 					//console.log(result); 
-					utils.WriteFileTxt(JSON.stringify(resultCustomer.Result.Data));
-					ShopifyCon.getRowsShopifyCustomer(resultCustomer.Result.Data);
+					//utils.WriteFileTxt(JSON.stringify(result.Response.id));
+					result.Response.id
+					ShopifyCon.getRowsShopifyCustomer(resultCustomer.Result.Data,result.Response.id);
 		});
 			
 	}
