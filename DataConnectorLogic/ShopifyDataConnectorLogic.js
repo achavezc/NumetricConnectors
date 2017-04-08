@@ -13,10 +13,10 @@ var NumetricShopifyFormat = function(inputData,namePk,fieldsName){
 function getRowsShopify(inputShopify,jsonListRows,namePrincipalList){ //namesSecondaryList
 	if(utils.isArray(inputShopify)){
 			for (var i = 0; i < inputShopify.length; i++ ){
-				utils.GenerateRowsListFromShopify(inputShopify[i],jsonListRows,namePrincipalList,null,null); //namesSecondaryList
+				utils.GenerateRowsListFromShopify(inputShopify[i],jsonListRows,namePrincipalList,null,null,false); //namesSecondaryList
 			}
 		} else {
-				utils.GenerateRowsListFromShopify(inputShopify,jsonListRows,namePrincipalList,null,null); //namesSecondaryList
+				utils.GenerateRowsListFromShopify(inputShopify,jsonListRows,namePrincipalList,null,null,false); //namesSecondaryList
 		}
 }
 

@@ -109,7 +109,7 @@ var formatField = function(NameField,ValueField){
 	return BodyJson;
 }
 
-var GenerarFieldListDataSetNumetric = function (inputJson,fieldsName, baseJson,fkName,fkValue){
+var GenerarFieldListDataSetNumetric = function (inputJson,fieldsName, baseJson,fkName,fkValue,isSingleObj){
 
 
 var fieldsNameActual = fieldsName; //prefixName +
@@ -120,9 +120,10 @@ var foreignKeyValue=null;
 var props = Object.keys(inputJson);
 	if(props.length>0){
 		if(fkName !==null && fkValue !== null){ //if is different of null is a child
-			if(!isInclude(props,"id") || !isInclude(props,"id_"+fieldsName)){ //search if not contains a common primary key
+			if(!isInclude(props,"id") || !isInclude(props,fieldsName+"_id")){ //search if not contains a common primary key
 				var pkName = "id";
-				var pkValue = fkValue+inputJson[props[0]]
+				var pkValue;
+				if(isSingleObj){pkValue = fkValue;} else {pkValue = fkValue.toString()+inputJson[props[0]];}
 		    	baseJson[fieldsNameActual].push(formatField(pkName,pkValue));
 		    	foreignKeyName = fieldsName+pkName;
 				foreignKeyValue = pkValue;
@@ -147,7 +148,7 @@ var props = Object.keys(inputJson);
 	    		if(isJsonObject(inputJson[prop][0])){
 	    		//count++;
 	    		//arguments.callee(inputJson[prop][0],fieldsName,baseJson,count);
-	    		GenerarFieldListDataSetNumetric(inputJson[prop][0],fieldsName+"_"+prop,baseJson,foreignKeyName,foreignKeyValue);
+	    		GenerarFieldListDataSetNumetric(inputJson[prop][0],fieldsName+"_"+prop,baseJson,foreignKeyName,foreignKeyValue,false);
 	    		}else{
 	    			//if is a simple list of values then transform stringify
 	    			var newValueProperty = JSON.stringify(inputJson[prop]);
@@ -156,7 +157,7 @@ var props = Object.keys(inputJson);
 	    	}
 	    } else if(isJsonObject(inputJson[prop])){
 	    	//if is an JsonObject try generate a particular dataset for him
-	    	GenerarFieldListDataSetNumetric(inputJson[prop],fieldsName+"_"+prop,baseJson,foreignKeyName,foreignKeyValue);
+	    	GenerarFieldListDataSetNumetric(inputJson[prop],fieldsName+"_"+prop,baseJson,foreignKeyName,foreignKeyValue,true);
 	    }
 	    else {
 	    	baseJson[fieldsNameActual].push(formatField(prop,inputJson[prop]));
@@ -187,7 +188,7 @@ var inpuSingleData = inputDataShopify[fieldsName][0];
 var count =0;
 
 //inputDataShopify
-GenerarFieldListDataSetNumetric(inpuSingleData,fieldsName,JsonFieldsList,count,null,null);
+GenerarFieldListDataSetNumetric(inpuSingleData,fieldsName,JsonFieldsList,count,null,null,false);
 
 
 	for(var element in JsonFieldsList){
@@ -211,7 +212,7 @@ var JsonFieldsList = {};
 var fieldsName = "fields";
 var count =0;
 
-GenerarFieldListDataSetNumetric(inputDataMixPanel, fieldsName, JsonFieldsList,count);
+GenerarFieldListDataSetNumetric(inputDataMixPanel, fieldsName, JsonFieldsList,count,null,null,false);
 count =0;
 
 	for(var element in JsonFieldsList){
@@ -237,18 +238,18 @@ var GenerateRowsFromMixPanel = function(inputDataMixPanel,jsonRows){
 		jsonRows["rows"].push(Row);
 }
 
-var GenerateRowsListFromShopify= function(inputDataShopify,jsonListRows,NameListRows,fkName,fkValue){
+var GenerateRowsListFromShopify= function(inputDataShopify,jsonListRows,NameListRows,fkName,fkValue,isSingleObj){
 	//NamesSubList
 	var Row = {};
 	var foreignKeyName='';
 	var foreignKeyValue=null;
-
 	var props = Object.keys(inputDataShopify);
 	if(props.length>0){
 		if(fkName !==null && fkValue !== null){ //if is different of null is a child
-			if(!isInclude(props,"id") || !isInclude(props,"id_"+NameListRows)){ //search if not contains a common primary key
+			if(!isInclude(props,"id") && !isInclude(props,NameListRows+"_id")){ //search if not contains a common primary key
 				var pkName = "id";
-				var pkValue = fkValue + inputDataShopify[props[0]];
+				var pkValue;
+				if(isSingleObj){pkValue = fkValue;} else {pkValue = fkValue.toString()+inputDataShopify[props[0]];}
 				Row = CreateProp(Row,pkName,pkValue);
 				foreignKeyName = NameListRows+pkName;
 				foreignKeyValue = pkValue; 
@@ -281,7 +282,7 @@ var GenerateRowsListFromShopify= function(inputDataShopify,jsonListRows,NameList
 					}
 					for (var i = 0; i < inputDataShopify[property].length; i++ ){
 						//GenerateRowsListFromShopify(inputDataShopify[property][i],jsonListRows,property,NamesSubList,foreignKeyName,foreignKeyValue);
-						GenerateRowsListFromShopify(inputDataShopify[property][i],jsonListRows,newNameListRows,foreignKeyName,foreignKeyValue);
+						GenerateRowsListFromShopify(inputDataShopify[property][i],jsonListRows,newNameListRows,foreignKeyName,foreignKeyValue,false);
 					}
 				}
 			//}
@@ -293,7 +294,7 @@ var GenerateRowsListFromShopify= function(inputDataShopify,jsonListRows,NameList
 						jsonListRows[newNameListRows] = {};
 						jsonListRows[newNameListRows]["rows"]=[];
 					}
-				GenerateRowsListFromShopify(inputDataShopify[property],jsonListRows,newNameListRows,foreignKeyName,foreignKeyValue);
+				GenerateRowsListFromShopify(inputDataShopify[property],jsonListRows,newNameListRows,foreignKeyName,foreignKeyValue,true);
 			//}
 		}
 		else{
