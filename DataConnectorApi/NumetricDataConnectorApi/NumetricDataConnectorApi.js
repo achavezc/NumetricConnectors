@@ -62,23 +62,6 @@ var generateDataSetNumetric = function(data){
 }
 
 var updateRowsDataSetNumetric = function(datasetId,data){
-	/*
-	utils.WriteFileTxt("\r\n");
-	utils.WriteFileTxt("\r\n");
-	utils.WriteFileTxt("\r\n");
-	utils.WriteFileTxt("\r\n");
-	utils.WriteFileTxt("\r\n");
-	utils.WriteFileTxt("\r\n");
-	utils.WriteFileTxt("\r\n");
-	utils.WriteFileTxt(JSON.stringify(data));
-	utils.WriteFileTxt("\r\n");
-	utils.WriteFileTxt("\r\n");
-	utils.WriteFileTxt("\r\n");
-	utils.WriteFileTxt("\r\n");
-	utils.WriteFileTxt("\r\n");
-	utils.WriteFileTxt("\r\n");
-	utils.WriteFileTxt("\r\n");
-	*/
 
 	console.log(datasetId);
 	var conf = new config(datasetId);
