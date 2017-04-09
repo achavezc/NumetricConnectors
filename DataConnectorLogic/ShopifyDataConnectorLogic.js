@@ -167,35 +167,9 @@ var getRowsShopifyArticle = function(inputsShopify){
 var getRowsShopifyOrder = function(inputsShopify){
 	var datasetId = "";
 	var JsonResult = {};
-	/*var namesDatasetChild =  ["discount_codes","note_attributes","tax_lines","line_items","properties"
-							 ,"shipping_lines","fulfillments","refunds","refund_line_items","transactions"];
-
-	JsonResult["orders"] = {};
-	JsonResult["orders"]["rows"]=[];
-
-	JsonResult["discount_codes"] = {};
-	JsonResult["discount_codes"]["rows"]=[];
-	JsonResult["note_attributes"] = {};
-	JsonResult["note_attributes"]["rows"]=[];
-	JsonResult["tax_lines"] = {};
-	JsonResult["tax_lines"]["rows"]=[];
-	JsonResult["line_items"] = {};
-	JsonResult["line_items"]["rows"]=[];
-	JsonResult["properties"] = {};
-	JsonResult["properties"]["rows"]=[];
-    JsonResult["shipping_lines"] = {};
-	JsonResult["shipping_lines"]["rows"]=[];
-	JsonResult["fulfillments"] = {};
-	JsonResult["fulfillments"]["rows"]=[];
-	JsonResult["refunds"] = {};
-	JsonResult["refunds"]["rows"]=[];
-	JsonResult["refund_line_items"] = {};
-	JsonResult["refund_line_items"]["rows"]=[];
-	JsonResult["transactions"] = {};
-	JsonResult["transactions"]["rows"]=[];*/
-
 	var props = Object.keys(inputsShopify);
 	var nameParent;
+	var datasetReady=true;
 	if(props.length>0){
 		nameParent = props[0]; 
 	}
@@ -205,24 +179,28 @@ var getRowsShopifyOrder = function(inputsShopify){
 
 	getRowsShopify(inputsShopify[nameParent],JsonResult,nameParent); //namesDatasetChild
 
-	utils.WriteFileTxt(JSON.stringify(JsonResult));
+	//utils.WriteFileTxt(JSON.stringify(JsonResult));
 
-	/*for(var property in JsonResult){
+	for(var property in JsonResult){
 		switch (property) {
-			case 'orders'				: datasetId = datasetsShopify.datasetOrderId.id; break;
-			case 'discount_codes' 		: datasetId = datasetsShopify.datasetOrderDiscountCodeId.id; break;
-			case 'note_attributes'		: datasetId = datasetsShopify.datasetOrderNoteAttributeId.id; break;
-			case 'tax_lines'			: datasetId = datasetsShopify.datasetOrderTaxLineId.id; break;
-			case 'line_items'			: datasetId = datasetsShopify.datasetOrderLineItemId.id; break;
-			case 'properties'			: datasetId = datasetsShopify.datasetOrderLineItemPropertiesId.id; break;
-			case 'shipping_lines'		: datasetId = datasetsShopify.datasetOrderShippingLineId.id; break;
-			case 'fulfillments'			: datasetId = datasetsShopify.datasetOrderFulfillmentId.id; break;
-			case 'refunds'				: datasetId = datasetsShopify.datasetOrderRefundsId.id; break;
-			case 'refund_line_items'	: datasetId = datasetsShopify.datasetOrderRefundsLineItemId.id; break;
-			case 'transactions'			: datasetId = datasetsShopify.datasetOrderRefundsTransactionId.id; break;
+			case 'orders'				: datasetId = datasetsShopify.datasetOrderId.id; datasetReady=true; break;
+			//case 'discount_codes' 		: datasetId = datasetsShopify.datasetOrderDiscountCodeId.id; break;
+			//case 'note_attributes'		: datasetId = datasetsShopify.datasetOrderNoteAttributeId.id; break;
+			//case 'tax_lines'			: datasetId = datasetsShopify.datasetOrderTaxLineId.id; break;
+			//case 'line_items'			: datasetId = datasetsShopify.datasetOrderLineItemId.id; break;
+			//case 'properties'			: datasetId = datasetsShopify.datasetOrderLineItemPropertiesId.id; break;
+			//case 'shipping_lines'		: datasetId = datasetsShopify.datasetOrderShippingLineId.id; break;
+			//case 'fulfillments'			: datasetId = datasetsShopify.datasetOrderFulfillmentId.id; break;
+			//case 'refunds'				: datasetId = datasetsShopify.datasetOrderRefundsId.id; break;
+			//case 'refund_line_items'	: datasetId = datasetsShopify.datasetOrderRefundsLineItemId.id; break;
+			//case 'transactions'			: datasetId = datasetsShopify.datasetOrderRefundsTransactionId.id; break;
+			default: datasetReady=false; break;
 		}
-		NumetricCon.updateRowsDataSetNumetric(datasetId,JsonResult[property]);
-	}*/
+		if(datasetReady){
+			NumetricCon.updateRowsDataSetNumetric(datasetId,JsonResult[property]);			
+		}
+
+	}
 }
 
 //METODO FINAL QUE USARE PARA CARGAR CUALQUIER DATA A SU DATASET CORRESPONDIENTE EN NUMETRIC

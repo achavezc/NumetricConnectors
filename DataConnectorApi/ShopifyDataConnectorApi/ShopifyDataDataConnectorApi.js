@@ -45,7 +45,9 @@ var getOrders = function getOrders(lastUpdated,callback) {
     var date = toTimeZone(lastUpdated.created_at_min,lastUpdated.timezone);
     shopify.order.list({ created_at_min: date})
     .then(function(orders) {
-        resultEvent.Result.Data  = JSON.stringify(orders);
+        resultEvent.Result.Data  = {}; 
+        resultEvent.Result.Data.orders = [];
+        resultEvent.Result.Data.orders = orders
         resultEvent.Result.Success = true;
         callback(resultEvent);
     })
