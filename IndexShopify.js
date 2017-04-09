@@ -1,6 +1,7 @@
 'use strict'
 const NumetricCon = require("./DataConnectorApi/NumetricDataConnectorApi/NumetricDataConnectorApi")
 const ShopifyCon = require("./DataConnectorLogic/ShopifyDataConnectorLogic")
+const numetricDataConnectorLogic = require("./DataConnectorLogic/NumetricDataConnectorLogic")
 const ShopifyData = require("./DataConnectorApi/ShopifyDataConnectorApi/ShopifyDataDataConnectorApi")
 const inputsMixPanel = require("./SampleData/exampleDataMixPanel")
 const inputsShopify = require("./SampleData/exampleDataShopify")
@@ -19,6 +20,42 @@ var lastUpdated = {
   created_at_min : conf.parameters().initialDateTimeShopify,
   timezone : 'GMT-11:00'
 }
+
+
+
+
+
+ShopifyData.getCustomers(lastUpdated,function(resultCustomer){ 
+		if(resultCustomer.Result.Success){
+		
+		var datasetShopify = ShopifyCon.NumetricShopifyFormat(resultCustomer.Result.Data,"id","customers");
+		var lstIds = [];
+		var datos = resultCustomer.Result.Data;
+		
+		numetricDataConnectorLogic.verifyCreateDatasetNumetric('customers',datasetShopify.DataSetList[0]).then(resultCustomer=>
+		{
+		
+		resultCustomer.Result.datasetCustomerId = resultCustomer.Response.Id; 
+		
+			
+			numetricDataConnectorLogic.verifyCreateDatasetNumetric('customers_addresses',datasetShopify.DataSetList[1]).then(resultDefaultAddres=>
+			{
+				resultCustomer.Result.datasetCustomerDefaultAddressId = resultDefaultAddres.Response.Id; 
+				numetricDataConnectorLogic.verifyCreateDatasetNumetric('customers_default_address',datasetShopify.DataSetList[2]).then(resultAdress=>
+				{
+					resultCustomer.Result.datasetCustomerAddressId = resultAdress.Response.Id; 
+					resultCustomer.Result.Data = datos;
+					ShopifyCon.getRowsShopifyCustomer(resultCustomer.Result);
+					
+				});
+			});
+			
+			
+			
+		});   
+		}
+});
+
 
 /*
 ShopifyData.getTimeZone(function(result){	
