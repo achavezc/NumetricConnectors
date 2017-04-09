@@ -4,7 +4,7 @@ const ShopifyCon = require("./DataConnectorLogic/ShopifyDataConnectorLogic")
 const numetricDataConnectorLogic = require("./DataConnectorLogic/NumetricDataConnectorLogic")
 const ShopifyData = require("./DataConnectorApi/ShopifyDataConnectorApi/ShopifyDataDataConnectorApi")
 const config = require("./Config/Config")
-
+const utils = require("./Helper/Util")
 var conf = new config();
 
 
@@ -13,14 +13,11 @@ var lastUpdated = {
   timezone : 'GMT-11:00'
 }
 
-
+/*
 ShopifyData.getCustomers(lastUpdated,function(resultCustomer){ 
 		if(resultCustomer.Result.Success){
-		
 		var datasetShopify = ShopifyCon.NumetricShopifyFormat(resultCustomer.Result.Data,"id","customers");
-		var lstIds = [];
 		var datos = resultCustomer.Result.Data;
-
 		numetricDataConnectorLogic.verifyCreateDatasetNumetric('customers',datasetShopify.DataSetList).then(resultCustomer=>
 		{
 		resultCustomer.Result.customers = {};
@@ -42,5 +39,23 @@ ShopifyData.getCustomers(lastUpdated,function(resultCustomer){
 		});   
 		}
 });
+*/
 
 
+
+	ShopifyData.getOrders(lastUpdated,function(resultOrder){ 
+		if(resultOrder.Result.Success){
+			var datasetShopify = ShopifyCon.NumetricShopifyFormat(resultOrder.Result.Data,"id","orders");
+			var datos = resultOrder.Result.Data;
+
+			numetricDataConnectorLogic.verifyCreateDatasetNumetric('orders',datasetShopify.DataSetList).then(resultOrderVerify=>
+			{	
+						
+						resultOrder.Result.orders = {};
+						resultOrder.Result.orders.id =  resultOrderVerify.Result.Id; 
+						resultOrder.Result.Data = datos;
+						//utils.WriteFileTxt(JSON.stringify(resultOrder.Result));
+						ShopifyCon.sendRowsShopifyToNumetric(resultOrder.Result);
+			});   
+		}
+	});
