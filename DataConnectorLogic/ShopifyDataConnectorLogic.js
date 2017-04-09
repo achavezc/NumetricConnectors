@@ -33,10 +33,13 @@ var sendRowsShopifyToNumetric = function(inputsShopify){
 	JsonResult[nameParent]["rows"]=[];
 
 	getRowsShopify(inputsShopify.Data[nameParent],JsonResult,nameParent); 
+	var props = Object.keys(inputsShopify);
 
 	for(var property in JsonResult){
-		datasetId = inputsShopify[property].id;
-		NumetricCon.updateRowsDataSetNumetric(datasetId,JsonResult[property]);
+		if(utils.isInclude(props,property)){
+			datasetId = inputsShopify[property].id;
+			NumetricCon.updateRowsDataSetNumetric(datasetId,JsonResult[property]);
+		}
 	}
 }
 

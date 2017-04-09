@@ -324,5 +324,6 @@ module.exports = {
  GenerateRowsFromMixPanel : GenerateRowsFromMixPanel,
  GenerateRowsListFromShopify : GenerateRowsListFromShopify,
  isArray : isArray,
- WriteFileTxt : WriteFileTxt
+ WriteFileTxt : WriteFileTxt,
+ isInclude : isInclude
 }
