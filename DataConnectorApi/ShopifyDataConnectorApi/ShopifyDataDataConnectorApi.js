@@ -71,7 +71,7 @@ var getEvents = function getEvents(lastUpdated,callback) {
         resultEvent.Result.Data  = {}; 
         resultEvent.Result.Data.events = [];
         resultEvent.Result.Data.events = events;
-		
+		resultEvent.Result.Success = true;
 		utils.WriteFileTxt("\r\n");
 		utils.WriteFileTxt(utils.WriteFileTxt(JSON.stringify(events)));
 		utils.WriteFileTxt("\r\n");
@@ -131,15 +131,17 @@ var getCustomCollections = function getCustomCollections(lastUpdated) {
     });
 }
 
-var getComments = function getComments(lastUpdated) {
+var getComments = function getComments(lastUpdated,callback) {
     var resultEvent = {};
     resultEvent.Result = {}
     resultEvent.Result.Success = false;
     var date = toTimeZone(lastUpdated.created_at_min,lastUpdated.timezone);
     shopify.comment.list({ created_at_min: date})
     .then(function(comments) {
-        resultEvent.Result.Data  = JSON.stringify(comments);
-        resultEvent.Result.Success = true;
+        resultEvent.Result.Data  = {}; 
+        resultEvent.Result.Data.comments = [];
+        resultEvent.Result.Data.comments = comments;
+		resultEvent.Result.Success = true;
         callback(resultEvent);
     })
     .catch(function(err) {

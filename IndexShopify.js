@@ -41,7 +41,7 @@ ShopifyData.getCustomers(lastUpdated,function(resultCustomer){
 });
 */
 
-
+/*
 ShopifyData.getEvents(lastUpdated,function(resultEvents)
 { 
 		if(resultEvents.Result.Success)
@@ -55,8 +55,8 @@ ShopifyData.getEvents(lastUpdated,function(resultEvents)
 			
 			numetricDataConnectorLogic.verifyCreateDatasetNumetric('events',datasetShopify.DataSetList).then(resultEventsVerify=>
 			{
-				resultEvents.Result.event = {};
-				resultEvents.Result.event.id =  resultEventsVerify.Result.Id; 
+				resultEvents.Result.events = {};
+				resultEvents.Result.events.id =  resultEventsVerify.Result.Id; 
 				resultEvents.Result.Data = datos;
 				
 				utils.WriteFileTxt("\r\n");
@@ -64,12 +64,32 @@ ShopifyData.getEvents(lastUpdated,function(resultEvents)
 				utils.WriteFileTxt("\r\n");
 			
 			
-				//ShopifyCon.sendRowsShopifyToNumetric(resultEvents.Result);
+				ShopifyCon.sendRowsShopifyToNumetric(resultEvents.Result);
 				
 			});   
 		}
 });
 
+*/
+
+ShopifyData.getComments(lastUpdated,function(resultComments)
+{ 
+		if(resultComments.Result.Success)
+		{			
+			var datasetShopify = ShopifyCon.NumetricShopifyFormat(resultEvents.Result.Data,"id","comments");
+			var datos = resultComments.Result.Data;
+			
+			numetricDataConnectorLogic.verifyCreateDatasetNumetric('comments',datasetShopify.DataSetList).then(resultCommentsVerify=>
+			{
+				resultComments.Result.comments = {};
+				resultComments.Result.comments.id =  resultCommentsVerify.Result.Id; 
+				resultComments.Result.Data = datos;
+							
+				ShopifyCon.sendRowsShopifyToNumetric(resultComments.Result);
+				
+			});   
+		}
+});
 
 
 /*
