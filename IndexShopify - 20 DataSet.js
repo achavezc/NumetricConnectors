@@ -40,32 +40,34 @@ ShopifyData.getCustomers(lastUpdated,function(resultCustomer){
 		}
 });
 */
-
 /*
-ShopifyData.getEvents(lastUpdated,function(resultEvents){ 
-		if(resultEvents.Result.Success){
-		var datasetShopify = ShopifyCon.NumetricShopifyFormat(resultEvents.Result.Data,"id","events");
-		var datos = resultEvents.Result.Data;
-		numetricDataConnectorLogic.verifyCreateDatasetNumetric('events',datasetShopify.DataSetList).then(resultEventsVerify=>
-		{
-			resultEvents.Result.event = {};
-			resultEvents.Result.event.id =  resultEventsVerify.Result.Id; 
+			case 'orders'				: datasetId = datasetsShopify.datasetOrderId.id; break;
+			case 'discount_codes' 		: datasetId = datasetsShopify.datasetOrderDiscountCodeId.id; break;
+			case 'note_attributes'		: datasetId = datasetsShopify.datasetOrderNoteAttributeId.id; break;
+			case 'tax_lines'			: datasetId = datasetsShopify.datasetOrderTaxLineId.id; break;
+			case 'line_items'			: datasetId = datasetsShopify.datasetOrderLineItemId.id; break;
+			case 'properties'			: datasetId = datasetsShopify.datasetOrderLineItemPropertiesId.id; break;
+			case 'shipping_lines'		: datasetId = datasetsShopify.datasetOrderShippingLineId.id; break;
+			case 'fulfillments'			: datasetId = datasetsShopify.datasetOrderFulfillmentId.id; break;
+			case 'refunds'				: datasetId = datasetsShopify.datasetOrderRefundsId.id; break;
+			case 'refund_line_items'	: datasetId = datasetsShopify.datasetOrderRefundsLineItemId.id; break;
+			case 'transactions'			: datasetId = datasetsShopify.datasetOrderRefundsTransactionId.id; break;
 			
-			resultEvents.Result.Data = datos;
-					ShopifyCon.sendRowsShopifyToNumetric(resultEvents.Result);
-			
-		});   
-		}
-});
+			orders_client_details
 */
-
-
 
 	ShopifyData.getOrders(lastUpdated,function(resultOrder)
 	{ 
 		if(resultOrder.Result.Success){
 			var datasetShopify = ShopifyCon.NumetricShopifyFormat(resultOrder.Result.Data,"id","orders");
-			var datos = resultOrder.Result.Data;	
+			var datos = resultOrder.Result.Data;
+
+			/*
+			utils.WriteFileTxt("\r\n");
+			utils.WriteFileTxt(utils.WriteFileTxt(JSON.stringify(resultOrder)));
+			utils.WriteFileTxt("\r\n");
+			*/
+			
 			
 			numetricDataConnectorLogic.verifyCreateDatasetNumetric('orders',datasetShopify.DataSetList).then(resultOrderVerify=>
 			{							

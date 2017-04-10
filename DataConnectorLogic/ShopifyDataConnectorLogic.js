@@ -38,7 +38,8 @@ var sendRowsShopifyToNumetric = function(inputsShopify){
 	for(var property in JsonResult){
 		if(utils.isInclude(props,property)){
 			datasetId = inputsShopify[property].id;
-			NumetricCon.updateRowsDataSetNumetric(datasetId,JsonResult[property]);
+			if(datasetId !== '')
+				NumetricCon.updateRowsDataSetNumetric(datasetId,JsonResult[property]);
 		}
 	}
 }

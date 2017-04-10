@@ -58,15 +58,16 @@ var getOrders = function getOrders(lastUpdated,callback) {
     });
 }
 
-var getEvents = function getEvents(lastUpdated) {
+var getEvents = function getEvents(lastUpdated,callback) {
     var resultEvent = {};
     resultEvent.Result = {}
     resultEvent.Result.Success = false;
     var date = toTimeZone(lastUpdated.created_at_min,lastUpdated.timezone);
     shopify.event.list({ created_at_min: date})
     .then(function(events) {
-        resultEvent.Result.Data  = JSON.stringify(events);
-        resultEvent.Result.Success = true;
+        resultEvent.Result.Data  = {}; 
+        resultEvent.Result.Data.events = [];
+        resultEvent.Result.Data.events = events;
         callback(resultEvent);
     })
     .catch(function(err) {

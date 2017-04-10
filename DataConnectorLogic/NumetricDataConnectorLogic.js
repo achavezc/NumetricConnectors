@@ -11,8 +11,7 @@ var conf = new config();
 
 
 var verifyCreateDatasetNumetric = function(datasetName,data) //callback
-{
-	utils.WriteFileTxt(datasetName);
+{	
 	var found = false;
 	var resultEvent = {};
     resultEvent["Result"] = {}
@@ -25,10 +24,7 @@ var verifyCreateDatasetNumetric = function(datasetName,data) //callback
 		for (var i = 0; i < result.Response.length; i++ )
 		{
 			if(result.Response[i].name==datasetName)
-			{			
-				utils.WriteFileTxt("\r\n");
-				utils.WriteFileTxt('Existe');	
-				utils.WriteFileTxt("\r\n");					
+			{										
 				found=true;
 				resultEvent.Result.Id = result.Response[i].id;
 				resultEvent.Result.Success = true;
@@ -44,12 +40,7 @@ var verifyCreateDatasetNumetric = function(datasetName,data) //callback
 			{
 				if(res.Result.Success)
 				{	
-					utils.WriteFileTxt("\r\n");
-					utils.WriteFileTxt('Creó');
-					utils.WriteFileTxt("\r\n");
-
-					resultEvent.Result.Id = res.Response.id;
-					
+					resultEvent.Result.Id = res.Response.id;					
 				}
 				resultEvent.Result.Success = res.Result.Success;
 				//callback(resultEvent);
@@ -70,7 +61,7 @@ var SearchDataSet = function(datsetName,dataSetList){
 	resultEvent.Result["Data"] = {};
 
 	for (var i = 0; i < dataSetList.length; i++ ) {
-		if(dataSetList[i].name = datsetName){
+		if(dataSetList[i].name === datsetName){
 			resultEvent.Success = true;
 			resultEvent.Data = dataSetList[i];
 			return resultEvent;
