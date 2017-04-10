@@ -27,6 +27,12 @@ var classNameOfThing = '';
 
 classNameOfThing = typeof jsonObject;
 
+if(classNameOfThing == 'number'){
+	if(jsonObject % 1 != 0){
+		classNameOfThing = 'double';
+	}
+}
+
 if(classNameOfThing == 'object' || classNameOfThing == 'string'){
 	if(jsonObject==null){
 		classNameOfThing = 'null';
