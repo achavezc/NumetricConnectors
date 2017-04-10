@@ -5,53 +5,16 @@ const numetricDataConnectorLogic = require("./DataConnectorLogic/NumetricDataCon
 const ShopifyData = require("./DataConnectorApi/ShopifyDataConnectorApi/ShopifyDataDataConnectorApi")
 const config = require("./Config/Config")
 const utils = require("./Helper/Util")
-const ShopifyDataConSync = require("./DataConnectorSync/ShopifyDataConnectorSync")
-
-
-
-
 var conf = new config();
 
 
-var lastUpdated = {
-  created_at_min : conf.parameters().initialDateTimeShopify,
-  timezone : 'GMT-11:00'
-}
-
-/*
-
-SI FUNCIONA
-
-ShopifyData.getCustomers(lastUpdated,function(resultCustomer){ 
-		if(resultCustomer.Result.Success){
-		var datasetShopify = ShopifyCon.NumetricShopifyFormat(resultCustomer.Result.Data,"id","customers");
-		var datos = resultCustomer.Result.Data;
-		numetricDataConnectorLogic.verifyCreateDatasetNumetric('customers',datasetShopify.DataSetList).then(resultCustomer=>
-		{
-		resultCustomer.Result.customers = {};
-		resultCustomer.Result.customers.id =  resultCustomer.Result.Id; 
-			
-			numetricDataConnectorLogic.verifyCreateDatasetNumetric('customers_addresses',datasetShopify.DataSetList).then(resultDefaultAddres=>
-			{
-				resultCustomer.Result.customers_addresses = {};
-				resultCustomer.Result.customers_addresses.id= resultDefaultAddres.Result.Id; 
-				numetricDataConnectorLogic.verifyCreateDatasetNumetric('customers_default_address',datasetShopify.DataSetList).then(resultAdress=>
-				{
-					resultCustomer.Result.customers_default_address = {};
-					resultCustomer.Result.customers_default_address.id = resultAdress.Result.Id; 
-					resultCustomer.Result.Data = datos;
-					ShopifyCon.sendRowsShopifyToNumetric(resultCustomer.Result);
-				});
-			});
-			
-		});   
-		}
-});
-
-
-ShopifyData.getOrders(lastUpdated,function(resultOrder)
+var syncData = function syncData(lastUpdated) 
+{
+	
+	return ShopifyData.getOrders(lastUpdated,function(resultOrder)
 	{ 
-		if(resultOrder.Result.Success){
+		if(resultOrder.Result.Success)
+		{
 			var datasetShopify = ShopifyCon.NumetricShopifyFormat(resultOrder.Result.Data,"id","orders");
 			var datos = resultOrder.Result.Data;	
 			
@@ -171,6 +134,9 @@ ShopifyData.getOrders(lastUpdated,function(resultOrder)
 																										resultOrder.Result.orders_customer_default_address.id =  resultOrdersCustomerDefaultAddressVerify.Result.Id; 
 																										resultOrder.Result.Data = datos;
 																										ShopifyCon.sendRowsShopifyToNumetric(resultOrder.Result);
+																										
+																										console.log(resultOrder.Result);});
+																										
 																									});
 																									
 																								});																						
@@ -178,196 +144,33 @@ ShopifyData.getOrders(lastUpdated,function(resultOrder)
 																						});
 																					});
 																				});
-																			});
-																		
-																		});
-																	
-																	});
-																
+																			});																		
+																		});																	
+																	});																
 																});
-															});
-															
+															});															
 														});
 													});
-												});
-												
-											});
-											
-										});
-										
+												});												
+											});											
+										});										
 									});
 								});
 							});
-						}); 
-							
+						}); 							
 					});	
 				});	
 			});   
 		}
 	});
-	
-	
 
-ShopifyData.getEvents(lastUpdated,function(resultEvents)
-{ 
-		if(resultEvents.Result.Success)
-		{			
-			var datasetShopify = ShopifyCon.NumetricShopifyFormat(resultEvents.Result.Data,"id","events");
-			var datos = resultEvents.Result.Data;
-			
-			numetricDataConnectorLogic.verifyCreateDatasetNumetric('events',datasetShopify.DataSetList).then(resultEventsVerify=>
-			{
-				resultEvents.Result.events = {};
-				resultEvents.Result.events.id =  resultEventsVerify.Result.Id; 
-				resultEvents.Result.Data = datos;			
-			
-				ShopifyCon.sendRowsShopifyToNumetric(resultEvents.Result);
-				
-			});   
-		}
-});
-
-ShopifyData.getComments(lastUpdated,function(resultComments)
-{ 
-		if(resultComments.Result.Success)
-		{			
-			var datasetShopify = ShopifyCon.NumetricShopifyFormat(resultComments.Result.Data,"id","comments");
-			var datos = resultComments.Result.Data;
-			
-			numetricDataConnectorLogic.verifyCreateDatasetNumetric('comments',datasetShopify.DataSetList).then(resultCommentsVerify=>
-			{
-				resultComments.Result.comments = {};
-				resultComments.Result.comments.id =  resultCommentsVerify.Result.Id; 
-				resultComments.Result.Data = datos;
-							
-				ShopifyCon.sendRowsShopifyToNumetric(resultComments.Result);
-				
-			});   
-		}
-});
-
-ShopifyData.getProducts(lastUpdated,function(resultProducts)
-{ 
-		if(resultProducts.Result.Success)
-		{	
-			var datasetShopify = ShopifyCon.NumetricShopifyFormat(resultProducts.Result.Data,"id","products");
-			var datos = resultProducts.Result.Data;
-			
-			numetricDataConnectorLogic.verifyCreateDatasetNumetric('products',datasetShopify.DataSetList).then(resultProductsVerify=>
-			{
-				resultProducts.Result.products = {};
-				resultProducts.Result.products.id =  resultProductsVerify.Result.Id; 
-				resultProducts.Result.Data = datos;
-							
-				ShopifyCon.sendRowsShopifyToNumetric(resultProducts.Result);
-				
-			});   
-		}
-});
-
-ShopifyData.getCustomCollections(lastUpdated,function(resultCustomCollection)
-{ 
-		if(resultCustomCollection.Result.Success)
-		{						
-			var datasetShopify = ShopifyCon.NumetricShopifyFormat(resultCustomCollection.Result.Data,"id","custom_Collection");
-			var datos = resultCustomCollection.Result.Data;
-			
-			numetricDataConnectorLogic.verifyCreateDatasetNumetric('custom_Collection',datasetShopify.DataSetList).then(resultCustomCollectionVerify=>
-			{
-				resultCustomCollection.Result.custom_Collection = {};
-				resultCustomCollection.Result.custom_Collection.id =  resultCustomCollectionVerify.Result.Id; 
-				resultCustomCollection.Result.Data = datos;			
-			
-				ShopifyCon.sendRowsShopifyToNumetric(resultCustomCollection.Result);				
-			});   
-		}
-});
-
-
-*/
-
-//TODO:llamar a ShopifyDataConSync.syncData
+}
 
 
 
+module.exports = 
+{
+    syncData : syncData
+};
 
 
-
-/*
-NO FUNCIONA
-
-
-
-//TODO:Request path contains unescaped characters
-ShopifyData.getTransactions(lastUpdated,function(resultTransactions)
-{ 
-	if(resultTransactions.Result.Success)
-	{						
-		var datasetShopify = ShopifyCon.NumetricShopifyFormat(resultTransactions.Result.Data,"id","transactions");
-		var datos = resultTransactions.Result.Data;
-		
-		numetricDataConnectorLogic.verifyCreateDatasetNumetric('transactions',datasetShopify.DataSetList).then(resultTransactionsVerify=>
-		{
-			resultTransactions.Result.transactions = {};
-			resultTransactions.Result.transactions.id =  resultTransactionsVerify.Result.Id; 
-			resultTransactions.Result.Data = datos;			
-		
-			ShopifyCon.sendRowsShopifyToNumetric(resultTransactions.Result);				
-		});   
-	}
-});
-
-
-//TODO: "SELF_SIGNED_CERT_IN_CHAIN","message":"self signed certificate in certificate chain" ,"hostname":"alshopping.myshopify.com","method":"GET","path":"/admin/smart_collections.json?created_at_min=2017-01-07T03%3A52%3A48.000Z"
-ShopifyData.getSmartCollections(lastUpdated,function(resultSmartCollection)
-{ 
-		if(resultSmartCollection.Result.Success)
-		{						
-			var datasetShopify = ShopifyCon.NumetricShopifyFormat(resultSmartCollection.Result.Data,"id","smart_Collection");
-			var datos = resultSmartCollection.Result.Data;
-			
-			numetricDataConnectorLogic.verifyCreateDatasetNumetric('smart_Collection',datasetShopify.DataSetList).then(resultSmartCollectionVerify=>
-			{
-				resultSmartCollection.Result.smart_Collection = {};
-				resultSmartCollection.Result.smart_Collection.id =  resultSmartCollectionVerify.Result.Id; 
-				resultSmartCollection.Result.Data = datos;			
-			
-				ShopifyCon.sendRowsShopifyToNumetric(resultSmartCollection.Result);				
-			});   
-		}
-});
-
-//TODO: {"code":"SELF_SIGNED_CERT_IN_CHAIN","message":"self signed certificate in certificate chain","hostname":"alshopping.myshopify.com","method":"GET","path":"/admin/blogs.json?created_at_min=2017-01-07T03%3A52%3A48.000Z"}
-ShopifyData.getArticles(lastUpdated,function(resultArticles)
-{ 
-	if(resultArticles.Result.Success)
-	{						
-		var datasetShopify = ShopifyCon.NumetricShopifyFormat(resultArticles.Result.Data,"id","articles");
-		var datos = resultArticles.Result.Data;
-		
-		numetricDataConnectorLogic.verifyCreateDatasetNumetric('articles',datasetShopify.DataSetList).then(resultArticlesVerify=>
-		{
-			resultArticles.Result.articles = {};
-			resultArticles.Result.articles.id =  resultArticlesVerify.Result.Id; 
-			resultArticles.Result.Data = datos;			
-		
-			ShopifyCon.sendRowsShopifyToNumetric(resultArticles.Result);				
-		});   
-	}
-});
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	
-*/
