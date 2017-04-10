@@ -10,6 +10,52 @@ var conf = new config();
 
 var syncData = function syncData(lastUpdated) 
 {
+	//TODO: call syncDataOrder,syncDataCustomer
+
+}
+
+var syncDataCustomer = function syncDataCustomer(lastUpdated) 
+{
+	var resultEvent = {};
+    resultEvent.Result = {}
+    resultEvent.Result.Success = false;
+	return ShopifyData.getCustomers(lastUpdated,function(resultCustomer){ 
+		if(resultCustomer.Result.Success){
+		var datasetShopify = ShopifyCon.NumetricShopifyFormat(resultCustomer.Result.Data,"id","customers");
+		var datos = resultCustomer.Result.Data;
+		numetricDataConnectorLogic.verifyCreateDatasetNumetric('customers',datasetShopify.DataSetList).then(resultCustomer=>
+		{
+		resultCustomer.Result.customers = {};
+		resultCustomer.Result.customers.id =  resultCustomer.Result.Id; 
+			
+			numetricDataConnectorLogic.verifyCreateDatasetNumetric('customers_addresses',datasetShopify.DataSetList).then(resultDefaultAddres=>
+			{
+				resultCustomer.Result.customers_addresses = {};
+				resultCustomer.Result.customers_addresses.id= resultDefaultAddres.Result.Id; 
+				numetricDataConnectorLogic.verifyCreateDatasetNumetric('customers_default_address',datasetShopify.DataSetList).then(resultAdress=>
+				{
+					resultCustomer.Result.customers_default_address = {};
+					resultCustomer.Result.customers_default_address.id = resultAdress.Result.Id; 
+					resultCustomer.Result.Data = datos;
+					ShopifyCon.sendRowsShopifyToNumetric(resultCustomer.Result);
+					
+					resultEvent.Result.Success = true;
+					return resultEvent;
+				});
+			});
+			
+		});   
+		}
+});
+}
+
+
+var syncDataOrder = function syncDataOrder(lastUpdated) 
+{
+	var resultEvent = {};
+    resultEvent.Result = {}
+    resultEvent.Result.Success = false;
+	
 	
 	return ShopifyData.getOrders(lastUpdated,function(resultOrder)
 	{ 
@@ -135,7 +181,9 @@ var syncData = function syncData(lastUpdated)
 																										resultOrder.Result.Data = datos;
 																										ShopifyCon.sendRowsShopifyToNumetric(resultOrder.Result);
 																										
+																										resultEvent.Result.Success = true;																										
 																										console.log(resultOrder.Result);});
+																										return resultEvent;
 																										
 																									});
 																									
