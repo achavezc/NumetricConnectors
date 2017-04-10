@@ -64,64 +64,66 @@ var getEvents = function getEvents(lastUpdated,callback) {
     resultEvent.Result.Success = false;
     var date = toTimeZone(lastUpdated.created_at_min,lastUpdated.timezone);
     shopify.event.list({ created_at_min: date})
-    .then(function(events) {
-		utils.WriteFileTxt("\r\n");
-		utils.WriteFileTxt("getEvents OK");
-		utils.WriteFileTxt("\r\n");
+    .then(function(events) 
+	{		
         resultEvent.Result.Data  = {}; 
         resultEvent.Result.Data.events = [];
         resultEvent.Result.Data.events = events;
-		resultEvent.Result.Success = true;
-		utils.WriteFileTxt("\r\n");
-		utils.WriteFileTxt(utils.WriteFileTxt(JSON.stringify(events)));
-		utils.WriteFileTxt("\r\n");
+		resultEvent.Result.Success = true;		
 		
         callback(resultEvent);
     })
-    .catch(function(err) {
-		utils.WriteFileTxt("\r\n");
-		utils.WriteFileTxt("Error");
-		utils.WriteFileTxt("\r\n");
+    .catch(function(err)
+	{		
         resultEvent.Result.Success = false;
         resultEvent.Result.Error = err;
         callback(resultEvent);
     });
 }
 
-var getArticles = function getArticles(lastUpdated){
+var getArticles = function getArticles(lastUpdated,callback){
      var resultEvent = {};
     resultEvent.Result = {}
     resultEvent.Result.Success = false;
     var date = toTimeZone(lastUpdated.created_at_min,lastUpdated.timezone);
     var articleList = [];
     shopify.blog.list({ created_at_min: date})
-    .then(function(blogs) {
+    .then(function(blogs) 
+	{
+		
         for(i=0; i<blogs.length;i++){
              shopify.article.list(blogs[i].id,{ created_at_min: date})
               .then(function(articles) {
                   articleList.push(articles);
              })
         }
-        resultEvent.Result.Data  = JSON.stringify(articleList);
-        resultEvent.Result.Success = true;
+        resultEvent.Result.Data  = {}; 
+        resultEvent.Result.Data.articles = [];
+        resultEvent.Result.Data.articles = articleList;
+		resultEvent.Result.Success = true;
         callback(resultEvent);
     })
-    .catch(function(err) {
+    .catch(function(err) 
+	{
+		
         resultEvent.Result.Success = false;
         resultEvent.Result.Error = err;
         callback(resultEvent);
     });
 }
 
-var getCustomCollections = function getCustomCollections(lastUpdated) {
+var getCustomCollections = function getCustomCollections(lastUpdated,callback) {
     var resultEvent = {};
     resultEvent.Result = {}
     resultEvent.Result.Success = false;
     var date = toTimeZone(lastUpdated.created_at_min,lastUpdated.timezone);
     shopify.customCollection.list({ created_at_min: date})
-    .then(function(customCollections) {
-        resultEvent.Result.Data  = JSON.stringify(customCollections);
-        resultEvent.Result.Success = true;
+    .then(function(customCollections) 
+	{
+        resultEvent.Result.Data  = {}; 
+        resultEvent.Result.Data.customCollections = [];
+        resultEvent.Result.Data.customCollections = customCollections;
+		resultEvent.Result.Success = true;		
         callback(resultEvent);
     })
     .catch(function(err) {
@@ -151,15 +153,18 @@ var getComments = function getComments(lastUpdated,callback) {
     });
 }
 
-var getProducts = function getProducts(lastUpdated) {
+var getProducts = function getProducts(lastUpdated,callback) {
     var resultEvent = {};
     resultEvent.Result = {}
     resultEvent.Result.Success = false;
     var date = toTimeZone(lastUpdated.created_at_min,lastUpdated.timezone);
     shopify.product.list({ created_at_min: date})
-    .then(function(products) {
-        resultEvent.Result.Data  = JSON.stringify(products);
-        resultEvent.Result.Success = true;
+    .then(function(products) 
+	{
+        resultEvent.Result.Data  = {}; 
+        resultEvent.Result.Data.products = [];
+        resultEvent.Result.Data.products = products;
+		resultEvent.Result.Success = true;
         callback(resultEvent);
     })
     .catch(function(err) {
@@ -191,7 +196,7 @@ var getCustomers = function getCustomers(lastUpdated,callback) {
     });
 }
 
-var getCustomerAddress = function getCustomerAddress(lastUpdated) {
+var getCustomerAddress = function getCustomerAddress(lastUpdated,callback) {
   var resultEvent = {};
   resultEvent.Result = {}
   resultEvent.Result.Success = false;
@@ -205,8 +210,10 @@ var getCustomerAddress = function getCustomerAddress(lastUpdated) {
                 addresList.push(customerAddresss);
             })
           }
-          resultEvent.Result.Data  = JSON.stringify(addresList);
-          resultEvent.Result.Success = true;
+			resultEvent.Result.Data  = {}; 
+			resultEvent.Result.Data.customer_Address = [];
+			resultEvent.Result.Data.customer_Address = addresList;
+			resultEvent.Result.Success = true;
           callback(resultEvent);
     })
     .catch(function(err) {
@@ -216,33 +223,38 @@ var getCustomerAddress = function getCustomerAddress(lastUpdated) {
     });
 }
 
-var getTransactions = function getTransactions(lastUpdated) {
+var getTransactions = function getTransactions(lastUpdated,callback) {
     var resultEvent = {};
     resultEvent.Result = {}
     resultEvent.Result.Success = false;
     var date = toTimeZone(lastUpdated.created_at_min,lastUpdated.timezone);
     shopify.transaction.list({ created_at_min: date})
     .then(function(transactions) {
-        resultEvent.Result.Data  = JSON.stringify(transactions);
+        resultEvent.Result.Data = {};
+        resultEvent.Result.Data.transactions = [];
+        resultEvent.Result.Data.transactions = transactions;
+		
         resultEvent.Result.Success = true;
         callback(resultEvent);
     })
     .catch(function(err) {
+		
         resultEvent.Result.Success = false;
         resultEvent.Result.Error = err;
         callback(resultEvent);
     });
 }
 
-var getSmartCollections = function getSmartCollections(lastUpdated) {
+var getSmartCollections = function getSmartCollections(lastUpdated,callback) {
     var resultEvent = {};
     resultEvent.Result = {}
     resultEvent.Result.Success = false;
     var date = toTimeZone(lastUpdated.created_at_min,lastUpdated.timezone);
     shopify.smartCollection.list({ created_at_min: date})
     .then(function(smartCollections) {
-        resultEvent.Result.Data  = JSON.stringify(smartCollections);
-        resultEvent.Result.Success = true;
+        resultEvent.Result.Data = {};
+        resultEvent.Result.Data.smartCollections = [];
+        resultEvent.Result.Data.smartCollections = smartCollections;
         callback(resultEvent);
     })
     .catch(function(err) {
