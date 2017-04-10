@@ -64,7 +64,7 @@ ShopifyData.getCustomers(lastUpdated,function(resultCustomer){
 
 			/*
 			utils.WriteFileTxt("\r\n");
-			utils.WriteFileTxt(utils.WriteFileTxt(JSON.stringify(resultOrder)));
+			utils.WriteFileTxt(JSON.stringify(resultOrder));
 			utils.WriteFileTxt("\r\n");
 			*/
 			

@@ -7,11 +7,17 @@ const NumetricCon = require("../DataConnectorApi/NumetricDataConnectorApi/Numetr
 const datasetsMixPanel = require("../Model/datasetsMixPanel")
 
 
-function NumetricMixPanelFormat(inputData){
+function NumetricMixPanelFormat(inputData,namePk,fieldsName)
+{
 	var conf = new config();
- var result = mapper.transform(inputData, conf.parameters().plantillaJsonDestino, conf.parameters().operations);
- return result[""];
+	return  mapper.transform(inputData, conf.parameters().templateMixPanelEvents, conf.parameters().operations);
 }
+
+/*
+var NumetricShopifyFormat = function(inputData,namePk,fieldsName){
+	return utils.GenerateDataSetsNumetricFromShopify(inputData,"Shopify",namePk,fieldsName);
+}
+*/
 
 
 function updateRowsMixPanel(inputMixPanel){

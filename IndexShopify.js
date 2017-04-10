@@ -14,6 +14,9 @@ var lastUpdated = {
 }
 
 /*
+
+SI FUNCIONA
+
 ShopifyData.getCustomers(lastUpdated,function(resultCustomer){ 
 		if(resultCustomer.Result.Success){
 		var datasetShopify = ShopifyCon.NumetricShopifyFormat(resultCustomer.Result.Data,"id","customers");
@@ -241,7 +244,7 @@ ShopifyData.getComments(lastUpdated,function(resultComments)
 ShopifyData.getProducts(lastUpdated,function(resultProducts)
 { 
 		if(resultProducts.Result.Success)
-		{			
+		{	
 			var datasetShopify = ShopifyCon.NumetricShopifyFormat(resultProducts.Result.Data,"id","products");
 			var datos = resultProducts.Result.Data;
 			
@@ -257,35 +260,120 @@ ShopifyData.getProducts(lastUpdated,function(resultProducts)
 		}
 });
 
-*/
-
-
-ShopifyData.getArticles(lastUpdated,function(resultArticles)
+ShopifyData.getCustomCollections(lastUpdated,function(resultCustomCollection)
 { 
-		if(resultArticles.Result.Success)
+		if(resultCustomCollection.Result.Success)
 		{						
-			var datasetShopify = ShopifyCon.NumetricShopifyFormat(resultArticles.Result.Data,"id","articles");
-			var datos = resultArticles.Result.Data;
+			var datasetShopify = ShopifyCon.NumetricShopifyFormat(resultCustomCollection.Result.Data,"id","custom_Collection");
+			var datos = resultCustomCollection.Result.Data;
 			
-			
-			
-			numetricDataConnectorLogic.verifyCreateDatasetNumetric('articles',datasetShopify.DataSetList).then(resultArticlesVerify=>
+			numetricDataConnectorLogic.verifyCreateDatasetNumetric('custom_Collection',datasetShopify.DataSetList).then(resultCustomCollectionVerify=>
 			{
-				resultArticles.Result.articles = {};
-				resultArticles.Result.articles.id =  resultArticlesVerify.Result.Id; 
-				resultArticles.Result.Data = datos;			
+				resultCustomCollection.Result.custom_Collection = {};
+				resultCustomCollection.Result.custom_Collection.id =  resultCustomCollectionVerify.Result.Id; 
+				resultCustomCollection.Result.Data = datos;			
 			
-				ShopifyCon.sendRowsShopifyToNumetric(resultArticles.Result);
-				
+				ShopifyCon.sendRowsShopifyToNumetric(resultCustomCollection.Result);				
 			});   
 		}
+});
+
+*/
+
+//TODO:Request path contains unescaped characters
+ShopifyData.getTransactions(lastUpdated,function(resultTransactions)
+{ 
+	if(resultTransactions.Result.Success)
+	{						
+		var datasetShopify = ShopifyCon.NumetricShopifyFormat(resultTransactions.Result.Data,"id","transactions");
+		var datos = resultTransactions.Result.Data;
+		
+		numetricDataConnectorLogic.verifyCreateDatasetNumetric('transactions',datasetShopify.DataSetList).then(resultTransactionsVerify=>
+		{
+			resultTransactions.Result.transactions = {};
+			resultTransactions.Result.transactions.id =  resultTransactionsVerify.Result.Id; 
+			resultTransactions.Result.Data = datos;			
+		
+			ShopifyCon.sendRowsShopifyToNumetric(resultTransactions.Result);				
+		});   
+	}
+});
+
+
+
+
+/*
+NO FUNCIONA
+
+//TODO:Request path contains unescaped characters
+ShopifyData.getTransactions(lastUpdated,function(resultTransactions)
+{ 
+	if(resultTransactions.Result.Success)
+	{						
+		var datasetShopify = ShopifyCon.NumetricShopifyFormat(resultTransactions.Result.Data,"id","transactions");
+		var datos = resultTransactions.Result.Data;
+		
+		numetricDataConnectorLogic.verifyCreateDatasetNumetric('transactions',datasetShopify.DataSetList).then(resultTransactionsVerify=>
+		{
+			resultTransactions.Result.transactions = {};
+			resultTransactions.Result.transactions.id =  resultTransactionsVerify.Result.Id; 
+			resultTransactions.Result.Data = datos;			
+		
+			ShopifyCon.sendRowsShopifyToNumetric(resultTransactions.Result);				
+		});   
+	}
+});
+
+
+//TODO: "SELF_SIGNED_CERT_IN_CHAIN","message":"self signed certificate in certificate chain" ,"hostname":"alshopping.myshopify.com","method":"GET","path":"/admin/smart_collections.json?created_at_min=2017-01-07T03%3A52%3A48.000Z"
+ShopifyData.getSmartCollections(lastUpdated,function(resultSmartCollection)
+{ 
+		if(resultSmartCollection.Result.Success)
+		{						
+			var datasetShopify = ShopifyCon.NumetricShopifyFormat(resultSmartCollection.Result.Data,"id","smart_Collection");
+			var datos = resultSmartCollection.Result.Data;
+			
+			numetricDataConnectorLogic.verifyCreateDatasetNumetric('smart_Collection',datasetShopify.DataSetList).then(resultSmartCollectionVerify=>
+			{
+				resultSmartCollection.Result.smart_Collection = {};
+				resultSmartCollection.Result.smart_Collection.id =  resultSmartCollectionVerify.Result.Id; 
+				resultSmartCollection.Result.Data = datos;			
+			
+				ShopifyCon.sendRowsShopifyToNumetric(resultSmartCollection.Result);				
+			});   
+		}
+});
+
+//TODO: {"code":"SELF_SIGNED_CERT_IN_CHAIN","message":"self signed certificate in certificate chain","hostname":"alshopping.myshopify.com","method":"GET","path":"/admin/blogs.json?created_at_min=2017-01-07T03%3A52%3A48.000Z"}
+ShopifyData.getArticles(lastUpdated,function(resultArticles)
+{ 
+	if(resultArticles.Result.Success)
+	{						
+		var datasetShopify = ShopifyCon.NumetricShopifyFormat(resultArticles.Result.Data,"id","articles");
+		var datos = resultArticles.Result.Data;
+		
+		numetricDataConnectorLogic.verifyCreateDatasetNumetric('articles',datasetShopify.DataSetList).then(resultArticlesVerify=>
+		{
+			resultArticles.Result.articles = {};
+			resultArticles.Result.articles.id =  resultArticlesVerify.Result.Id; 
+			resultArticles.Result.Data = datos;			
+		
+			ShopifyCon.sendRowsShopifyToNumetric(resultArticles.Result);				
+		});   
+	}
 });
 
 
 
 
 
-/*
+
+
+
+
+
+
+
 
 
 	
