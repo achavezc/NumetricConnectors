@@ -65,12 +65,23 @@ var getEvents = function getEvents(lastUpdated,callback) {
     var date = toTimeZone(lastUpdated.created_at_min,lastUpdated.timezone);
     shopify.event.list({ created_at_min: date})
     .then(function(events) {
+		utils.WriteFileTxt("\r\n");
+		utils.WriteFileTxt("getEvents OK");
+		utils.WriteFileTxt("\r\n");
         resultEvent.Result.Data  = {}; 
         resultEvent.Result.Data.events = [];
         resultEvent.Result.Data.events = events;
+		
+		utils.WriteFileTxt("\r\n");
+		utils.WriteFileTxt(utils.WriteFileTxt(JSON.stringify(events)));
+		utils.WriteFileTxt("\r\n");
+		
         callback(resultEvent);
     })
     .catch(function(err) {
+		utils.WriteFileTxt("\r\n");
+		utils.WriteFileTxt("Error");
+		utils.WriteFileTxt("\r\n");
         resultEvent.Result.Success = false;
         resultEvent.Result.Error = err;
         callback(resultEvent);

@@ -41,26 +41,38 @@ ShopifyData.getCustomers(lastUpdated,function(resultCustomer){
 });
 */
 
-/*
-ShopifyData.getEvents(lastUpdated,function(resultEvents){ 
-		if(resultEvents.Result.Success){
-		var datasetShopify = ShopifyCon.NumetricShopifyFormat(resultEvents.Result.Data,"id","events");
-		var datos = resultEvents.Result.Data;
-		numetricDataConnectorLogic.verifyCreateDatasetNumetric('events',datasetShopify.DataSetList).then(resultEventsVerify=>
+
+ShopifyData.getEvents(lastUpdated,function(resultEvents)
+{ 
+		if(resultEvents.Result.Success)
 		{
-			resultEvents.Result.event = {};
-			resultEvents.Result.event.id =  resultEventsVerify.Result.Id; 
+			utils.WriteFileTxt("\r\n");
+			utils.WriteFileTxt("getEvents Success");
+			utils.WriteFileTxt("\r\n");
 			
-			resultEvents.Result.Data = datos;
-					ShopifyCon.sendRowsShopifyToNumetric(resultEvents.Result);
+			var datasetShopify = ShopifyCon.NumetricShopifyFormat(resultEvents.Result.Data,"id","events");
+			var datos = resultEvents.Result.Data;
 			
-		});   
+			numetricDataConnectorLogic.verifyCreateDatasetNumetric('events',datasetShopify.DataSetList).then(resultEventsVerify=>
+			{
+				resultEvents.Result.event = {};
+				resultEvents.Result.event.id =  resultEventsVerify.Result.Id; 
+				resultEvents.Result.Data = datos;
+				
+				utils.WriteFileTxt("\r\n");
+				utils.WriteFileTxt(utils.WriteFileTxt(JSON.stringify(datos)));
+				utils.WriteFileTxt("\r\n");
+			
+			
+				//ShopifyCon.sendRowsShopifyToNumetric(resultEvents.Result);
+				
+			});   
 		}
 });
-*/
 
 
 
+/*
 	ShopifyData.getOrders(lastUpdated,function(resultOrder)
 	{ 
 		if(resultOrder.Result.Success){
@@ -217,3 +229,4 @@ ShopifyData.getEvents(lastUpdated,function(resultEvents){
 			});   
 		}
 	});
+*/
