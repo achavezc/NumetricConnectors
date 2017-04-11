@@ -12,6 +12,7 @@ config.prototype.parameters = function(data){ return {
 
 	initialDateTimeMixPanel:'2017-03-05',
 	initialDateTimeShopify:'01/06/2017 4:52:48 PM',
+	retriesCount: 3,
 	optionsGetDataSet:{
 		uri: 'https://api-qa.numetric.com/v2/dataset',
 		//port:80,
