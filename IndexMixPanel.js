@@ -6,29 +6,34 @@ const MixPanelData = require("./DataConnectorApi/MixPanelDataConnectorApi/MixPan
 const inputsMixPanel = require("./SampleData/exampleDataMixPanel")
 const inputsShopify = require("./SampleData/exampleDataShopify")
 const config = require("./Config/Config")
+const MixPanelDataConSync = require("./DataConnectorSync/MixPanelDataConnectorSync")
+const promiseRetry = require('promise-retry')
+var datetime = require('node-datetime');
+var nconf = require('nconf');
+nconf.use('file', { file: './ConfigDate/DateTimeLastSync.json' });
+nconf.load();
 
 var conf = new config();
 
 
-var lastUpdated = {
-  from_date : conf.parameters().initialDateTimeMixPanel,
-  to_date : '2017-04-05'
+
+
+var dateInitial = "";
+if(nconf.get('lastUpdateMixPanelEvent')!= ""){
+	dateInitial = nconf.get('lastUpdateMixPanelEvent');
+}else{
+	dateInitial = conf.parameters().initialDateTimeMixPanel;
 }
 
+var dt = datetime.create();
+var fomratted = dt.format('Y/m/d');
 
-MixPanelData.apiSecretMixPanel = conf.parameters().apiSecretMixPanel;
 
-MixPanelData.getEvents(lastUpdated,function(resultEvent){	
-		  if(result.Result.Success){  
-		  	var datasetMixPanel = MixPanelCon.generateDataSetMixPanelAux(result.Result.Data);
-		  	var datos = result.Result.Data;
+var lastUpdated = {
+  created_at_min : dateInitial,
+  to_date : fomratted
+}
 
-		  	numetricDataConnectorLogic.verifyCreateDatasetNumetric("MixPanelEvent",datasetMixPanel.DataSetList).then(resultEvent=>{
-		  		resultEvent.Result.MixPanelEvent = {};
-				resultEvent.Result.MixPanelEvent.id =  resultEvent.Result.Id;
-				resultEvent.Result.Data = datos;
-				MixPanelCon.updateRowsMixPanel(resultEvent.Result);
+MixPanelDataConSync.syncDataRetry(lastUpdated);
 
-		  	})
-		  }
-});
+
