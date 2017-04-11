@@ -9,7 +9,8 @@ const promiseRetry = require('promise-retry')
 var nconf = require('nconf');
 nconf.use('file', { file: '../ConfigDate/DateTimeLastSync.json' });
 var conf = new config();
-const format = require("node.date-time");
+var datetime = require('node-datetime');
+//const format = require("node.date-time");
 
 var options = {
   retries: conf.parameters().retriesCount//,
@@ -34,8 +35,10 @@ var syncDataRetry = function syncDataRetry(lastUpdated)
 		console.log('entro al then ');
 		// save datetime
 		nconf.load();
-		console.log(new Date().format("MM/DD/Y HH:mm:SS"));
-		nconf.set('lastUpdateShopify',new Date().format("MM/DD/Y HH:mm:SS"));
+		var dt = datetime.create();
+		var fomratted = dt.format('m/d/Y H:M:S');
+		console.log(fomratted);
+		nconf.set('lastUpdateShopify',fomratted);
 		nconf.save(function (err) {
 			if (err) {
 			console.error(err.message);

@@ -8,8 +8,8 @@ const utils = require("./Helper/Util")
 const ShopifyDataConSync = require("./DataConnectorSync/ShopifyDataConnectorSync")
 const promiseRetry = require('promise-retry')
 var conf = new config();
-const format = require("node.date-time");
-
+//const format = require("node.date-time");
+var datetime = require('node-datetime');
 var nconf = require('nconf');
 nconf.use('file', { file: './ConfigDate/DateTimeLastSync.json' });
 nconf.load();
@@ -47,8 +47,13 @@ var options = {
   //randomize: true
 }
 */
+//var dt = datetime.create();
+//var fomratted = dt.format('m/d/Y H:M:S');
 
+//console.log(fomratted);
+//console.log(new Date(dt.now()).format("MM/DD/Y HH:mm:SS"));
 //'01/06/2017 4:52:48 PM',
+/
 ShopifyData.getTimeZone(function(resultTimeZone){
 	if(resultTimeZone.Result.Success) {
 		if(resultTimeZone.Result.TimeZone != ""){
@@ -57,6 +62,7 @@ ShopifyData.getTimeZone(function(resultTimeZone){
 		ShopifyDataConSync.syncDataRetry(lastUpdated);
 	}
 });
+
 
 //console.log(new Date().format("MM-DD-Y HH:mm:SS")); // 2016-5-18 
 //console.log(format("y-M-d H:m:s")); // 16-5-18 15:45:8 
