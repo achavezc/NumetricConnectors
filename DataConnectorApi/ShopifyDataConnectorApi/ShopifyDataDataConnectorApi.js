@@ -27,7 +27,17 @@ var getTimeZone = function getTimeZone(callback) {
     resultEvent.Result.Success = false;
     shopify.shop.get({ })
     .then(function(shop) {
-        resultEvent.Result.TimeZone  = shop.timezone;
+        var timezoneEnd = "";
+        var lstEnd = [];
+        var lst1 = shop.timezone.split(')');
+        
+        if(lst1.length>0){
+            lstEnd = lst1[0].split('(');
+        }
+        if(lstEnd.length>0){
+                timezoneEnd = lstEnd[1]
+        }
+        resultEvent.Result.TimeZone  = timezoneEnd;
         resultEvent.Result.Success = true;
         callback(resultEvent);
     })

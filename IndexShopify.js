@@ -49,8 +49,12 @@ var options = {
 */
 
 //'01/06/2017 4:52:48 PM',
-
-ShopifyDataConSync.syncDataRetry(lastUpdated);
+ShopifyData.getTimeZone(function(resultTimeZone){
+	if(resultTimeZone.Result.Success) {
+		lastUpdated.timezone = resultTimeZone.Result.TimeZone 
+		ShopifyDataConSync.syncDataRetry(lastUpdated);
+	}
+});
 
 //console.log(new Date().format("MM-DD-Y HH:mm:SS")); // 2016-5-18 
 //console.log(format("y-M-d H:m:s")); // 16-5-18 15:45:8 
