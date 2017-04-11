@@ -6,33 +6,38 @@ const ShopifyData = require("./DataConnectorApi/ShopifyDataConnectorApi/ShopifyD
 const config = require("./Config/Config")
 const utils = require("./Helper/Util")
 const ShopifyDataConSync = require("./DataConnectorSync/ShopifyDataConnectorSync")
-
 const promiseRetry = require('promise-retry')
+var conf = new config();
 
 var nconf = require('nconf');
 nconf.use('file', { file: './ConfigDate/DateTimeLastSync.json' });
 nconf.load();
 
 
-
 console.log(nconf.get('lastUpdateShopify'));
 
-
+/*
 var dateTime = require('node-datetime');
 
 var dt = dateTime.create();
 
 nconf.set('lastUpdateShopify', new Date(dt.now()));
+*/
 
 
-var conf = new config();
-
+var dateInitial = "";
+if(nconf.get('lastUpdateShopify')!= ""){
+	dateInitial = nconf.get('lastUpdateShopify');
+}else{
+	dateInitial = conf.parameters().initialDateTimeShopify;
+}
 
 var lastUpdated = {
-  created_at_min : conf.parameters().initialDateTimeShopify,
+  created_at_min : dateInitial,//conf.parameters().initialDateTimeShopify,
   timezone : 'GMT-11:00'
 }
 
+/*
 var options = {
   retries: 3//,
   //factor: 1,
@@ -40,9 +45,10 @@ var options = {
   //maxTimeout: 2000,
   //randomize: true
 }
+*/
+ShopifyDataConSync.syncDataRetry(lastUpdated);
 
-//ShopifyDataConSync.syncData(lastUpdated);
-
+/*
 promiseRetry(options,function (retry, number) {
     console.log('attempt number', number);
 
@@ -50,10 +56,12 @@ promiseRetry(options,function (retry, number) {
     .catch(retry);
 })
 .then(function (value) {
+	// guardar fecha
     console.log(value);
 }, function (err) {
     //grabar log de error despues de intentos
 });
+*/
 
 /*
 

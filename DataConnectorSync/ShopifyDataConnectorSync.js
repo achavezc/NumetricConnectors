@@ -5,13 +5,38 @@ const numetricDataConnectorLogic = require("../DataConnectorLogic/NumetricDataCo
 const ShopifyData = require("../DataConnectorApi/ShopifyDataConnectorApi/ShopifyDataDataConnectorApi")
 const config = require("../Config/Config")
 const utils = require("../Helper/Util")
+const promiseRetry = require('promise-retry')
+var nconf = require('nconf');
+nconf.use('file', { file: './ConfigDate/DateTimeLastSync.json' });
+nconf.load();
 var conf = new config();
 
+var options = {
+  retries: conf.parameters().retriesCount//,
+  //factor: 1,
+  //minTimeout: 1000,
+  //maxTimeout: 2000,
+  //randomize: true
+}
 
-var syncData = function syncDataRetry(lastUpdated) 
+
+var syncDataRetry = function syncDataRetry(lastUpdated) 
 {
 	//TODO:syncData
 	//TODO: Config.CountRetry
+	promiseRetry(options,function (retry, number) {
+    console.log('attempt number', number);
+
+		return ShopifyDataConSync.syncData(lastUpdated)
+		.catch(retry);
+	})
+	.then(function (value) {
+		// guardar fecha
+		//console.log(value);
+		nconf.set('lastUpdateShopify',Date.now());
+	}, function (err) {
+		//grabar log de error despues de intentos
+	});
 }
 
 var syncData = function syncData(lastUpdated) 
@@ -355,7 +380,8 @@ var syncDataOrder = function syncDataOrder(lastUpdated)
 
 module.exports = 
 {
-    syncData : syncData
+    syncData : syncData,
+	syncDataRetry : syncDataRetry
 };
 
 
