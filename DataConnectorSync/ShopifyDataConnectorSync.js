@@ -7,8 +7,7 @@ const config = require("../Config/Config")
 const utils = require("../Helper/Util")
 const promiseRetry = require('promise-retry')
 var nconf = require('nconf');
-nconf.use('file', { file: '.s./ConfigDate/DateTimeLastSync.json' });
-nconf.load();
+nconf.use('file', { file: '../ConfigDate/DateTimeLastSync.json' });
 var conf = new config();
 const format = require("node.date-time");
 
@@ -32,11 +31,22 @@ var syncDataRetry = function syncDataRetry(lastUpdated)
 		.catch(retry);
 	})
 	.then(function (value) {
-		// guardar fecha
-		console.log("entro al then de sync lol");
-		nconf.set('lastUpdateShopify',new Date().format("Y-MM-dd HH:mm:SS"));
+		
 	}, function (err) {
-		//grabar log de error despues de intentos
+		// guardar fecha
+		
+		nconf.load();
+		console.log(new Date().format("Y-MM-dd HH:mm:SS"));
+		nconf.set('lastUpdateShopify',new Date().format("Y-MM-dd HH:mm:SS"));
+		nconf.save(function (err) {
+			if (err) {
+			console.error(err.message);
+			return;
+			}
+			console.log('Configuration saved successfully.');
+		});
+  
+		
 	});
 }
 
