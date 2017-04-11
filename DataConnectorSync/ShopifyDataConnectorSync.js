@@ -8,12 +8,22 @@ const utils = require("../Helper/Util")
 var conf = new config();
 
 
+var syncData = function syncDataRetry(lastUpdated) 
+{
+	//TODO:syncData
+	//TODO: Config.CountRetry
+}
+
 var syncData = function syncData(lastUpdated) 
 {
-	//TODO: call syncDataOrder,syncDataCustomer
+	
+	
 	syncDataCustomer(lastUpdated);
+	syncDataEvents(lastUpdated);
 	syncDataOrder(lastUpdated);
-
+	syncDataComments(lastUpdated);
+	syncDataProducts(lastUpdated);
+	syncDataCustomCollections(lastUpdated);
 }
 
 var syncDataCustomer = function syncDataCustomer(lastUpdated) 
@@ -51,6 +61,123 @@ var syncDataCustomer = function syncDataCustomer(lastUpdated)
 });
 }
 
+var syncDataEvents = function syncDataOrder(lastUpdated) 
+{
+	var resultEvent = {};
+    resultEvent.Result = {}
+    resultEvent.Result.Success = false;
+	
+	ShopifyData.getEvents(lastUpdated,function(resultEvents)
+	{ 
+			if(resultEvents.Result.Success)
+			{			
+				var datasetShopify = ShopifyCon.NumetricShopifyFormat(resultEvents.Result.Data,"id","events");
+				var datos = resultEvents.Result.Data;
+				
+				numetricDataConnectorLogic.verifyCreateDatasetNumetric('events',datasetShopify.DataSetList).then(resultEventsVerify=>
+				{
+					resultEvents.Result.events = {};
+					resultEvents.Result.events.id =  resultEventsVerify.Result.Id; 
+					resultEvents.Result.Data = datos;			
+				
+					ShopifyCon.sendRowsShopifyToNumetric(resultEvents.Result);
+					
+					resultEvent.Result.Success = false;
+					
+					return resultEvent;
+					
+				});   
+			}
+	});
+}
+
+var syncDataComments = function syncDataComments(lastUpdated) 
+{
+	var resultEvent = {};
+    resultEvent.Result = {}
+    resultEvent.Result.Success = false;
+	
+	ShopifyData.getComments(lastUpdated,function(resultComments)
+	{ 
+			if(resultComments.Result.Success)
+			{			
+				var datasetShopify = ShopifyCon.NumetricShopifyFormat(resultComments.Result.Data,"id","comments");
+				var datos = resultComments.Result.Data;
+				
+				numetricDataConnectorLogic.verifyCreateDatasetNumetric('comments',datasetShopify.DataSetList).then(resultCommentsVerify=>
+				{
+					resultComments.Result.comments = {};
+					resultComments.Result.comments.id =  resultCommentsVerify.Result.Id; 
+					resultComments.Result.Data = datos;
+								
+					ShopifyCon.sendRowsShopifyToNumetric(resultComments.Result);
+					
+					resultEvent.Result.Success = false;
+					
+					return resultEvent;
+				});   
+			}
+	});
+
+}
+
+var syncDataProducts = function syncDataProducts(lastUpdated) 
+{
+	var resultEvent = {};
+    resultEvent.Result = {}
+    resultEvent.Result.Success = false;
+	
+	ShopifyData.getProducts(lastUpdated,function(resultProducts)
+	{ 
+			if(resultProducts.Result.Success)
+			{	
+				var datasetShopify = ShopifyCon.NumetricShopifyFormat(resultProducts.Result.Data,"id","products");
+				var datos = resultProducts.Result.Data;
+				
+				numetricDataConnectorLogic.verifyCreateDatasetNumetric('products',datasetShopify.DataSetList).then(resultProductsVerify=>
+				{
+					resultProducts.Result.products = {};
+					resultProducts.Result.products.id =  resultProductsVerify.Result.Id; 
+					resultProducts.Result.Data = datos;
+								
+					ShopifyCon.sendRowsShopifyToNumetric(resultProducts.Result);
+					
+					resultEvent.Result.Success = false;
+					
+					return resultEvent;
+				});   
+			}
+	});
+}
+
+var syncDataCustomCollections = function syncDataCustomCollections(lastUpdated) 
+{
+	var resultEvent = {};
+    resultEvent.Result = {}
+    resultEvent.Result.Success = false;
+	
+	ShopifyData.getCustomCollections(lastUpdated,function(resultCustomCollection)
+	{ 
+			if(resultCustomCollection.Result.Success)
+			{						
+				var datasetShopify = ShopifyCon.NumetricShopifyFormat(resultCustomCollection.Result.Data,"id","custom_Collection");
+				var datos = resultCustomCollection.Result.Data;
+				
+				numetricDataConnectorLogic.verifyCreateDatasetNumetric('custom_Collection',datasetShopify.DataSetList).then(resultCustomCollectionVerify=>
+				{
+					resultCustomCollection.Result.custom_Collection = {};
+					resultCustomCollection.Result.custom_Collection.id =  resultCustomCollectionVerify.Result.Id; 
+					resultCustomCollection.Result.Data = datos;			
+				
+					ShopifyCon.sendRowsShopifyToNumetric(resultCustomCollection.Result);	
+					
+					resultEvent.Result.Success = false;
+					
+					return resultEvent;
+				});   
+			}
+	});
+}
 
 var syncDataOrder = function syncDataOrder(lastUpdated) 
 {
@@ -185,8 +312,9 @@ var syncDataOrder = function syncDataOrder(lastUpdated)
 																										
 																										resultEvent.Result.Success = true;																										
 																										console.log(resultOrder.Result);
-																									});
 																										return resultEvent;
+																									});
+																										
 																										
 																									});
 																									
