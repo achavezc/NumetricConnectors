@@ -55,65 +55,72 @@ var syncDataCustomer = function syncDataCustomer(lastUpdated)
 	var resultEvent = {};
     resultEvent.Result = {}
     resultEvent.Result.Success = false;
-	return 	ShopifyData.getCustomers(lastUpdated).then(resultCustomer=>{ 
-		if(resultCustomer.Result.Success){
-		var datasetShopify = ShopifyCon.NumetricShopifyFormat(resultCustomer.Result.Data,"id","customers");
-		var datos = resultCustomer.Result.Data;
-		return numetricDataConnectorLogic.verifyCreateDatasetNumetric('customers',datasetShopify.DataSetList).then(resultCustomer=>
+	return 	ShopifyData.getCustomers(lastUpdated).then(resultCustomer=>
+	{ 
+		if(resultCustomer.Result.Success)
 		{
-		resultCustomer.Result.customers = {};
-		resultCustomer.Result.customers.id =  resultCustomer.Result.Id; 
-			
-			return numetricDataConnectorLogic.verifyCreateDatasetNumetric('customers_addresses',datasetShopify.DataSetList).then(resultDefaultAddres=>
+			var datasetShopify = ShopifyCon.NumetricShopifyFormat(resultCustomer.Result.Data,"id","customers");
+			var datos = resultCustomer.Result.Data;
+			return numetricDataConnectorLogic.verifyCreateDatasetNumetric('customers',datasetShopify.DataSetList).then(resultCustomerVerify=>
 			{
-				resultCustomer.Result.customers_addresses = {};
-				resultCustomer.Result.customers_addresses.id= resultDefaultAddres.Result.Id; 
-				return numetricDataConnectorLogic.verifyCreateDatasetNumetric('customers_default_address',datasetShopify.DataSetList).then(resultAdress=>
+				resultCustomer.Result.customers = {};
+				resultCustomer.Result.customers.id =  resultCustomerVerify.Result.Id; 
+					
+				return numetricDataConnectorLogic.verifyCreateDatasetNumetric('customers_addresses',datasetShopify.DataSetList).then(resultDefaultAddressVerify=>
 				{
-					resultCustomer.Result.customers_default_address = {};
-					resultCustomer.Result.customers_default_address.id = resultAdress.Result.Id; 
-					resultCustomer.Result.Data = datos;
-					return ShopifyCon.sendRowsShopifyToNumetric(resultCustomer.Result).then(results=>{
-						return resolve(results);
+					resultCustomer.Result.customers_addresses = {};
+					resultCustomer.Result.customers_addresses.id= resultDefaultAddressVerify.Result.Id; 
+					return numetricDataConnectorLogic.verifyCreateDatasetNumetric('customers_default_address',datasetShopify.DataSetList).then(resultAddressVerify=>
+					{
+						resultCustomer.Result.customers_default_address = {};
+						resultCustomer.Result.customers_default_address.id = resultAddressVerify.Result.Id; 
+						resultCustomer.Result.Data = datos;
+						return ShopifyCon.sendRowsShopifyToNumetric(resultCustomer.Result).then(results=>
+						{
+							return results;
+						});
+						//resultEvent.Result.Success = true;
+						//return resultEvent;
 					});
-					//resultEvent.Result.Success = true;
-					//return resultEvent;
 				});
-			});
-			
-		});   
+					
+			});   
 		}
 	});
 }
 
-var syncDataEvents = function syncDataOrder(lastUpdated) 
+var syncDataEvents = function syncDataEvents(lastUpdated) 
 {
 	var resultEvent = {};
     resultEvent.Result = {}
     resultEvent.Result.Success = false;
 	
-	ShopifyData.getEvents(lastUpdated,function(resultEvents)
+	return 	ShopifyData.getEvents(lastUpdated).then(resultEvents=>	
 	{ 
-			if(resultEvents.Result.Success)
-			{			
-				var datasetShopify = ShopifyCon.NumetricShopifyFormat(resultEvents.Result.Data,"id","events");
-				var datos = resultEvents.Result.Data;
+		if(resultEvents.Result.Success)
+		{			
+			var datasetShopify = ShopifyCon.NumetricShopifyFormat(resultEvents.Result.Data,"id","events");
+			var datos = resultEvents.Result.Data;
+			
+			return numetricDataConnectorLogic.verifyCreateDatasetNumetric('events',datasetShopify.DataSetList).then(resultEventsVerify=>
+			{
+				resultEvents.Result.events = {};
+				resultEvents.Result.events.id =  resultEventsVerify.Result.Id; 
+				resultEvents.Result.Data = datos;										
 				
-				numetricDataConnectorLogic.verifyCreateDatasetNumetric('events',datasetShopify.DataSetList).then(resultEventsVerify=>
+				return ShopifyCon.sendRowsShopifyToNumetric(resultEvents.Result).then(results=>
 				{
-					resultEvents.Result.events = {};
-					resultEvents.Result.events.id =  resultEventsVerify.Result.Id; 
-					resultEvents.Result.Data = datos;			
+					return results;
+				});
 				
-					ShopifyCon.sendRowsShopifyToNumetric(resultEvents.Result);
-					
-					resultEvent.Result.Success = false;
-					
-					return resultEvent;
-					
-				});   
-			}
-	});
+				//resultEvent.Result.Success = false;
+				
+				//return resultEvent;
+				
+			});   
+		}
+	})
+	
 }
 
 var syncDataComments = function syncDataComments(lastUpdated) 
@@ -122,28 +129,30 @@ var syncDataComments = function syncDataComments(lastUpdated)
     resultEvent.Result = {}
     resultEvent.Result.Success = false;
 	
-	ShopifyData.getComments(lastUpdated,function(resultComments)
+	return 	ShopifyData.getComments(lastUpdated).then(resultComments=>		
 	{ 
-			if(resultComments.Result.Success)
-			{			
-				var datasetShopify = ShopifyCon.NumetricShopifyFormat(resultComments.Result.Data,"id","comments");
-				var datos = resultComments.Result.Data;
-				
-				numetricDataConnectorLogic.verifyCreateDatasetNumetric('comments',datasetShopify.DataSetList).then(resultCommentsVerify=>
+		if(resultComments.Result.Success)
+		{			
+			var datasetShopify = ShopifyCon.NumetricShopifyFormat(resultComments.Result.Data,"id","comments");
+			var datos = resultComments.Result.Data;
+			
+			return numetricDataConnectorLogic.verifyCreateDatasetNumetric('comments',datasetShopify.DataSetList).then(resultCommentsVerify=>
+			{
+				resultComments.Result.comments = {};
+				resultComments.Result.comments.id =  resultCommentsVerify.Result.Id; 
+				resultComments.Result.Data = datos;
+							
+				return ShopifyCon.sendRowsShopifyToNumetric(resultComments.Result).then(results=>
 				{
-					resultComments.Result.comments = {};
-					resultComments.Result.comments.id =  resultCommentsVerify.Result.Id; 
-					resultComments.Result.Data = datos;
-								
-					ShopifyCon.sendRowsShopifyToNumetric(resultComments.Result);
-					
-					resultEvent.Result.Success = false;
-					
-					return resultEvent;
-				});   
-			}
-	});
-
+					return results;
+				});			
+									
+				//resultEvent.Result.Success = false;
+				
+				//return resultEvent;
+			});   
+		}
+	})
 }
 
 var syncDataProducts = function syncDataProducts(lastUpdated) 
@@ -152,27 +161,31 @@ var syncDataProducts = function syncDataProducts(lastUpdated)
     resultEvent.Result = {}
     resultEvent.Result.Success = false;
 	
-	ShopifyData.getProducts(lastUpdated,function(resultProducts)
+	return 	ShopifyData.getProducts(lastUpdated).then(resultProducts=>																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																				{
 	{ 
-			if(resultProducts.Result.Success)
-			{	
-				var datasetShopify = ShopifyCon.NumetricShopifyFormat(resultProducts.Result.Data,"id","products");
-				var datos = resultProducts.Result.Data;
+		if(resultProducts.Result.Success)
+		{	
+			var datasetShopify = ShopifyCon.NumetricShopifyFormat(resultProducts.Result.Data,"id","products");
+			var datos = resultProducts.Result.Data;
+			
+			return numetricDataConnectorLogic.verifyCreateDatasetNumetric('products',datasetShopify.DataSetList).then(resultProductsVerify=>
+			{
+				resultProducts.Result.products = {};
+				resultProducts.Result.products.id =  resultProductsVerify.Result.Id; 
+				resultProducts.Result.Data = datos;						
 				
-				numetricDataConnectorLogic.verifyCreateDatasetNumetric('products',datasetShopify.DataSetList).then(resultProductsVerify=>
+				return ShopifyCon.sendRowsShopifyToNumetric(resultProducts.Result).then(results=>
 				{
-					resultProducts.Result.products = {};
-					resultProducts.Result.products.id =  resultProductsVerify.Result.Id; 
-					resultProducts.Result.Data = datos;
-								
-					ShopifyCon.sendRowsShopifyToNumetric(resultProducts.Result);
-					
-					resultEvent.Result.Success = false;
-					
-					return resultEvent;
-				});   
-			}
-	});
+					return results;
+				});			
+				
+				//resultEvent.Result.Success = false;
+				
+				//return resultEvent;
+			});   
+		}
+	})	
+	
 }
 
 var syncDataCustomCollections = function syncDataCustomCollections(lastUpdated) 
@@ -181,26 +194,30 @@ var syncDataCustomCollections = function syncDataCustomCollections(lastUpdated)
     resultEvent.Result = {}
     resultEvent.Result.Success = false;
 	
-	ShopifyData.getCustomCollections(lastUpdated,function(resultCustomCollection)
+	return 	ShopifyData.getCustomCollections(lastUpdated).then(resultCustomCollection=>		
 	{ 
-			if(resultCustomCollection.Result.Success)
-			{						
-				var datasetShopify = ShopifyCon.NumetricShopifyFormat(resultCustomCollection.Result.Data,"id","custom_Collection");
-				var datos = resultCustomCollection.Result.Data;
-				
-				numetricDataConnectorLogic.verifyCreateDatasetNumetric('custom_Collection',datasetShopify.DataSetList).then(resultCustomCollectionVerify=>
+		if(resultCustomCollection.Result.Success)
+		{						
+			var datasetShopify = ShopifyCon.NumetricShopifyFormat(resultCustomCollection.Result.Data,"id","custom_Collection");
+			var datos = resultCustomCollection.Result.Data;
+			
+			return numetricDataConnectorLogic.verifyCreateDatasetNumetric('custom_Collection',datasetShopify.DataSetList).then(resultCustomCollectionVerify=>
+			{
+				resultCustomCollection.Result.custom_Collection = {};
+				resultCustomCollection.Result.custom_Collection.id =  resultCustomCollectionVerify.Result.Id; 
+				resultCustomCollection.Result.Data = datos;			
+			
+				return ShopifyCon.sendRowsShopifyToNumetric(resultCustomCollection.Result).then(results=>
 				{
-					resultCustomCollection.Result.custom_Collection = {};
-					resultCustomCollection.Result.custom_Collection.id =  resultCustomCollectionVerify.Result.Id; 
-					resultCustomCollection.Result.Data = datos;			
+					return results;
+				});
 				
-					ShopifyCon.sendRowsShopifyToNumetric(resultCustomCollection.Result);	
-					
-					resultEvent.Result.Success = false;
-					
-					return resultEvent;
-				});   
-			}
+				//resultEvent.Result.Success = false;
+																																																																																																																																																																																																																																																																																																																																																																																						
+				//return resultEvent;
+			});   
+		}
+		
 	});
 }
 
@@ -218,57 +235,57 @@ var syncDataOrder = function syncDataOrder(lastUpdated)
 			var datasetShopify = ShopifyCon.NumetricShopifyFormat(resultOrder.Result.Data,"id","orders");
 			var datos = resultOrder.Result.Data;	
 			
-			numetricDataConnectorLogic.verifyCreateDatasetNumetric('orders',datasetShopify.DataSetList).then(resultOrderVerify=>
+			return numetricDataConnectorLogic.verifyCreateDatasetNumetric('orders',datasetShopify.DataSetList).then(resultOrderVerify=>
 			{							
 				resultOrder.Result.orders = {};
 				resultOrder.Result.orders.id =  resultOrderVerify.Result.Id; 
 				
-				numetricDataConnectorLogic.verifyCreateDatasetNumetric('orders_billing_address',datasetShopify.DataSetList).then(resultOrdersBillingAddressVerify=>
+				return numetricDataConnectorLogic.verifyCreateDatasetNumetric('orders_billing_address',datasetShopify.DataSetList).then(resultOrdersBillingAddressVerify=>
 				{				
 					resultOrder.Result.orders_billing_address = {};
 					resultOrder.Result.orders_billing_address.id =  resultOrdersBillingAddressVerify.Result.Id; 
 					
-					numetricDataConnectorLogic.verifyCreateDatasetNumetric('orders_shipping_address',datasetShopify.DataSetList).then(resultOrdersShippingAddressVerify=>
+					return numetricDataConnectorLogic.verifyCreateDatasetNumetric('orders_shipping_address',datasetShopify.DataSetList).then(resultOrdersShippingAddressVerify=>
 					{				
 						resultOrder.Result.orders_shipping_address = {};
 						resultOrder.Result.orders_shipping_address.id =  resultOrdersShippingAddressVerify.Result.Id; 
 						
-						numetricDataConnectorLogic.verifyCreateDatasetNumetric('orders_discount_codes',datasetShopify.DataSetList).then(resultOrdersDiscountCodesVerify=>
+						return numetricDataConnectorLogic.verifyCreateDatasetNumetric('orders_discount_codes',datasetShopify.DataSetList).then(resultOrdersDiscountCodesVerify=>
 						{							
 							resultOrder.Result.orders_discount_codes = {};
 							resultOrder.Result.orders_discount_codes.id =  resultOrdersDiscountCodesVerify.Result.Id; 
 							
-							numetricDataConnectorLogic.verifyCreateDatasetNumetric('orders_note_attributes',datasetShopify.DataSetList).then(resultOrdersNoteAttributesVerify=>
+							return numetricDataConnectorLogic.verifyCreateDatasetNumetric('orders_note_attributes',datasetShopify.DataSetList).then(resultOrdersNoteAttributesVerify=>
 							{							
 								resultOrder.Result.orders_note_attributes = {};
 								resultOrder.Result.orders_note_attributes.id =  resultOrdersNoteAttributesVerify.Result.Id; 
 								
-								numetricDataConnectorLogic.verifyCreateDatasetNumetric('orders_tax_lines',datasetShopify.DataSetList).then(resultOrdersTaxLinesVerify=>
+								return numetricDataConnectorLogic.verifyCreateDatasetNumetric('orders_tax_lines',datasetShopify.DataSetList).then(resultOrdersTaxLinesVerify=>
 								{							
 									resultOrder.Result.orders_tax_lines = {};
 									resultOrder.Result.orders_tax_lines.id =  resultOrdersTaxLinesVerify.Result.Id; 
 									
-									numetricDataConnectorLogic.verifyCreateDatasetNumetric('orders_line_items',datasetShopify.DataSetList).then(resultOrdersLineItemsVerify=>
+									return numetricDataConnectorLogic.verifyCreateDatasetNumetric('orders_line_items',datasetShopify.DataSetList).then(resultOrdersLineItemsVerify=>
 									{							
 										resultOrder.Result.orders_line_items = {};
 										resultOrder.Result.orders_line_items.id =  resultOrdersLineItemsVerify.Result.Id; 
 										
-										numetricDataConnectorLogic.verifyCreateDatasetNumetric('orders_line_items_properties',datasetShopify.DataSetList).then(resultOrdersLineItemsPropertiesVerify=>
+										return numetricDataConnectorLogic.verifyCreateDatasetNumetric('orders_line_items_properties',datasetShopify.DataSetList).then(resultOrdersLineItemsPropertiesVerify=>
 										{							
 											resultOrder.Result.orders_line_items_properties = {};
 											resultOrder.Result.orders_line_items_properties.id =  resultOrdersLineItemsPropertiesVerify.Result.Id; 
 											
-											numetricDataConnectorLogic.verifyCreateDatasetNumetric('orders_shipping_lines',datasetShopify.DataSetList).then(resultOrdersShippingLinesVerify=>
+											return numetricDataConnectorLogic.verifyCreateDatasetNumetric('orders_shipping_lines',datasetShopify.DataSetList).then(resultOrdersShippingLinesVerify=>
 											{							
 												resultOrder.Result.orders_shipping_lines = {};
 												resultOrder.Result.orders_shipping_lines.id =  resultOrdersShippingLinesVerify.Result.Id; 
 												
-												numetricDataConnectorLogic.verifyCreateDatasetNumetric('orders_fulfillments',datasetShopify.DataSetList).then(resultOrdersFulfillmentsVerify=>
+												return numetricDataConnectorLogic.verifyCreateDatasetNumetric('orders_fulfillments',datasetShopify.DataSetList).then(resultOrdersFulfillmentsVerify=>
 												{							
 													resultOrder.Result.orders_fulfillments = {};
 													resultOrder.Result.orders_fulfillments.id =  resultOrdersFulfillmentsVerify.Result.Id; 
 													
-													numetricDataConnectorLogic.verifyCreateDatasetNumetric('orders_fulfillments_receipt',datasetShopify.DataSetList).then(resultOrdersFulfillmentsReceiptVerify=>
+													return numetricDataConnectorLogic.verifyCreateDatasetNumetric('orders_fulfillments_receipt',datasetShopify.DataSetList).then(resultOrdersFulfillmentsReceiptVerify=>
 													{							
 														resultOrder.Result.orders_fulfillments_receipt = {};
 														resultOrder.Result.orders_fulfillments_receipt.id =  resultOrdersFulfillmentsReceiptVerify.Result.Id; 
@@ -367,9 +384,9 @@ var syncDataOrder = function syncDataOrder(lastUpdated)
 			//});   
 		//}
 //	});
-
+	})
 }
-});
+
 }
 
 
@@ -379,5 +396,3 @@ module.exports =
     syncData : syncData,
 	syncDataRetry : syncDataRetry
 };
-
-
