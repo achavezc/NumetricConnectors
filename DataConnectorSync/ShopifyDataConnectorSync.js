@@ -41,6 +41,30 @@ var syncDataRetry = function syncDataRetry(lastUpdated)
 
 var syncData = function syncData(lastUpdated) 
 {
+ //TODO: call syncDataOrder,syncDataCustomer
+ 
+ return syncDataCustomer(lastUpdated).then(resultCustome=>
+ {
+	return syncDataEvents(lastUpdated).then(resultEvents=>
+	{
+		//return syncDataOrder(lastUpdated).then(resultOrder=>
+		//{
+			return syncDataComments(lastUpdated).then(resultOrder=>
+			{
+				return syncDataProducts(lastUpdated).then(resultProducts=>
+				{
+					return syncDataCustomCollections(lastUpdated).then(
+					{
+						ResultEvent.Result.Success= true;
+					});     
+				});
+			});
+		//});
+   });
+})
+
+var syncData = function syncData(lastUpdated) 
+{
 	//TODO: call syncDataOrder,syncDataCustomer
 	return syncDataCustomer(lastUpdated);
 	//syncDataEvents(lastUpdated);
