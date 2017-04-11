@@ -86,32 +86,38 @@ var syncDataCustomer = function syncDataCustomer(lastUpdated)
 	{ 
 		if(resultCustomer.Result.Success)
 		{
-			var datasetShopify = ShopifyCon.NumetricShopifyFormat(resultCustomer.Result.Data,"id","customers");
-			var datos = resultCustomer.Result.Data;
-			return numetricDataConnectorLogic.verifyCreateDatasetNumetric('customers',datasetShopify.DataSetList).then(resultCustomerVerify=>
-			{
-				resultCustomer.Result.customers = {};
-				resultCustomer.Result.customers.id =  resultCustomerVerify.Result.Id; 
-					
-				return numetricDataConnectorLogic.verifyCreateDatasetNumetric('customers_addresses',datasetShopify.DataSetList).then(resultDefaultAddressVerify=>
+			if(resultCustomer.Result.Data.length>0){
+				var datasetShopify = ShopifyCon.NumetricShopifyFormat(resultCustomer.Result.Data,"id","customers");
+				var datos = resultCustomer.Result.Data;
+				return numetricDataConnectorLogic.verifyCreateDatasetNumetric('customers',datasetShopify.DataSetList).then(resultCustomerVerify=>
 				{
-					resultCustomer.Result.customers_addresses = {};
-					resultCustomer.Result.customers_addresses.id= resultDefaultAddressVerify.Result.Id; 
-					return numetricDataConnectorLogic.verifyCreateDatasetNumetric('customers_default_address',datasetShopify.DataSetList).then(resultAddressVerify=>
+					resultCustomer.Result.customers = {};
+					resultCustomer.Result.customers.id =  resultCustomerVerify.Result.Id; 
+
+					return numetricDataConnectorLogic.verifyCreateDatasetNumetric('customers_addresses',datasetShopify.DataSetList).then(resultDefaultAddressVerify=>
 					{
-						resultCustomer.Result.customers_default_address = {};
-						resultCustomer.Result.customers_default_address.id = resultAddressVerify.Result.Id; 
-						resultCustomer.Result.Data = datos;
-						return ShopifyCon.sendRowsShopifyToNumetric(resultCustomer.Result).then(results=>
+						resultCustomer.Result.customers_addresses = {};
+						resultCustomer.Result.customers_addresses.id= resultDefaultAddressVerify.Result.Id; 
+						return numetricDataConnectorLogic.verifyCreateDatasetNumetric('customers_default_address',datasetShopify.DataSetList).then(resultAddressVerify=>
 						{
-							return results;
+							resultCustomer.Result.customers_default_address = {};
+							resultCustomer.Result.customers_default_address.id = resultAddressVerify.Result.Id; 
+							resultCustomer.Result.Data = datos;
+							return ShopifyCon.sendRowsShopifyToNumetric(resultCustomer.Result).then(results=>
+							{
+								return results;
+							});
+							//resultEvent.Result.Success = true;
+							//return resultEvent;
 						});
-						//resultEvent.Result.Success = true;
-						//return resultEvent;
 					});
+
 				});
-					
-			});   
+			}
+			else{
+				resultEvent.Result.Success = true;
+				return resultEvent;
+			}
 		}
 	});
 }
