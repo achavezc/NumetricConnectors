@@ -33,7 +33,6 @@ var lastUpdated = {
   timezone : 'GMT-11:00'
 }
 
-<<<<<<< HEAD
 var options = {
   retries: 3//,
   //factor: 1,
@@ -56,10 +55,6 @@ promiseRetry(options,function (retry, number) {
     //grabar log de error despues de intentos
 });
 
-
-=======
-//ShopifyDataConSync.syncData(lastUpdated);
->>>>>>> cb256c425ad19b52b117f7272656d875188e57f3
 /*
 
 SI FUNCIONA

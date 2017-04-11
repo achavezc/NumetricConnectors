@@ -16,27 +16,13 @@ var syncData = function syncDataRetry(lastUpdated)
 
 var syncData = function syncData(lastUpdated) 
 {
-<<<<<<< HEAD
 	//TODO: call syncDataOrder,syncDataCustomer
 	return syncDataCustomer(lastUpdated);
-
-
 	//syncDataEvents(lastUpdated);
 	//syncDataOrder(lastUpdated);
 	//syncDataComments(lastUpdated);
 	//syncDataProducts(lastUpdated);
 	//syncDataCustomCollections(lastUpdated);
-
-=======
-	
-	
-	syncDataCustomer(lastUpdated);
-	syncDataEvents(lastUpdated);
-	syncDataOrder(lastUpdated);
-	syncDataComments(lastUpdated);
-	syncDataProducts(lastUpdated);
-	syncDataCustomCollections(lastUpdated);
->>>>>>> cb256c425ad19b52b117f7272656d875188e57f3
 }
 
 var syncDataCustomer = function syncDataCustomer(lastUpdated) 
