@@ -35,7 +35,7 @@ if(nconf.get('lastUpdateShopify')!= ""){
 
 var lastUpdated = {
   created_at_min : dateInitial,//conf.parameters().initialDateTimeShopify,
-  timezone : 'GMT-11:00'
+  timezone :conf.parameters().timezone 
 }
 
 /*
@@ -51,7 +51,9 @@ var options = {
 //'01/06/2017 4:52:48 PM',
 ShopifyData.getTimeZone(function(resultTimeZone){
 	if(resultTimeZone.Result.Success) {
-		lastUpdated.timezone = resultTimeZone.Result.TimeZone 
+		if(resultTimeZone.Result.TimeZone != ""){
+		lastUpdated.timezone = resultTimeZone.Result.TimeZone
+		} 
 		ShopifyDataConSync.syncDataRetry(lastUpdated);
 	}
 });
