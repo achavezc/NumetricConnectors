@@ -42,7 +42,7 @@ var syncDataRetry = function syncDataRetry(lastUpdated)
 var syncData = function syncData(lastUpdated) 
 {
  //TODO: call syncDataOrder,syncDataCustomer
- 
+    console.log(lastUpdated);
 	 return syncDataCustomer(lastUpdated).then(resultCustome=>
 	 {
 		return syncDataEvents(lastUpdated).then(resultEvents=>
@@ -176,7 +176,7 @@ var syncDataProducts = function syncDataProducts(lastUpdated)
     resultEvent.Result = {}
     resultEvent.Result.Success = false;
 	
-	return 	ShopifyData.getProducts(lastUpdated).then(resultProducts=>																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																				{
+	return 	ShopifyData.getProducts(lastUpdated).then(resultProducts=>																																																										//{
 	{ 
 		if(resultProducts.Result.Success)
 		{	
