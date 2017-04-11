@@ -8,13 +8,14 @@ const utils = require("./Helper/Util")
 const ShopifyDataConSync = require("./DataConnectorSync/ShopifyDataConnectorSync")
 const promiseRetry = require('promise-retry')
 var conf = new config();
+const format = require("node.date-time");
 
 var nconf = require('nconf');
 nconf.use('file', { file: './ConfigDate/DateTimeLastSync.json' });
 nconf.load();
 
 
-console.log(nconf.get('lastUpdateShopify'));
+//console.log(nconf.get('lastUpdateShopify'));
 
 /*
 var dateTime = require('node-datetime');
@@ -46,8 +47,14 @@ var options = {
   //randomize: true
 }
 */
+
+//'01/06/2017 4:52:48 PM',
+
 ShopifyDataConSync.syncDataRetry(lastUpdated);
 
+//console.log(new Date().format("Y-MM-dd HH:mm:SS")); // 2016-5-18 
+//console.log(format("y-M-d H:m:s")); // 16-5-18 15:45:8 
+//console.log(new Date(dt.now()));
 /*
 promiseRetry(options,function (retry, number) {
     console.log('attempt number', number);
