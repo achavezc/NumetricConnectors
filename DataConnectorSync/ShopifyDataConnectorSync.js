@@ -1,10 +1,10 @@
 'use strict'
-const NumetricCon = require("./DataConnectorApi/NumetricDataConnectorApi/NumetricDataConnectorApi")
-const ShopifyCon = require("./DataConnectorLogic/ShopifyDataConnectorLogic")
-const numetricDataConnectorLogic = require("./DataConnectorLogic/NumetricDataConnectorLogic")
-const ShopifyData = require("./DataConnectorApi/ShopifyDataConnectorApi/ShopifyDataDataConnectorApi")
-const config = require("./Config/Config")
-const utils = require("./Helper/Util")
+const NumetricCon = require("../DataConnectorApi/NumetricDataConnectorApi/NumetricDataConnectorApi")
+const ShopifyCon = require("../DataConnectorLogic/ShopifyDataConnectorLogic")
+const numetricDataConnectorLogic = require("../DataConnectorLogic/NumetricDataConnectorLogic")
+const ShopifyData = require("../DataConnectorApi/ShopifyDataConnectorApi/ShopifyDataDataConnectorApi")
+const config = require("../Config/Config")
+const utils = require("../Helper/Util")
 var conf = new config();
 
 
@@ -182,7 +182,8 @@ var syncDataOrder = function syncDataOrder(lastUpdated)
 																										ShopifyCon.sendRowsShopifyToNumetric(resultOrder.Result);
 																										
 																										resultEvent.Result.Success = true;																										
-																										console.log(resultOrder.Result);});
+																										console.log(resultOrder.Result);
+																									});
 																										return resultEvent;
 																										
 																									});
@@ -208,10 +209,12 @@ var syncDataOrder = function syncDataOrder(lastUpdated)
 						}); 							
 					});	
 				});	
-			});   
-		}
-	});
+			//});   
+		//}
+//	});
 
+}
+});
 }
 
 

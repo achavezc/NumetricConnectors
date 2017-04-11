@@ -291,7 +291,24 @@ ShopifyData.getCustomCollections(lastUpdated,function(resultCustomCollection)
 
 
 
-
+ShopifyData.getTransactions(lastUpdated,function(resultTransactions)
+{ 
+	
+	if(resultTransactions.Result.Success)
+	{						
+		var datasetShopify = ShopifyCon.NumetricShopifyFormat(resultTransactions.Result.Data,"id","transactions");
+		var datos = resultTransactions.Result.Data;
+		
+		numetricDataConnectorLogic.verifyCreateDatasetNumetric('transactions',datasetShopify.DataSetList).then(resultTransactionsVerify=>
+		{
+			resultTransactions.Result.transactions = {};
+			resultTransactions.Result.transactions.id =  resultTransactionsVerify.Result.Id; 
+			resultTransactions.Result.Data = datos;			
+		
+			ShopifyCon.sendRowsShopifyToNumetric(resultTransactions.Result);				
+		});   
+	}
+});
 
 /*
 NO FUNCIONA
