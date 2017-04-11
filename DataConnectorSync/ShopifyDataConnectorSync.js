@@ -27,7 +27,7 @@ var syncDataRetry = function syncDataRetry(lastUpdated)
 	promiseRetry(options,function (retry, number) {
     console.log('attempt number', number);
 
-		return ShopifyDataConSync.syncData(lastUpdated)
+		return syncData(lastUpdated)
 		.catch(retry);
 	})
 	.then(function (value) {
