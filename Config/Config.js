@@ -11,7 +11,7 @@ config.prototype.parameters = function(data){ return {
     passwordShopify : 'ef0a6f9c267ff5498d1db4aae742273d',
 
 	initialDateTimeMixPanel:'2017-03-05',
-	initialDateTimeShopify:'01/06/2017 4:52:48 PM',
+	initialDateTimeShopify:'01/01/2017 4:52:48 PM',
 	retriesCount: 1,
 	timezone:'GMT-11:00',
 	optionsGetDataSet:{

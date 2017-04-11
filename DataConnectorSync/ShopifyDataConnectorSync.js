@@ -40,7 +40,7 @@ var syncDataRetry = function syncDataRetry(lastUpdated)
 		
 		var dt = datetime.create();
 		var fomratted = dt.format('m/d/Y H:M:S');
-		console.log(fomratted);
+		//console.log(fomratted);
 		nconf.set('lastUpdateShopify',fomratted);
 		
 		nconf.save(function (err) 
@@ -62,7 +62,7 @@ var syncData = function syncData(lastUpdated)
 {
 	console.log(lastUpdated);
 	
-	console.log("syncDataRetry");
+	console.log("syncData");
 	
     var resultEvent = {};
     resultEvent.Result = {}
@@ -98,15 +98,19 @@ var syncData = function syncData(lastUpdated)
 
 var syncDataCustomer = function syncDataCustomer(lastUpdated) 
 {
+	console.log("syncDataCustomer Init");
+	
 	var resultEvent = {};
     resultEvent.Result = {}
     resultEvent.Result.Success = false;
 	return 	ShopifyData.getCustomers(lastUpdated).then(resultCustomer=>
-	{ 
+	{ 		
+			
 		if(resultCustomer.Result.Success)
-		{
-			if(resultCustomer.Result.Data.length>0)
-			{
+		{			
+			
+			if(resultCustomer.Result.Data.customers.length>0)
+			{	
 				var datasetShopify = ShopifyCon.NumetricShopifyFormat(resultCustomer.Result.Data,"id","customers");
 				var datos = resultCustomer.Result.Data;
 				return numetricDataConnectorLogic.verifyCreateDatasetNumetric('customers',datasetShopify.DataSetList).then(resultCustomerVerify=>
