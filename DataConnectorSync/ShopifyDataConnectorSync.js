@@ -55,41 +55,37 @@ var syncDataCustomer = function syncDataCustomer(lastUpdated)
 	var resultEvent = {};
     resultEvent.Result = {}
     resultEvent.Result.Success = false;
-	return new Promise(function(resolve,reject)
-	{
-
-		ShopifyData.getCustomers(lastUpdated,function(resultCustomer){ 
+	return 	ShopifyData.getCustomers(lastUpdated).then(resultCustomer=>{ 
 		if(resultCustomer.Result.Success){
 		var datasetShopify = ShopifyCon.NumetricShopifyFormat(resultCustomer.Result.Data,"id","customers");
 		var datos = resultCustomer.Result.Data;
 		return numetricDataConnectorLogic.verifyCreateDatasetNumetric('customers',datasetShopify.DataSetList).then(resultCustomer=>
 		{
-			resultCustomer.Result.customers = {};
-			resultCustomer.Result.customers.id =  resultCustomer.Result.Id; 
-				
-				return numetricDataConnectorLogic.verifyCreateDatasetNumetric('customers_addresses',datasetShopify.DataSetList).then(resultDefaultAddres=>
+		resultCustomer.Result.customers = {};
+		resultCustomer.Result.customers.id =  resultCustomer.Result.Id; 
+			
+			return numetricDataConnectorLogic.verifyCreateDatasetNumetric('customers_addresses',datasetShopify.DataSetList).then(resultDefaultAddres=>
+			{
+				resultCustomer.Result.customers_addresses = {};
+				resultCustomer.Result.customers_addresses.id= resultDefaultAddres.Result.Id; 
+				return numetricDataConnectorLogic.verifyCreateDatasetNumetric('customers_default_address',datasetShopify.DataSetList).then(resultAdress=>
 				{
-					resultCustomer.Result.customers_addresses = {};
-					resultCustomer.Result.customers_addresses.id= resultDefaultAddres.Result.Id; 
-					return numetricDataConnectorLogic.verifyCreateDatasetNumetric('customers_default_address',datasetShopify.DataSetList).then(resultAdress=>
-					{
-						resultCustomer.Result.customers_default_address = {};
-						resultCustomer.Result.customers_default_address.id = resultAdress.Result.Id; 
-						resultCustomer.Result.Data = datos;
-						return ShopifyCon.sendRowsShopifyToNumetric(resultCustomer.Result).then(results=>{
-							return resolve(results);
-						});
-						//resultEvent.Result.Success = true;
-						//return resultEvent;
+					resultCustomer.Result.customers_default_address = {};
+					resultCustomer.Result.customers_default_address.id = resultAdress.Result.Id; 
+					resultCustomer.Result.Data = datos;
+					return ShopifyCon.sendRowsShopifyToNumetric(resultCustomer.Result).then(results=>{
+						return resolve(results);
 					});
+					//resultEvent.Result.Success = true;
+					//return resultEvent;
 				});
+			});
 			
 		});   
 		}
-	})
-
 	});
 }
+
 
 var syncDataEvents = function syncDataOrder(lastUpdated) 
 {
@@ -402,5 +398,4 @@ module.exports =
     syncData : syncData,
 	syncDataRetry : syncDataRetry
 };
-
 
