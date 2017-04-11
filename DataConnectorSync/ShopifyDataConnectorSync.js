@@ -34,7 +34,7 @@ var syncDataRetry = function syncDataRetry(lastUpdated)
 		
 	}, function (err) {
 		// guardar fecha
-		
+		console.log(err);
 		nconf.load();
 		console.log(new Date().format("Y-MM-dd HH:mm:SS"));
 		nconf.set('lastUpdateShopify',new Date().format("Y-MM-dd HH:mm:SS"));
