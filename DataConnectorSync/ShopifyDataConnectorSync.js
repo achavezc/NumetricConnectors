@@ -36,11 +36,15 @@ var syncDataRetry = function syncDataRetry(lastUpdated)
 		nconf.set('lastUpdateShopify',Date.now());
 	}, function (err) {
 		//grabar log de error despues de intentos
+		console.log(err);
 	});
 }
 
 var syncData = function syncData(lastUpdated) 
 {
+    var resultEvent = {};
+    resultEvent.Result = {}
+    resultEvent.Result.Success = false;
  //TODO: call syncDataOrder,syncDataCustomer
  
 	 return syncDataCustomer(lastUpdated).then(resultCustome=>
@@ -55,7 +59,8 @@ var syncData = function syncData(lastUpdated)
 					{
 						return syncDataCustomCollections(lastUpdated).then(resultCustomCollections=>
 						{
-							ResultEvent.Result.Success= true;
+							 ResultEvent.Result.Success= true;
+							return ResultEvent;
 						});     
 					});
 				});
