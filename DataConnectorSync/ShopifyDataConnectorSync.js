@@ -55,9 +55,7 @@ var syncDataCustomer = function syncDataCustomer(lastUpdated)
 	var resultEvent = {};
     resultEvent.Result = {}
     resultEvent.Result.Success = false;
-	return new Promise(function(resolve,reject){
-
-		ShopifyData.getCustomers(lastUpdated,function(resultCustomer){ 
+	return 	ShopifyData.getCustomers(lastUpdated).then(resultCustomer=>{ 
 		if(resultCustomer.Result.Success){
 		var datasetShopify = ShopifyCon.NumetricShopifyFormat(resultCustomer.Result.Data,"id","customers");
 		var datos = resultCustomer.Result.Data;
@@ -85,8 +83,6 @@ var syncDataCustomer = function syncDataCustomer(lastUpdated)
 			
 		});   
 		}
-	})
-
 	});
 }
 
