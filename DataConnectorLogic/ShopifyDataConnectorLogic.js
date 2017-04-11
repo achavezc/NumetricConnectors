@@ -34,14 +34,22 @@ var sendRowsShopifyToNumetric = function(inputsShopify){
 
 	getRowsShopify(inputsShopify.Data[nameParent],JsonResult,nameParent); 
 	var props = Object.keys(inputsShopify);
+	var listInputs=[];
 
-	for(var property in JsonResult){
-		if(utils.isInclude(props,property)){
-			datasetId = inputsShopify[property].id;
-			if(datasetId !== '')
-				NumetricCon.updateRowsDataSetNumetric(datasetId,JsonResult[property]);
+		for(var property in JsonResult){
+			if(utils.isInclude(props,property)){
+				if(inputsShopify[property].id !== ''){
+					var inputRow = {};
+					inputRow = utils.CreateProp(inputRow,"id",inputsShopify[property].id);
+					inputRow = utils.CreateProp(inputRow,"rows",JsonResult[property]);
+					listInputs.push(inputRow);
+				}
+			}
 		}
-	}
+	
+	var actions = listInputs.map(function(input){ return NumetricCon.updateRowsDataSetNumetric(input.id,input.rows);});
+	var results = Promise.all(actions);
+	return results;
 }
 
 

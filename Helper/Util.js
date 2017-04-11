@@ -224,10 +224,10 @@ count =0;
 	for(var element in JsonFieldsList){
 		var DataSet = {};
 		count++;
-		DataSet = CreateProp(DataSet,"name","DataSet"+count);
+		DataSet = CreateProp(DataSet,"name","MixPanelEvent");
 		DataSet = CreateProp(DataSet,"fields",JsonFieldsList[element]);
 		DataSet = CreateProp(DataSet,"primaryKey","distinct_id");
-	    DataSet = CreateProp(DataSet,"description","DataSet Mix Panel Generate Automatic");
+	    DataSet = CreateProp(DataSet,"description","MixPanel Event");
 	    JsonResult["DataSetList"].push(DataSet);
 	}
 return JsonResult;
@@ -331,5 +331,6 @@ module.exports = {
  GenerateRowsListFromShopify : GenerateRowsListFromShopify,
  isArray : isArray,
  WriteFileTxt : WriteFileTxt,
- isInclude : isInclude
+ isInclude : isInclude,
+ CreateProp : CreateProp
 }

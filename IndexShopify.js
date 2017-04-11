@@ -6,7 +6,7 @@ const ShopifyData = require("./DataConnectorApi/ShopifyDataConnectorApi/ShopifyD
 const config = require("./Config/Config")
 const utils = require("./Helper/Util")
 const ShopifyDataConSync = require("./DataConnectorSync/ShopifyDataConnectorSync")
-
+const promiseRetry = require('promise-retry')
 
 
 
@@ -18,7 +18,29 @@ var lastUpdated = {
   timezone : 'GMT-11:00'
 }
 
-ShopifyDataConSync.syncData(lastUpdated);
+var options = {
+  retries: 3//,
+  //factor: 1,
+  //minTimeout: 1000,
+  //maxTimeout: 2000,
+  //randomize: true
+}
+
+//ShopifyDataConSync.syncData(lastUpdated);
+
+promiseRetry(options,function (retry, number) {
+    console.log('attempt number', number);
+
+    return ShopifyDataConSync.syncData(lastUpdated)
+    .catch(retry);
+})
+.then(function (value) {
+    console.log(value);
+}, function (err) {
+    //grabar log de error despues de intentos
+});
+
+
 /*
 
 SI FUNCIONA

@@ -24,38 +24,33 @@ function updateRowsMixPanel(inputMixPanel){
 	var JsonResult = {};
 	JsonResult["rows"] = [];
 	
-	if(utils.isArray(inputMixPanel)){
-		for (var i = 0; i < inputMixPanel.length; i++ ){
-			var row = NumetricMixPanelFormat(inputMixPanel[i]);
+	if(utils.isArray(inputMixPanel.Data)){
+		for (var i = 0; i < inputMixPanel.Data.length; i++ ){
+			var row = NumetricMixPanelFormat(inputMixPanel.Data[i]);
 			utils.GenerateRowsFromMixPanel(row,JsonResult);
 		}
 	} else {
-			var row = NumetricMixPanelFormat(inputMixPanel);
+			var row = NumetricMixPanelFormat(inputMixPanel.Data);
 			utils.GenerateRowsFromMixPanel(row,JsonResult);
 	}
 	
-	/*
-	var lstBatch = {};
-	lstBatch["rows"] = [];
-	for(i=0; i<JsonResult["rows"].length; i++){
-		lstBatch["rows"].push(JsonResult["rows"][i]);
-		if( (i % 1000) == 0){
-			console.log("demo");
-			NumetricCon.updateRowsDataSetNumetric(datasetsMixPanel.datasetMixPanelEventId.id,lstBatch,rowsCount);
-			lstBatch["rows"] = [];
-		}
-	}
-	*/
-	NumetricCon.updateRowsDataSetNumetric(datasetsMixPanel.datasetMixPanelEventId.id,JsonResult);
+	NumetricCon.updateRowsDataSetNumetric(inputMixPanel.MixPanelEvent.id,JsonResult);
 }
 
 var generateDataSetMixPanelAux = function(inputMixPanel){
 
 var conf = new config();
-var finalFormatMixPanel = NumetricMixPanelFormat(inputMixPanel);
+var inputData;
+if(utils.isArray(inputMixPanel.Data)){
+	inputData = inputMixPanel[0];
+}else{
+	inputData = inputMixPanel;
+}
+
+var finalFormatMixPanel = NumetricMixPanelFormat(inputData);
 var datasetmixpanel = utils.GenerateDataSetsNumetricFromMixPanel(finalFormatMixPanel);
 //console.log(datasetmixpanel.DataSetList[0])
-
+ return datasetmixpanel;
 } 
 
 var verifyDatasetMixPanel = function(){
@@ -93,5 +88,6 @@ var verifyDatasetMixPanel = function(){
 
 module.exports={
 	updateRowsMixPanel : updateRowsMixPanel,
-	verifyDatasetMixPanel : verifyDatasetMixPanel
+	verifyDatasetMixPanel : verifyDatasetMixPanel,
+	generateDataSetMixPanelAux : generateDataSetMixPanelAux
 }

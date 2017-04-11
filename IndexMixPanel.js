@@ -1,5 +1,6 @@
 'use strict'
 const NumetricCon = require("./DataConnectorApi/NumetricDataConnectorApi/NumetricDataConnectorApi")
+const numetricDataConnectorLogic = require("./DataConnectorLogic/NumetricDataConnectorLogic")
 const MixPanelCon = require("./DataConnectorLogic/MixPanelDataConnectorLogic")
 const MixPanelData = require("./DataConnectorApi/MixPanelDataConnectorApi/MixPanelDataConnectorApi")
 const inputsMixPanel = require("./SampleData/exampleDataMixPanel")
@@ -17,15 +18,17 @@ var lastUpdated = {
 
 MixPanelData.apiSecretMixPanel = conf.parameters().apiSecretMixPanel;
 
-
-MixPanelCon.verifyDatasetMixPanel().then(result=>{
-	if(result.Result.Success){
-		MixPanelData.getEvents(lastUpdated,function(result){	
+MixPanelData.getEvents(lastUpdated,function(resultEvent){	
 		  if(result.Result.Success){  
-		 	MixPanelCon.updateRowsMixPanel(result.Result.Data);
+		  	var datasetMixPanel = MixPanelCon.generateDataSetMixPanelAux(result.Result.Data);
+		  	var datos = result.Result.Data;
+
+		  	numetricDataConnectorLogic.verifyCreateDatasetNumetric("MixPanelEvent",datasetMixPanel.DataSetList).then(resultEvent=>{
+		  		resultEvent.Result.MixPanelEvent = {};
+				resultEvent.Result.MixPanelEvent.id =  resultEvent.Result.Id;
+				resultEvent.Result.Data = datos;
+				MixPanelCon.updateRowsMixPanel(resultEvent.Result);
+
+		  	})
 		  }
-		});
-	}
 });
-
-

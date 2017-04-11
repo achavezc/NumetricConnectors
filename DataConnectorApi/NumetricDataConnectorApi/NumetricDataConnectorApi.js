@@ -16,11 +16,11 @@ var getDataSetNumetric = function(){
         	 resultEvent.Result.Success = true;
 		     return resultEvent;
 			})
-			.catch(function(err){ 
+			/*.catch(function(err){ 
 			    resultEvent.Result.Success = false;
         		resultEvent.Result.Error = err;
         		return resultEvent;
-			});
+			});*/
 }
 
 var getDataSetNumetricById = function(datasetId){
@@ -53,12 +53,12 @@ var generateDataSetNumetric = function(data){
         	 resultEvent.Result.Success = true;
 		     return resultEvent;
 	})
-	.catch(function(err){ 
+	/*.catch(function(err){ 
 		    
 			resultEvent.Result.Success = false;
         	resultEvent.Result.Error = err;
         	return resultEvent;
-	});
+	});*/
 }
 
 var updateRowsDataSetNumetric = function(datasetId,data){
