@@ -132,6 +132,7 @@ var syncDataEvents = function syncDataEvents(lastUpdated)
 	{ 
 		if(resultEvents.Result.Success)
 		{			
+			if(resultEvents.Result.Data.length>0){
 			var datasetShopify = ShopifyCon.NumetricShopifyFormat(resultEvents.Result.Data,"id","events");
 			var datos = resultEvents.Result.Data;
 			
@@ -150,7 +151,8 @@ var syncDataEvents = function syncDataEvents(lastUpdated)
 				
 				//return resultEvent;
 				
-			});   
+			});  
+		  } 
 		}
 	})
 	
@@ -166,6 +168,7 @@ var syncDataComments = function syncDataComments(lastUpdated)
 	{ 
 		if(resultComments.Result.Success)
 		{			
+				if(resultComments.Result.Data.length>0){
 			var datasetShopify = ShopifyCon.NumetricShopifyFormat(resultComments.Result.Data,"id","comments");
 			var datos = resultComments.Result.Data;
 			
@@ -183,7 +186,8 @@ var syncDataComments = function syncDataComments(lastUpdated)
 				//resultEvent.Result.Success = false;
 				
 				//return resultEvent;
-			});   
+			});  
+				} 
 		}
 	})
 }
@@ -198,6 +202,7 @@ var syncDataProducts = function syncDataProducts(lastUpdated)
 	{ 
 		if(resultProducts.Result.Success)
 		{	
+			if(resultProducts.Result.Data.length>0){
 			var datasetShopify = ShopifyCon.NumetricShopifyFormat(resultProducts.Result.Data,"id","products");
 			var datos = resultProducts.Result.Data;
 			
@@ -215,7 +220,8 @@ var syncDataProducts = function syncDataProducts(lastUpdated)
 				//resultEvent.Result.Success = false;
 				
 				//return resultEvent;
-			});   
+			}); 
+			}  
 		}
 	})	
 	
@@ -231,6 +237,7 @@ var syncDataCustomCollections = function syncDataCustomCollections(lastUpdated)
 	{ 
 		if(resultCustomCollection.Result.Success)
 		{						
+			if(resultCustomCollection.Result.Data.length>0){
 			var datasetShopify = ShopifyCon.NumetricShopifyFormat(resultCustomCollection.Result.Data,"id","custom_Collection");
 			var datos = resultCustomCollection.Result.Data;
 			
@@ -249,6 +256,7 @@ var syncDataCustomCollections = function syncDataCustomCollections(lastUpdated)
 																																																																																																																																																																																																																																																																																																																																																																																						
 				//return resultEvent;
 			});   
+			}
 		}
 		
 	});
