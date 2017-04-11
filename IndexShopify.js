@@ -6,8 +6,23 @@ const ShopifyData = require("./DataConnectorApi/ShopifyDataConnectorApi/ShopifyD
 const config = require("./Config/Config")
 const utils = require("./Helper/Util")
 const ShopifyDataConSync = require("./DataConnectorSync/ShopifyDataConnectorSync")
+<<<<<<< HEAD
 const promiseRetry = require('promise-retry')
+=======
+var nconf = require('nconf');
+nconf.use('file', { file: './ConfigDate/DateTimeLastSync.json' });
+nconf.load();
 
+>>>>>>> cb256c425ad19b52b117f7272656d875188e57f3
+
+console.log(nconf.get('lastUpdateShopify'));
+
+
+var dateTime = require('node-datetime');
+
+var dt = dateTime.create();
+
+nconf.set('lastUpdateShopify', new Date(dt.now()));
 
 
 var conf = new config();
@@ -18,6 +33,7 @@ var lastUpdated = {
   timezone : 'GMT-11:00'
 }
 
+<<<<<<< HEAD
 var options = {
   retries: 3//,
   //factor: 1,
@@ -41,6 +57,9 @@ promiseRetry(options,function (retry, number) {
 });
 
 
+=======
+//ShopifyDataConSync.syncData(lastUpdated);
+>>>>>>> cb256c425ad19b52b117f7272656d875188e57f3
 /*
 
 SI FUNCIONA
