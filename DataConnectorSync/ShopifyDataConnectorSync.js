@@ -8,16 +8,22 @@ const utils = require("../Helper/Util")
 var conf = new config();
 
 
+var syncData = function syncDataRetry(lastUpdated) 
+{
+	//TODO:syncData
+	//TODO: Config.CountRetry
+}
+
 var syncData = function syncData(lastUpdated) 
 {
-	//TODO: call syncDataOrder,syncDataCustomer
+	
+	
 	syncDataCustomer(lastUpdated);
 	syncDataEvents(lastUpdated);
 	syncDataOrder(lastUpdated);
 	syncDataComments(lastUpdated);
 	syncDataProducts(lastUpdated);
 	syncDataCustomCollections(lastUpdated);
-
 }
 
 var syncDataCustomer = function syncDataCustomer(lastUpdated) 
