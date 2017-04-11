@@ -31,13 +31,11 @@ var syncDataRetry = function syncDataRetry(lastUpdated)
 		.catch(retry);
 	})
 	.then(function (value) {
-		
-	}, function (err) {
-		// guardar fecha
-		console.log(err);
+		console.log('entro al then ');
+		// save datetime
 		nconf.load();
-		console.log(new Date().format("Y-MM-dd HH:mm:SS"));
-		nconf.set('lastUpdateShopify',new Date().format("Y-MM-dd HH:mm:SS"));
+		console.log(new Date().format("MM/DD/Y HH:mm:SS"));
+		nconf.set('lastUpdateShopify',new Date().format("MM/DD/Y HH:mm:SS"));
 		nconf.save(function (err) {
 			if (err) {
 			console.error(err.message);
@@ -45,13 +43,16 @@ var syncDataRetry = function syncDataRetry(lastUpdated)
 			}
 			console.log('Configuration saved successfully.');
 		});
-  
-		
+	}, function (err) {
+		console.log(err);
 	});
 }
 
 var syncData = function syncData(lastUpdated) 
 {
+    var resultEvent = {};
+    resultEvent.Result = {}
+    resultEvent.Result.Success = false;
  //TODO: call syncDataOrder,syncDataCustomer
     //console.log(lastUpdated);
 	 return syncDataCustomer(lastUpdated).then(resultCustome=>
@@ -66,8 +67,7 @@ var syncData = function syncData(lastUpdated)
 					{
 						return syncDataCustomCollections(lastUpdated).then(resultCustomCollections=>
 						{
-							return ResultEvent.Result.Success= true;
-							
+							return resultEvent.Result.Success= true;
 						});     
 					});
 				});
@@ -376,10 +376,8 @@ var syncDataOrder = function syncDataOrder(lastUpdated)
 																										resultOrder.Result.orders_customer_default_address = {};
 																										resultOrder.Result.orders_customer_default_address.id =  resultOrdersCustomerDefaultAddressVerify.Result.Id; 
 																										resultOrder.Result.Data = datos;
-																										ShopifyCon.sendRowsShopifyToNumetric(resultOrder.Result);
-																										
-																										//resultEvent.Result.Success = true;																										
-																																																		
+																																																			
+																										//resultEvent.Result.Success = true;															
 																										
 																										return ShopifyCon.sendRowsShopifyToNumetric(resultOrder.Result).then(results=>
 																										{
@@ -387,10 +385,7 @@ var syncDataOrder = function syncDataOrder(lastUpdated)
 																										});
 				
 																									});
-																										
-																										
 																								});
-																									
 																							});																						
 																						});																					
 																					});

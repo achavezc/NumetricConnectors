@@ -211,7 +211,7 @@ var getCustomers = function getCustomers(lastUpdated) {
     var date = toTimeZone(lastUpdated.created_at_min,lastUpdated.timezone);
     return shopify.customer.list({ created_at_min: date})
     .then(function(customers) {
-       
+       // console.log(customers);
         resultEvent.Result.Data = {};
         resultEvent.Result.Data.customers = [];
         resultEvent.Result.Data.customers = customers;
@@ -220,6 +220,7 @@ var getCustomers = function getCustomers(lastUpdated) {
         //callback(resultEvent);
     })
     .catch(function(err) {
+        //console.log("mal");
         resultEvent.Result.Success = false;
         resultEvent.Result.Error = err;
 		utils.WriteFileTxt("getCustomers error");

@@ -52,7 +52,7 @@ var options = {
 
 ShopifyDataConSync.syncDataRetry(lastUpdated);
 
-//console.log(new Date().format("Y-MM-dd HH:mm:SS")); // 2016-5-18 
+//console.log(new Date().format("MM-DD-Y HH:mm:SS")); // 2016-5-18 
 //console.log(format("y-M-d H:m:s")); // 16-5-18 15:45:8 
 //console.log(new Date(dt.now()));
 /*
