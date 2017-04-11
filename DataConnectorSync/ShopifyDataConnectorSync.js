@@ -33,7 +33,7 @@ var syncDataRetry = function syncDataRetry(lastUpdated)
 	})
 	.then(function (value) {
 		// guardar fecha
-		//console.log(value);
+		console.log("entro al then de sync lol");
 		nconf.set('lastUpdateShopify',new Date().format("Y-MM-dd HH:mm:SS"));
 	}, function (err) {
 		//grabar log de error despues de intentos
@@ -56,7 +56,8 @@ var syncData = function syncData(lastUpdated)
 					{
 						return syncDataCustomCollections(lastUpdated).then(resultCustomCollections=>
 						{
-							ResultEvent.Result.Success= true;
+							return ResultEvent.Result.Success= true;
+							
 						});     
 					});
 				});
