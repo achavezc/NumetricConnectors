@@ -6,8 +6,19 @@ const ShopifyData = require("./DataConnectorApi/ShopifyDataConnectorApi/ShopifyD
 const config = require("./Config/Config")
 const utils = require("./Helper/Util")
 const ShopifyDataConSync = require("./DataConnectorSync/ShopifyDataConnectorSync")
+var nconf = require('nconf');
+nconf.use('file', { file: './ConfigDate/DateTimeLastSync.json' });
+nconf.load();
 
 
+console.log(nconf.get('lastUpdateShopify'));
+
+
+var dateTime = require('node-datetime');
+
+var dt = dateTime.create();
+
+nconf.set('lastUpdateShopify', new Date(dt.now()));
 
 
 var conf = new config();
@@ -18,7 +29,7 @@ var lastUpdated = {
   timezone : 'GMT-11:00'
 }
 
-ShopifyDataConSync.syncData(lastUpdated);
+//ShopifyDataConSync.syncData(lastUpdated);
 /*
 
 SI FUNCIONA
