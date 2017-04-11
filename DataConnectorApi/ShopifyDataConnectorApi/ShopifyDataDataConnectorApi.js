@@ -286,6 +286,7 @@ var getTransactions = function getTransactions(lastUpdated,callback)
     })
     .catch(function(err) 
 	{
+        console.log(err);
 		utils.WriteFileTxt("\r\n");
 		utils.WriteFileTxt("getTransactions err");
 		utils.WriteFileTxt("\r\n")
@@ -305,6 +306,7 @@ var getSmartCollections = function getSmartCollections(lastUpdated,callback) {
     shopify.smartCollection.list({ created_at_min: date})
     .then(function(smartCollections) 
 	{
+        
         resultEvent.Result.Data  = {}; 
         resultEvent.Result.Data.smart_Collection = [];
         resultEvent.Result.Data.smart_Collection = smartCollections;

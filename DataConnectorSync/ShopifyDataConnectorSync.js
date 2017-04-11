@@ -11,6 +11,8 @@ var conf = new config();
 var syncData = function syncData(lastUpdated) 
 {
 	//TODO: call syncDataOrder,syncDataCustomer
+	syncDataCustomer(lastUpdated);
+	syncDataOrder(lastUpdated);
 
 }
 
