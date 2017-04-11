@@ -194,27 +194,29 @@ var getProducts = function getProducts(lastUpdated,callback) {
     });
 }
 
-var getCustomers = function getCustomers(lastUpdated,callback) {
+var getCustomers = function getCustomers(lastUpdated) {
     var resultEvent = {};
     resultEvent.Result = {}
     resultEvent.Result.Success = false;
     //console.log(resultEvent);
     var date = toTimeZone(lastUpdated.created_at_min,lastUpdated.timezone);
-    shopify.customer.list({ created_at_min: date})
+    return shopify.customer.list({ created_at_min: date})
     .then(function(customers) {
        
         resultEvent.Result.Data = {};
         resultEvent.Result.Data.customers = [];
         resultEvent.Result.Data.customers = customers;
         resultEvent.Result.Success = true;
-        callback(resultEvent);
+	return resultEvent;
+        //callback(resultEvent);
     })
     .catch(function(err) {
         resultEvent.Result.Success = false;
         resultEvent.Result.Error = err;
 		utils.WriteFileTxt("getCustomers error");
 		utils.WriteFileTxt(err.message);
-        callback(resultEvent);
+	 return resultEvent;
+        //callback(resultEvent);
     });
 }
 
