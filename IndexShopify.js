@@ -14,13 +14,6 @@ var nconf = require('nconf');
 nconf.use('file', { file: './ConfigDate/DateTimeLastSync.json' });
 nconf.load();
 
-//console.log(nconf.get('lastUpdateShopify'));
-
-/*
-var dateTime = require('node-datetime');
-var dt = dateTime.create();
-nconf.set('lastUpdateShopify', new Date(dt.now()));
-*/
 
 
 var dateInitial = "";
@@ -40,22 +33,16 @@ var lastUpdated =
   timezone :conf.parameters().timezone 
 }
 
-
-//var dt = datetime.create();
-//var fomratted = dt.format('m/d/Y H:M:S');
-  
-//console.log(fomratted);
-//console.log(new Date(dt.now()).format("MM/DD/Y HH:mm:SS"));
 //'01/06/2017 4:52:48 PM',
-
- 
-
-//'01/06/2017 4:52:48 PM',
-ShopifyData.getTimeZone(function(resultTimeZone){
-	if(resultTimeZone.Result.Success) {
-		if(resultTimeZone.Result.TimeZone != ""){
-		lastUpdated.timezone = resultTimeZone.Result.TimeZone
+ShopifyData.getTimeZone(function(resultTimeZone)
+{	
+	if(resultTimeZone.Result.Success) 
+	{
+		if(resultTimeZone.Result.TimeZone != "")
+		{
+			lastUpdated.timezone = resultTimeZone.Result.TimeZone
 		} 
+		
 		ShopifyDataConSync.syncDataRetry(lastUpdated);
 	}
 });

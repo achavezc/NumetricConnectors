@@ -96,7 +96,7 @@ var getEvents = function getEvents(lastUpdated)
     });
 }
 
-var getArticles = function getArticles(lastUpdated,callback){
+var getArticles = function getArticles(lastUpdated){
      var resultEvent = {};
     resultEvent.Result = {}
     resultEvent.Result.Success = false;
@@ -143,7 +143,7 @@ var getArticles = function getArticles(lastUpdated,callback){
     });
 }
 
-var getCustomCollections = function getCustomCollections(lastUpdated,callback)
+var getCustomCollections = function getCustomCollections(lastUpdated)
  {
 	var resultEvent = {};
     resultEvent.Result = {}
@@ -167,7 +167,7 @@ var getCustomCollections = function getCustomCollections(lastUpdated,callback)
     });
 }
 
-var getComments = function getComments(lastUpdated,callback) {
+var getComments = function getComments(lastUpdated) {
     var resultEvent = {};
     resultEvent.Result = {}
     resultEvent.Result.Success = false;
@@ -189,7 +189,7 @@ var getComments = function getComments(lastUpdated,callback) {
     });
 }
 
-var getProducts = function getProducts(lastUpdated,callback) 
+var getProducts = function getProducts(lastUpdated) 
 {
     var resultEvent = {};
     resultEvent.Result = {}
@@ -323,7 +323,7 @@ var getTransactions = function getTransactions(lastUpdated,callback)
 }
 */
 
-var getSmartCollections = function getSmartCollections(lastUpdated,callback) {
+var getSmartCollections = function getSmartCollections(lastUpdated) {
     var resultEvent = {};
     resultEvent.Result = {}
     resultEvent.Result.Success = false;
