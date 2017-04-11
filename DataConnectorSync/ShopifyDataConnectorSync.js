@@ -53,7 +53,7 @@ var syncData = function syncData(lastUpdated)
 				{
 					return syncDataProducts(lastUpdated).then(resultProducts=>
 					{
-						return syncDataCustomCollections(lastUpdated).then(
+						return syncDataCustomCollections(lastUpdated).then(resultCustomCollections=>
 						{
 							ResultEvent.Result.Success= true;
 						});     
@@ -242,8 +242,7 @@ var syncDataOrder = function syncDataOrder(lastUpdated)
     resultEvent.Result = {}
     resultEvent.Result.Success = false;
 	
-	
-	return ShopifyData.getOrders(lastUpdated,function(resultOrder)
+	return 	ShopifyData.getOrders(lastUpdated).then(resultOrder=>	
 	{ 
 		if(resultOrder.Result.Success)
 		{
@@ -305,103 +304,104 @@ var syncDataOrder = function syncDataOrder(lastUpdated)
 														resultOrder.Result.orders_fulfillments_receipt = {};
 														resultOrder.Result.orders_fulfillments_receipt.id =  resultOrdersFulfillmentsReceiptVerify.Result.Id; 
 														
-														numetricDataConnectorLogic.verifyCreateDatasetNumetric('orders_refunds',datasetShopify.DataSetList).then(resultOrdersRefundsVerify=>
+														return numetricDataConnectorLogic.verifyCreateDatasetNumetric('orders_refunds',datasetShopify.DataSetList).then(resultOrdersRefundsVerify=>
 														{							
 															resultOrder.Result.orders_refunds = {};
 															resultOrder.Result.orders_refunds.id =  resultOrdersRefundsVerify.Result.Id; 
 															
-															numetricDataConnectorLogic.verifyCreateDatasetNumetric('orders_refunds_line_items',datasetShopify.DataSetList).then(resultOrdersRefundsLineItemsVerify=>
+															return numetricDataConnectorLogic.verifyCreateDatasetNumetric('orders_refunds_line_items',datasetShopify.DataSetList).then(resultOrdersRefundsLineItemsVerify=>
 															{							
 																resultOrder.Result.orders_refunds_line_items = {};
 																resultOrder.Result.orders_refunds_line_items.id =  resultOrdersRefundsLineItemsVerify.Result.Id; 
 																
-																numetricDataConnectorLogic.verifyCreateDatasetNumetric('orders_refunds_line_items_line_item',datasetShopify.DataSetList).then(resultOrdersRefundsLineItemsItemVerify=>
+																return numetricDataConnectorLogic.verifyCreateDatasetNumetric('orders_refunds_line_items_line_item',datasetShopify.DataSetList).then(resultOrdersRefundsLineItemsItemVerify=>
 																{							
 																	resultOrder.Result.orders_refunds_line_items_line_item = {};
 																	resultOrder.Result.orders_refunds_line_items_line_item.id =  resultOrdersRefundsLineItemsItemVerify.Result.Id; 
 																	
-																	numetricDataConnectorLogic.verifyCreateDatasetNumetric('orders_refunds_line_items_line_item_properties',datasetShopify.DataSetList).then(resultOrdersRefundsLineItemsItemPropertiesVerify=>
+																	return numetricDataConnectorLogic.verifyCreateDatasetNumetric('orders_refunds_line_items_line_item_properties',datasetShopify.DataSetList).then(resultOrdersRefundsLineItemsItemPropertiesVerify=>
 																	{							
 																		resultOrder.Result.orders_refunds_line_items_line_item_properties = {};
 																		resultOrder.Result.orders_refunds_line_items_line_item_properties.id =  resultOrdersRefundsLineItemsItemPropertiesVerify.Result.Id; 
 																			
-																		numetricDataConnectorLogic.verifyCreateDatasetNumetric('orders_refunds_line_items_line_item_tax_lines',datasetShopify.DataSetList).then(resultOrdersRefundsLineItemsItemTaxLinesVerify=>
+																		return numetricDataConnectorLogic.verifyCreateDatasetNumetric('orders_refunds_line_items_line_item_tax_lines',datasetShopify.DataSetList).then(resultOrdersRefundsLineItemsItemTaxLinesVerify=>
 																		{							
 																			resultOrder.Result.orders_refunds_line_items_line_item_tax_lines = {};
 																			resultOrder.Result.orders_refunds_line_items_line_item_tax_lines.id =  resultOrdersRefundsLineItemsItemTaxLinesVerify.Result.Id; 
 																				
-																			numetricDataConnectorLogic.verifyCreateDatasetNumetric('orders_refunds_transactions',datasetShopify.DataSetList).then(resultOrdersRefundsTransactionsVerify=>
+																			return numetricDataConnectorLogic.verifyCreateDatasetNumetric('orders_refunds_transactions',datasetShopify.DataSetList).then(resultOrdersRefundsTransactionsVerify=>
 																			{							
 																				resultOrder.Result.orders_refunds_transactions = {};
 																				resultOrder.Result.orders_refunds_transactions.id =  resultOrdersRefundsTransactionsVerify.Result.Id; 
 																				
-																				numetricDataConnectorLogic.verifyCreateDatasetNumetric('orders_refunds_order_adjustments',datasetShopify.DataSetList).then(resultOrdersAdjustmentsVerify=>
+																				return numetricDataConnectorLogic.verifyCreateDatasetNumetric('orders_refunds_order_adjustments',datasetShopify.DataSetList).then(resultOrdersAdjustmentsVerify=>
 																				{							
 																					resultOrder.Result.orders_refunds_order_adjustments = {};
 																					resultOrder.Result.orders_refunds_order_adjustments.id =  resultOrdersAdjustmentsVerify.Result.Id; 
 																				
-																					numetricDataConnectorLogic.verifyCreateDatasetNumetric('orders_refunds_transactions_receipt',datasetShopify.DataSetList).then(resultOrdersRefundsTransactionsReceiptVerify=>
+																					return numetricDataConnectorLogic.verifyCreateDatasetNumetric('orders_refunds_transactions_receipt',datasetShopify.DataSetList).then(resultOrdersRefundsTransactionsReceiptVerify=>
 																					{							
 																						resultOrder.Result.orders_refunds_transactions_receipt = {};
 																						resultOrder.Result.orders_refunds_transactions_receipt.id =  resultOrdersRefundsTransactionsReceiptVerify.Result.Id; 
 																																									
-																						numetricDataConnectorLogic.verifyCreateDatasetNumetric('orders_client_details',datasetShopify.DataSetList).then(resultOrdersClientDetailsVerify=>
+																						return numetricDataConnectorLogic.verifyCreateDatasetNumetric('orders_client_details',datasetShopify.DataSetList).then(resultOrdersClientDetailsVerify=>
 																						{							
 																							resultOrder.Result.orders_client_details = {};
 																							resultOrder.Result.orders_client_details.id =  resultOrdersClientDetailsVerify.Result.Id; 
 																							
-																							numetricDataConnectorLogic.verifyCreateDatasetNumetric('orders_payment_details',datasetShopify.DataSetList).then(resultOrdersPaymentDetailsVerify=>
+																							return numetricDataConnectorLogic.verifyCreateDatasetNumetric('orders_payment_details',datasetShopify.DataSetList).then(resultOrdersPaymentDetailsVerify=>
 																							{							
 																								resultOrder.Result.orders_payment_details = {};
 																								resultOrder.Result.orders_payment_details.id =  resultOrdersPaymentDetailsVerify.Result.Id; 
 																								
-																								numetricDataConnectorLogic.verifyCreateDatasetNumetric('orders_customer',datasetShopify.DataSetList).then(resultOrdersCustomerVerify=>
+																								return numetricDataConnectorLogic.verifyCreateDatasetNumetric('orders_customer',datasetShopify.DataSetList).then(resultOrdersCustomerVerify=>
 																								{							
 																									resultOrder.Result.orders_customer = {};
 																									resultOrder.Result.orders_customer.id =  resultOrdersCustomerVerify.Result.Id; 
 																									
-																									numetricDataConnectorLogic.verifyCreateDatasetNumetric('orders_customer_default_address',datasetShopify.DataSetList).then(resultOrdersCustomerDefaultAddressVerify=>
+																									return numetricDataConnectorLogic.verifyCreateDatasetNumetric('orders_customer_default_address',datasetShopify.DataSetList).then(resultOrdersCustomerDefaultAddressVerify=>
 																									{							
 																										resultOrder.Result.orders_customer_default_address = {};
 																										resultOrder.Result.orders_customer_default_address.id =  resultOrdersCustomerDefaultAddressVerify.Result.Id; 
 																										resultOrder.Result.Data = datos;
 																										ShopifyCon.sendRowsShopifyToNumetric(resultOrder.Result);
 																										
-																										resultEvent.Result.Success = true;																										
-																										console.log(resultOrder.Result);
-																										return resultEvent;
+																										//resultEvent.Result.Success = true;																										
+																																																		
+																										
+																										return ShopifyCon.sendRowsShopifyToNumetric(resultOrder.Result).then(results=>
+																										{
+																											return results;
+																										});
+				
 																									});
 																										
 																										
-																									});
+																								});
 																									
-																								});																						
-																							});																					
-																						});
+																							});																						
+																						});																					
 																					});
 																				});
-																			});																		
-																		});																	
-																	});																
-																});
-															});															
-														});
+																			});
+																		});																		
+																	});																	
+																});																
+															});
+														});															
 													});
-												});												
-											});											
-										});										
-									});
+												});
+											});												
+										});											
+									});										
 								});
 							});
-						}); 							
-					});	
+						});
+					}); 							
 				});	
-			//});   
-		//}
-//	});
-	})
-}
-
+			});	
+		}
+	});
 }
 
 
