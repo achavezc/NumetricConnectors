@@ -26,7 +26,11 @@ var syncDataRetry = function syncDataRetry(lastUpdated)
 		console.log('attempt number', number);
 
 		return syncData(lastUpdated)
-		.catch(retry);
+		.catch(err=>{
+			//aqui grabas
+			console.log(err);
+			retry(err);
+		});
 	})
 	.then(function (value) 
 	{
@@ -50,6 +54,7 @@ var syncDataRetry = function syncDataRetry(lastUpdated)
 		});
 	}, function (err) 
 	{
+		//aqui grabas si siguio el error despues de los reintentos
 		console.log(err);
 	});
 }
