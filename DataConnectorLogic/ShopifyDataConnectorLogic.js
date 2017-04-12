@@ -22,6 +22,7 @@ function getRowsShopify(inputShopify,jsonListRows,namePrincipalList){ //namesSec
 
 //METODO FINAL QUE USARE PARA CARGAR CUALQUIER DATA A SU DATASET CORRESPONDIENTE EN NUMETRIC
 var sendRowsShopifyToNumetric = function(inputsShopify){
+	var conf = new config();
 	var datasetId = "";
 	var JsonResult = {};
 	var props = Object.keys(inputsShopify.Data);

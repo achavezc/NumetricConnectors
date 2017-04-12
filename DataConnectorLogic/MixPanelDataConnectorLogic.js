@@ -21,9 +21,10 @@ var NumetricShopifyFormat = function(inputData,namePk,fieldsName){
 
 
 function updateRowsMixPanel(inputMixPanel){
+	var conf = new config();
 	var JsonResult = {};
 	JsonResult["rows"] = [];
-	var SizeListData = config.parameters().SizeListData;
+	var SizeListData = conf.parameters().SizeListData;
 	var listInputs=[];
 	
 	if(utils.isArray(inputMixPanel.Data)){
