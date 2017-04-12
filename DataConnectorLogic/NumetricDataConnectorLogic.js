@@ -42,9 +42,10 @@ var verifyCreateDatasetNumetric = function(datasetName,data,currentListDataset) 
 		        //callback(resultEvent);
 			}
 		}
-
+		
 		if(!found)
 		{
+			
 			var datasetBody = SearchDataSet(datasetName,data);
 			NumetricCon.generateDataSetNumetric(datasetBody.Data).then(res=>
 			{

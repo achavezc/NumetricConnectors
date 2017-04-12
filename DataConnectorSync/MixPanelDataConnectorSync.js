@@ -12,7 +12,7 @@ nconf.use('file', { file: '../ConfigDate/DateTimeLastSync.json' });
 var conf = new config();
 var datetime = require('node-datetime');
 var conf = new config();
-
+const utils = require("../Helper/Util")
 
 
 var options = {
@@ -31,14 +31,14 @@ var syncDataRetry = function syncDataRetry(lastUpdated)
 	promiseRetry(options,function (retry, number) {
     console.log('attempt number', number);
 
-		return syncData(lastUpdated)
-		.catch(retry);
+		return syncData(lastUpdated);
+		//.catch(retry);
 	})
 	.then(function (value) {
 		// save datetime
 		nconf.load();
 		var dt = datetime.create();
-		var fomratted = dt.format('Y/m/d');
+		var fomratted = dt.format('Y-m-d');
 		console.log(fomratted);
 		nconf.set('lastUpdateMixPanelEvent',fomratted);
 		nconf.save(function (err) {
@@ -56,37 +56,48 @@ var syncDataRetry = function syncDataRetry(lastUpdated)
 
 var syncData = function syncData(lastUpdated) 
 {
+	return syncDataEvents(lastUpdated)
+	/*
     var resultEvent = {};
     resultEvent.Result = {}
     resultEvent.Result.Success = false;
+
 	return syncDataEvents(lastUpdated).then(result=>
 			{
 				return resultEvent.Result.Success= true;
 			});     
-
+	*/
 }
 var syncDataEvents = function syncDataEvents(lastUpdated) 
 {
 	var resultEvent = {};
     resultEvent.Result = {}
     resultEvent.Result.Success = false;
-	return 	MixPanelData.getEvents(lastUpdated,function(resultEvent){	
-		  if(result.Result.Success){  
-			  if(result.Result.Data.length>0){  
-					var datasetMixPanel = MixPanelCon.generateDataSetMixPanelAux(result.Result.Data);
-					var datos = result.Result.Data;
-
-					numetricDataConnectorLogic.verifyCreateDatasetNumetric("MixPanelEvent",datasetMixPanel.DataSetList).then(resultEvent=>{
+	
+		
+	//return 	MixPanelData.getEvents(lastUpdated).then(resultEvents=>
+	return 	MixPanelData.getEvents(lastUpdated,function(resultEvents)
+	{			
+		  if(resultEvents.Result.Success)
+		  {  
+			  if(resultEvents.Result.Data.length>0)
+			  {
+					var datasetMixPanel = MixPanelCon.generateDataSetMixPanelAux(resultEvents.Result.Data);	
+					var datos = resultEvents.Result.Data;
+					utils.WriteFileTxt(JSON.stringify(datos));
+					console.log(datasetMixPanel);
+					numetricDataConnectorLogic.verifyCreateDatasetNumetric("MixPanelEvent",datasetMixPanel.DataSetList).then(resultEvents=>{
+						console.log("sssss");	
 						resultEvent.Result.MixPanelEvent = {};
 						resultEvent.Result.MixPanelEvent.id =  resultEvent.Result.Id;
 						resultEvent.Result.Data = datos;
+
 						MixPanelCon.updateRowsMixPanel(resultEvent.Result);
 						
-
 					})
 			  }
 		  }
-	});
+	})
 }
 
 

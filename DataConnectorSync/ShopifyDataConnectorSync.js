@@ -29,6 +29,7 @@ var syncDataRetry = function syncDataRetry(lastUpdated)
 		.catch(err=>{
 			//aqui grabas
 			console.log(err);
+			utils.WriteFileTxt(JSON.stringify(err));
 			retry(err);
 		});
 	})
@@ -55,6 +56,7 @@ var syncDataRetry = function syncDataRetry(lastUpdated)
 	}, function (err) 
 	{
 		//aqui grabas si siguio el error despues de los reintentos
+		utils.WriteFileTxt(JSON.stringify(err));
 		console.log(err);
 	});
 }
@@ -84,24 +86,76 @@ var syncData = function syncData(lastUpdated)
 						console.log("syncDataComments Completed");
 						return syncDataProducts(lastUpdated,currentListDataset).then(resultProducts=>
 						{
-							console.log("syncDataProducts Completed");
-							return syncDataCustomCollections(lastUpdated,currentListDataset).then(resultCustomCollections=>
-							{
-								console.log("syncDataCustomCollections Completed");
-								return syncDataOrder(lastUpdated,currentListDataset).then(resultOrder=>
-								{
-									console.log("syncDataOrder Completed");
-									return resultEvent.Result.Success= true;
+
+							return syncDataBlogs(lastUpdated,currentListDataset).then(resultBlogs=>
+							{							
+								console.log("syncDataBlogs Completed");			
+								
+								return syncDataArticles(lastUpdated,currentListDataset).then(resultArticles=>
+								{			
+									console.log("syncDataArticles Completed");	
+									return syncDataSmartCollections(lastUpdated,currentListDataset).then(resultSmartCollections=>
+									{
+										console.log("syncSmartCollections Completed");
+										
+										return syncDataOrder(lastUpdated,currentListDataset).then(resultOrder=>
+										{
+											console.log("syncDataOrder Completed");
+											return resultEvent.Result.Success= true;
+										});
+									});
 								});
-							});     
-						});
+							});
+						});     
 					});
-				
 		   });
 		});
 	});
 }
 
+var syncDataBlogs = function syncDataBlogs(lastUpdated,currentListDataset) 
+{
+	console.log("syncDataBlogs Init");
+	
+	var resultEvent = {};
+    resultEvent.Result = {}
+    resultEvent.Result.Success = false;
+	
+	return 	ShopifyData.getBlogs(lastUpdated).then(resultBlogs=>	
+	{ 
+		if(resultBlogs.Result.Success)
+		{			
+			if(resultBlogs.Result.Data.blogs.length>0)
+			{
+				var datasetShopify = ShopifyCon.NumetricShopifyFormat(resultBlogs.Result.Data,"id","blogs");
+				var datos = resultBlogs.Result.Data;
+				var datasetNames =['blogs'];
+
+				return numetricDataConnectorLogic.verifyCreateManyDatasetNumetric(datasetNames,currentListDataset,datasetShopify.DataSetList).then(resultVerify=>
+				{
+					for (var i = 0; i < resultVerify.length; i++ ) {
+						if(resultVerify[i].Result.Success){
+							resultBlogs.Result[resultVerify[i].Result.datasetName] = {};
+							resultBlogs.Result[resultVerify[i].Result.datasetName].id=resultVerify[i].Result.Id;
+						}
+					}
+					resultBlogs.Result.Data = datos;
+					return ShopifyCon.sendRowsShopifyToNumetric(resultBlogs.Result).then(results=>
+					{
+						return results;
+					});
+
+				}); 
+			} 
+		}
+		else
+		{
+				resultEvent.Result.Success = true;
+				return resultEvent;
+		}
+	})
+	
+}
 
 var syncDataCustomer = function syncDataCustomer(lastUpdated,currentListDataset) 
 {
@@ -145,6 +199,53 @@ var syncDataCustomer = function syncDataCustomer(lastUpdated,currentListDataset)
 		}
 	});
 }
+
+
+var syncDataSmartCollections = function syncDataSmartCollections(lastUpdated,currentListDataset) 
+{
+	console.log("syncDataSmartCollections Init");
+	
+	var resultEvent = {};
+    resultEvent.Result = {}
+    resultEvent.Result.Success = false;
+	
+	return 	ShopifyData.getSmartCollections(lastUpdated).then(resultSmartCollection=>		
+	{ 
+		if(resultSmartCollection.Result.Success)
+		{						
+			if(resultSmartCollection.Result.Data.smart_Collection.length>0)
+			{
+				var datasetShopify = ShopifyCon.NumetricShopifyFormat(resultSmartCollection.Result.Data,"id","smart_Collection");
+				var datos = resultSmartCollection.Result.Data;
+				var datasetNames =['smart_Collection'];
+
+				return numetricDataConnectorLogic.verifyCreateManyDatasetNumetric(datasetNames,currentListDataset,datasetShopify.DataSetList).then(resultVerify=>
+				{
+					for (var i = 0; i < resultVerify.length; i++ ) {
+						if(resultVerify[i].Result.Success){
+							resultSmartCollection.Result[resultVerify[i].Result.datasetName] = {};
+							resultSmartCollection.Result[resultVerify[i].Result.datasetName].id=resultVerify[i].Result.Id;
+						}
+					}
+					resultSmartCollection.Result.Data = datos;
+					return ShopifyCon.sendRowsShopifyToNumetric(resultSmartCollection.Result).then(results=>
+					{
+						return results;
+					});
+
+				});   
+			}
+		}
+		else
+		{
+				resultEvent.Result.Success = true;
+				return resultEvent;
+		}
+		
+	});
+}
+
+
 
 var syncDataEvents = function syncDataEvents(lastUpdated,currentListDataset) 
 {
@@ -274,6 +375,51 @@ var syncDataProducts = function syncDataProducts(lastUpdated,currentListDataset)
 	
 }
 
+
+var syncDataArticles = function syncDataArticles(lastUpdated,currentListDataset) 
+{
+	console.log("syncArticles Init");
+	
+	var resultEvent = {};
+    resultEvent.Result = {}
+    resultEvent.Result.Success = false;
+	
+	return 	ShopifyData.getArticles(lastUpdated).then(resultArticles=>																																																									//{
+	{ 
+		if(resultArticles.Result.Success)
+		{	
+			if(resultArticles.Result.Data.articles.length>0)
+			{
+				var datasetShopify = ShopifyCon.NumetricShopifyFormat(resultArticles.Result.Data,"id","articles");
+				var datos = resultArticles.Result.Data;
+				var datasetNames =['articles'];
+				return numetricDataConnectorLogic.verifyCreateManyDatasetNumetric(datasetNames,currentListDataset,datasetShopify.DataSetList).then(resultVerify=>
+				{
+					for (var i = 0; i < resultVerify.length; i++ ) {
+						if(resultVerify[i].Result.Success){
+							resultArticles.Result[resultVerify[i].Result.datasetName] = {};
+							resultArticles.Result[resultVerify[i].Result.datasetName].id=resultVerify[i].Result.Id;
+						}
+					}
+					resultArticles.Result.Data = datos;
+					return ShopifyCon.sendRowsShopifyToNumetric(resultArticles.Result).then(results=>
+					{
+						return results;
+					});
+
+				});
+			}  
+		}
+		else
+		{
+				resultEvent.Result.Success = true;
+				return resultEvent;
+		}
+	})	
+	
+}
+
+
 var syncDataCustomCollections = function syncDataCustomCollections(lastUpdated,currentListDataset) 
 {
 	console.log("syncDataCustomCollections Init");
@@ -330,11 +476,7 @@ var syncDataOrder = function syncDataOrder(lastUpdated,currentListDataset)
 		if(resultOrder.Result.Success)
 		{
 			if(resultOrder.Result.Data.orders.length>0)
-			{	
-				utils.WriteFileTxt("\r\n");
-				utils.WriteFileTxt(JSON.stringify(resultOrder));
-				utils.WriteFileTxt("\r\n");
-			
+			{
 				var datasetShopify = ShopifyCon.NumetricShopifyFormat(resultOrder.Result.Data,"id","orders");
 				var datos = resultOrder.Result.Data;	
 				var datasetNames =['orders',
@@ -375,7 +517,6 @@ var syncDataOrder = function syncDataOrder(lastUpdated,currentListDataset)
 					});
 
 				}); 
-					
 			}
 			else
 			{
@@ -390,7 +531,8 @@ var syncDataOrder = function syncDataOrder(lastUpdated,currentListDataset)
 
 module.exports = 
 {
-    syncDataRetry : syncDataRetry
+    syncDataRetry : syncDataRetry,
+	syncDataOrder : syncDataOrder
 };
 
 
