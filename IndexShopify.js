@@ -43,11 +43,11 @@ ShopifyData.getTimeZone(function(resultTimeZone)
 			lastUpdated.timezone = resultTimeZone.Result.TimeZone
 		} 
 		
-		//ShopifyDataConSync.syncDataRetry(lastUpdated);
+		ShopifyDataConSync.syncDataRetry(lastUpdated);
 	}
 });
 
-ShopifyDataConSync.syncDataOrder(lastUpdated)
+
 
 
 
