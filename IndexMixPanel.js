@@ -13,11 +13,13 @@ var nconf = require('nconf');
 nconf.use('file', { file: './ConfigDate/DateTimeLastSync.json' });
 nconf.load();
 
+var moment = require('moment-timezone');
+
 var conf = new config();
 
 
-
-
+//console.log(moment().tz("America/Los_Angeles").format("YYYY-MM-DD"));
+var dateEnd = moment().tz("America/Los_Angeles").format("YYYY-MM-DD");
 var dateInitial = "";
 if(nconf.get('lastUpdateMixPanelEvent')!= ""){
 	dateInitial = nconf.get('lastUpdateMixPanelEvent');
@@ -26,14 +28,14 @@ if(nconf.get('lastUpdateMixPanelEvent')!= ""){
 }
 
 var dt = datetime.create();
-var fomratted = dt.format('Y/m/d');
+var fomratted = dt.format('Y-m-d');
 
 
 var lastUpdated = {
-  created_at_min : dateInitial,
-  to_date : fomratted
+  from_date :  conf.parameters().initialDateTimeMixPanel,//dateInitial,
+  to_date : dateEnd//fomratted
 }
-
+console.log(lastUpdated);
 MixPanelDataConSync.syncDataRetry(lastUpdated);
 
 

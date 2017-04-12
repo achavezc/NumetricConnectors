@@ -32,11 +32,13 @@ var verifyCreateDatasetNumetric = function(datasetName,data) //callback
 		        //callback(resultEvent);
 			}
 		}
-
+		
 		if(!found)
 		{
+			
 			var datasetBody = SearchDataSet(datasetName,data);
 			if(datasetBody.Success){
+				
 				return NumetricCon.generateDataSetNumetric(datasetBody.Data).then(res=>
 				{
 					if(res.Result.Success)

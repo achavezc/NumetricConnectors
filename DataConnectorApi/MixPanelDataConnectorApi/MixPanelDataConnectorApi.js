@@ -1,6 +1,7 @@
 //   You put the mat down, and then you jump to conclusions
 module.exports = require('./lib/mixpanel');
 mixpanel = require('./lib/mixpanel');
+const rp = require('request-promise')
 const config = require("./../../Config/Config")
 var conf = new config();
 //ddss
@@ -22,26 +23,22 @@ var mx = new mixpanel({
 
 var getEvents =  function getEvents(lastUpdated,callback)
 {
-				utils.WriteFileTxt("\r\n");
-				utils.WriteFileTxt("getEvents");		
-				utils.WriteFileTxt("\r\n");
+				console.log("entro1");
 			
                 var resultEvent = {};
                 resultEvent.Result = {}
                 resultEvent.Result.Success = false;
                 resultEvent.Result.Data = [];
-
-                mx.export_data({ from_date: lastUpdated.from_date, to_date: lastUpdated.to_date }, function(res) {
+                return mx.export_data({ from_date: lastUpdated.from_date, to_date: lastUpdated.to_date }, function(res) {
                     res.on('data', function(event_object) 
 					{
-						utils.WriteFileTxt("getEvents data");	
+						
                          resultEvent.Result.Data.push(event_object);
                     });
                     res.on('end', function() {
-						utils.WriteFileTxt("getEvents end");
-						utils.WriteFileTxt("\r\n");
-						utils.WriteFileTxt(JSON.stringify(resultEvent));
-						utils.WriteFileTxt("\r\n");
+						
+						//utils.WriteFileTxt(JSON.stringify(resultEvent));
+						
                         resultEvent.Result.Success = true;
                         callback(resultEvent);
                     });
@@ -52,6 +49,8 @@ var getEvents =  function getEvents(lastUpdated,callback)
                         //return resultEvent;
                     });
                 })
+
+                
 }
 
 
