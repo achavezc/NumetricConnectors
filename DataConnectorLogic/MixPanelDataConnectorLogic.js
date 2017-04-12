@@ -23,6 +23,8 @@ var NumetricShopifyFormat = function(inputData,namePk,fieldsName){
 function updateRowsMixPanel(inputMixPanel){
 	var JsonResult = {};
 	JsonResult["rows"] = [];
+	var SizeListData = config.parameters().SizeListData;
+	var listInputs=[];
 	
 	if(utils.isArray(inputMixPanel.Data)){
 		for (var i = 0; i < inputMixPanel.Data.length; i++ ){
@@ -34,7 +36,24 @@ function updateRowsMixPanel(inputMixPanel){
 			utils.GenerateRowsFromMixPanel(row,JsonResult);
 	}
 	
-	NumetricCon.updateRowsDataSetNumetric(inputMixPanel.MixPanelEvent.id,JsonResult);
+	var dimensionList = JsonResult.rows.length;
+					var numberList= Math.ceil((dimensionList/SizeListData));
+					for (var i = 1; i < numberList+1; i++ ){
+						var start = ( i - 1 ) * SizeListData;
+						var end = (i * SizeListData)-1;
+						var segmentListRows = JsonResult.rows.slice(start,end);
+						var inputRow = {};
+						var bodyData = {};
+						bodyData.rows = segmentListRows;
+						inputRow = utils.CreateProp(inputRow,"id",inputMixPanel.MixPanelEvent.id);
+						inputRow = utils.CreateProp(inputRow,"rows",bodyData);
+						listInputs.push(inputRow);
+					}
+	
+	var actions = listInputs.map(function(input){ return NumetricCon.updateRowsDataSetNumetric(input.id,input.rows);});
+	var results = Promise.all(actions);
+	return results;
+	//NumetricCon.updateRowsDataSetNumetric(inputMixPanel.MixPanelEvent.id,JsonResult);
 }
 
 var generateDataSetMixPanelAux = function(inputMixPanel){
