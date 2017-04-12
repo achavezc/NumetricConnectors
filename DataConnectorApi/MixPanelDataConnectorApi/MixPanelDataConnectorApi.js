@@ -6,7 +6,7 @@ var conf = new config();
 //ddss
 var configMixPanel = {};
 configMixPanel.apiSecretMixPanel = undefined;
-
+const utils = require("./../../Helper/Util")
 
 
 var mx = new mixpanel({
@@ -20,18 +20,28 @@ var mx = new mixpanel({
 //}
 
 
-var getEvents =  function getEvents(lastUpdated,callback){
-               
+var getEvents =  function getEvents(lastUpdated,callback)
+{
+				utils.WriteFileTxt("\r\n");
+				utils.WriteFileTxt("getEvents");		
+				utils.WriteFileTxt("\r\n");
+			
                 var resultEvent = {};
                 resultEvent.Result = {}
                 resultEvent.Result.Success = false;
                 resultEvent.Result.Data = [];
 
                 mx.export_data({ from_date: lastUpdated.from_date, to_date: lastUpdated.to_date }, function(res) {
-                    res.on('data', function(event_object) {
+                    res.on('data', function(event_object) 
+					{
+						utils.WriteFileTxt("getEvents data");	
                          resultEvent.Result.Data.push(event_object);
                     });
                     res.on('end', function() {
+						utils.WriteFileTxt("getEvents end");
+						utils.WriteFileTxt("\r\n");
+						utils.WriteFileTxt(JSON.stringify(resultEvent));
+						utils.WriteFileTxt("\r\n");
                         resultEvent.Result.Success = true;
                         callback(resultEvent);
                     });
