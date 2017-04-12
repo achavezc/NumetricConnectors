@@ -420,26 +420,35 @@ var syncDataOrder = function syncDataOrder(lastUpdated)
 				{	
 					console.log("verifyCreateDatasetNumetric orders Completed");
 					
-					resultOrder.Result.orders = {};
-					resultOrder.Result.orders.id =  resultOrderVerify.Result.Id; 
+					if(resultOrderVerify.Result.Success)
+					{
+						resultOrder.Result.orders = {};
+						resultOrder.Result.orders.id =  resultOrderVerify.Result.Id; 
+					}
 					
 					return numetricDataConnectorLogic.verifyCreateDatasetNumetric('orders_billing_address',datasetShopify.DataSetList).then(resultOrdersBillingAddressVerify=>
 					{		
 						console.log("verifyCreateDatasetNumetric orders_billing_address Completed");
 						
-						resultOrder.Result.orders_billing_address = {};
-						resultOrder.Result.orders_billing_address.id =  resultOrdersBillingAddressVerify.Result.Id; 
+						if(resultOrdersBillingAddressVerify.Result.Success)
+						{
+							resultOrder.Result.orders_billing_address = {};
+							resultOrder.Result.orders_billing_address.id =  resultOrdersBillingAddressVerify.Result.Id; 
+						}
 						
 						return numetricDataConnectorLogic.verifyCreateDatasetNumetric('orders_shipping_address',datasetShopify.DataSetList).then(resultOrdersShippingAddressVerify=>
 						{	
 							console.log("verifyCreateDatasetNumetric orders_shipping_address Completed");
 							
-							resultOrder.Result.orders_shipping_address = {};
-							resultOrder.Result.orders_shipping_address.id =  resultOrdersShippingAddressVerify.Result.Id; 
-							
+							if(resultOrdersShippingAddressVerify.Result.Success)
+							{
+								resultOrder.Result.orders_shipping_address = {};
+								resultOrder.Result.orders_shipping_address.id =  resultOrdersShippingAddressVerify.Result.Id; 
+							}
 							return numetricDataConnectorLogic.verifyCreateDatasetNumetric('orders_discount_codes',datasetShopify.DataSetList).then(resultOrdersDiscountCodesVerify=>
 							{			
 								console.log("verifyCreateDatasetNumetric orders_discount_codes Completed");
+								
 								if(resultOrdersDiscountCodesVerify.Result.Success){
 
 									resultOrder.Result.orders_discount_codes = {};
@@ -450,127 +459,184 @@ var syncDataOrder = function syncDataOrder(lastUpdated)
 								{							
 									console.log("verifyCreateDatasetNumetric orders_note_attributes Completed");
 									
-									resultOrder.Result.orders_note_attributes = {};
-									resultOrder.Result.orders_note_attributes.id =  resultOrdersNoteAttributesVerify.Result.Id; 
-									
+									if(resultOrdersNoteAttributesVerify.Result.Success)
+									{							
+										resultOrder.Result.orders_note_attributes = {};
+										resultOrder.Result.orders_note_attributes.id =  resultOrdersNoteAttributesVerify.Result.Id; 
+									}
 									return numetricDataConnectorLogic.verifyCreateDatasetNumetric('orders_tax_lines',datasetShopify.DataSetList).then(resultOrdersTaxLinesVerify=>
 									{	
 										console.log("verifyCreateDatasetNumetric orders_tax_lines Completed");
 										
-										resultOrder.Result.orders_tax_lines = {};
-										resultOrder.Result.orders_tax_lines.id =  resultOrdersTaxLinesVerify.Result.Id; 
-										
+										if(resultOrdersTaxLinesVerify.Result.Success)
+										{
+											resultOrder.Result.orders_tax_lines = {};
+											resultOrder.Result.orders_tax_lines.id =  resultOrdersTaxLinesVerify.Result.Id; 
+										}
 										return numetricDataConnectorLogic.verifyCreateDatasetNumetric('orders_line_items',datasetShopify.DataSetList).then(resultOrdersLineItemsVerify=>
 										{				
 											console.log("verifyCreateDatasetNumetric orders_line_items Completed");
 											
-											resultOrder.Result.orders_line_items = {};
-											resultOrder.Result.orders_line_items.id =  resultOrdersLineItemsVerify.Result.Id; 
-											
+											if(resultOrdersLineItemsVerify.Result.Success)
+											{
+												resultOrder.Result.orders_line_items = {};
+												resultOrder.Result.orders_line_items.id =  resultOrdersLineItemsVerify.Result.Id; 
+											}
 											return numetricDataConnectorLogic.verifyCreateDatasetNumetric('orders_line_items_properties',datasetShopify.DataSetList).then(resultOrdersLineItemsPropertiesVerify=>
 											{		
 												console.log("verifyCreateDatasetNumetric orders_line_items_properties Completed");
-												resultOrder.Result.orders_line_items_properties = {};
-												resultOrder.Result.orders_line_items_properties.id =  resultOrdersLineItemsPropertiesVerify.Result.Id; 
 												
+												if(resultOrdersLineItemsPropertiesVerify.Result.Success)
+												{
+													resultOrder.Result.orders_line_items_properties = {};
+													resultOrder.Result.orders_line_items_properties.id =  resultOrdersLineItemsPropertiesVerify.Result.Id; 
+												}
 												return numetricDataConnectorLogic.verifyCreateDatasetNumetric('orders_shipping_lines',datasetShopify.DataSetList).then(resultOrdersShippingLinesVerify=>
 												{			
 													console.log("verifyCreateDatasetNumetric orders_shipping_lines Completed");
-													resultOrder.Result.orders_shipping_lines = {};
-													resultOrder.Result.orders_shipping_lines.id =  resultOrdersShippingLinesVerify.Result.Id; 
 													
+													if(resultOrdersShippingLinesVerify.Result.Success)
+													{
+														resultOrder.Result.orders_shipping_lines = {};
+														resultOrder.Result.orders_shipping_lines.id =  resultOrdersShippingLinesVerify.Result.Id; 
+													}
 													return numetricDataConnectorLogic.verifyCreateDatasetNumetric('orders_fulfillments',datasetShopify.DataSetList).then(resultOrdersFulfillmentsVerify=>
 													{						
 														console.log("verifyCreateDatasetNumetric orders_fulfillments Completed");
-														resultOrder.Result.orders_fulfillments = {};
-														resultOrder.Result.orders_fulfillments.id =  resultOrdersFulfillmentsVerify.Result.Id; 
 														
+														if(resultOrdersFulfillmentsVerify.Result.Success)
+														{
+															resultOrder.Result.orders_fulfillments = {};
+															resultOrder.Result.orders_fulfillments.id =  resultOrdersFulfillmentsVerify.Result.Id; 
+														}	
 														return numetricDataConnectorLogic.verifyCreateDatasetNumetric('orders_fulfillments_receipt',datasetShopify.DataSetList).then(resultOrdersFulfillmentsReceiptVerify=>
 														{		
 															console.log("verifyCreateDatasetNumetric orders_fulfillments_receipt Completed");
-															resultOrder.Result.orders_fulfillments_receipt = {};
-															resultOrder.Result.orders_fulfillments_receipt.id =  resultOrdersFulfillmentsReceiptVerify.Result.Id; 
 															
+															if(resultOrdersFulfillmentsReceiptVerify.Result.Success)
+															{
+																resultOrder.Result.orders_fulfillments_receipt = {};
+																resultOrder.Result.orders_fulfillments_receipt.id =  resultOrdersFulfillmentsReceiptVerify.Result.Id; 
+															}	
 															return numetricDataConnectorLogic.verifyCreateDatasetNumetric('orders_refunds',datasetShopify.DataSetList).then(resultOrdersRefundsVerify=>
 															{			
 																console.log("verifyCreateDatasetNumetric orders_refunds Completed");
 																
-																resultOrder.Result.orders_refunds = {};
-																resultOrder.Result.orders_refunds.id =  resultOrdersRefundsVerify.Result.Id; 
+																if(resultOrdersRefundsVerify.Result.Success)
+																{
+																	resultOrder.Result.orders_refunds = {};
+																	resultOrder.Result.orders_refunds.id =  resultOrdersRefundsVerify.Result.Id; 
+																}
 																
 																return numetricDataConnectorLogic.verifyCreateDatasetNumetric('orders_refunds_line_items',datasetShopify.DataSetList).then(resultOrdersRefundsLineItemsVerify=>
 																{		
 																	console.log("verifyCreateDatasetNumetric orders_refunds_line_items Completed");
 																	
-																	resultOrder.Result.orders_refunds_line_items = {};
-																	resultOrder.Result.orders_refunds_line_items.id =  resultOrdersRefundsLineItemsVerify.Result.Id; 
+																	if(resultOrdersRefundsLineItemsVerify.Result.Success)
+																	{
+																		resultOrder.Result.orders_refunds_line_items = {};
+																		resultOrder.Result.orders_refunds_line_items.id =  resultOrdersRefundsLineItemsVerify.Result.Id; 
+																	}
 																	
 																	return numetricDataConnectorLogic.verifyCreateDatasetNumetric('orders_refunds_line_items_line_item',datasetShopify.DataSetList).then(resultOrdersRefundsLineItemsItemVerify=>
 																	{	
 																		console.log("verifyCreateDatasetNumetric orders_refunds_line_items_line_item Completed");
-																		resultOrder.Result.orders_refunds_line_items_line_item = {};
-																		resultOrder.Result.orders_refunds_line_items_line_item.id =  resultOrdersRefundsLineItemsItemVerify.Result.Id; 
 																		
+																		if(resultOrdersRefundsLineItemsItemVerify.Result.Success)
+																		{
+																			resultOrder.Result.orders_refunds_line_items_line_item = {};
+																			resultOrder.Result.orders_refunds_line_items_line_item.id =  resultOrdersRefundsLineItemsItemVerify.Result.Id; 
+																		}	
 																		return numetricDataConnectorLogic.verifyCreateDatasetNumetric('orders_refunds_line_items_line_item_properties',datasetShopify.DataSetList).then(resultOrdersRefundsLineItemsItemPropertiesVerify=>
 																		{				
 																			console.log("verifyCreateDatasetNumetric orders_refunds_line_items_line_item_properties Completed");
-																			resultOrder.Result.orders_refunds_line_items_line_item_properties = {};
-																			resultOrder.Result.orders_refunds_line_items_line_item_properties.id =  resultOrdersRefundsLineItemsItemPropertiesVerify.Result.Id; 
-																				
+																			
+																			if(resultOrdersRefundsLineItemsItemPropertiesVerify.Result.Success)
+																			{
+																				resultOrder.Result.orders_refunds_line_items_line_item_properties = {};
+																				resultOrder.Result.orders_refunds_line_items_line_item_properties.id =  resultOrdersRefundsLineItemsItemPropertiesVerify.Result.Id; 
+																			}		
 																			return numetricDataConnectorLogic.verifyCreateDatasetNumetric('orders_refunds_line_items_line_item_tax_lines',datasetShopify.DataSetList).then(resultOrdersRefundsLineItemsItemTaxLinesVerify=>
 																			{	
 																				console.log("verifyCreateDatasetNumetric orders_refunds_line_items_line_item_tax_lines Completed");
-																				resultOrder.Result.orders_refunds_line_items_line_item_tax_lines = {};
-																				resultOrder.Result.orders_refunds_line_items_line_item_tax_lines.id =  resultOrdersRefundsLineItemsItemTaxLinesVerify.Result.Id; 
-																					
+																				
+																				if(resultOrdersRefundsLineItemsItemTaxLinesVerify.Result.Success)
+																				{
+																					resultOrder.Result.orders_refunds_line_items_line_item_tax_lines = {};
+																					resultOrder.Result.orders_refunds_line_items_line_item_tax_lines.id =  resultOrdersRefundsLineItemsItemTaxLinesVerify.Result.Id; 
+																				}
 																				return numetricDataConnectorLogic.verifyCreateDatasetNumetric('orders_refunds_transactions',datasetShopify.DataSetList).then(resultOrdersRefundsTransactionsVerify=>
 																				{	
 																					console.log("verifyCreateDatasetNumetric orders_refunds_transactions Completed");
-																					resultOrder.Result.orders_refunds_transactions = {};
-																					resultOrder.Result.orders_refunds_transactions.id =  resultOrdersRefundsTransactionsVerify.Result.Id; 
 																					
+																					if(resultOrdersRefundsTransactionsVerify.Result.Success)
+																					{
+																						resultOrder.Result.orders_refunds_transactions = {};
+																						resultOrder.Result.orders_refunds_transactions.id =  resultOrdersRefundsTransactionsVerify.Result.Id; 
+																					}	
 																					return numetricDataConnectorLogic.verifyCreateDatasetNumetric('orders_refunds_order_adjustments',datasetShopify.DataSetList).then(resultOrdersAdjustmentsVerify=>
 																					{	
 																						console.log("verifyCreateDatasetNumetric orders_refunds_order_adjustments Completed");
-																						resultOrder.Result.orders_refunds_order_adjustments = {};
-																						resultOrder.Result.orders_refunds_order_adjustments.id =  resultOrdersAdjustmentsVerify.Result.Id; 
-																					
+																						
+																						if(resultOrdersAdjustmentsVerify.Result.Success)
+																						{
+																							resultOrder.Result.orders_refunds_order_adjustments = {};
+																							resultOrder.Result.orders_refunds_order_adjustments.id =  resultOrdersAdjustmentsVerify.Result.Id; 
+																						}
 																						return numetricDataConnectorLogic.verifyCreateDatasetNumetric('orders_refunds_transactions_receipt',datasetShopify.DataSetList).then(resultOrdersRefundsTransactionsReceiptVerify=>
 																						{			
 																							console.log("verifyCreateDatasetNumetric orders_refunds_transactions_receipt Completed");
-																							resultOrder.Result.orders_refunds_transactions_receipt = {};
-																							resultOrder.Result.orders_refunds_transactions_receipt.id =  resultOrdersRefundsTransactionsReceiptVerify.Result.Id; 
-																																										
+																							
+																							if(resultOrdersRefundsTransactionsReceiptVerify.Result.Success)
+																							{
+																								resultOrder.Result.orders_refunds_transactions_receipt = {};
+																								resultOrder.Result.orders_refunds_transactions_receipt.id =  resultOrdersRefundsTransactionsReceiptVerify.Result.Id; 
+																							}
+																							
 																							return numetricDataConnectorLogic.verifyCreateDatasetNumetric('orders_client_details',datasetShopify.DataSetList).then(resultOrdersClientDetailsVerify=>
 																							{			
 																								console.log("verifyCreateDatasetNumetric orders_client_details Completed");
-																								resultOrder.Result.orders_client_details = {};
-																								resultOrder.Result.orders_client_details.id =  resultOrdersClientDetailsVerify.Result.Id; 
 																								
+																								if(resultOrdersClientDetailsVerify.Result.Success)
+																								{
+																									resultOrder.Result.orders_client_details = {};
+																									resultOrder.Result.orders_client_details.id =  resultOrdersClientDetailsVerify.Result.Id; 
+																								}
 																								return numetricDataConnectorLogic.verifyCreateDatasetNumetric('orders_payment_details',datasetShopify.DataSetList).then(resultOrdersPaymentDetailsVerify=>
 																								{							
 																									console.log("verifyCreateDatasetNumetric orders_payment_details Completed");
-																									resultOrder.Result.orders_payment_details = {};
-																									resultOrder.Result.orders_payment_details.id =  resultOrdersPaymentDetailsVerify.Result.Id; 
 																									
+																									if(resultOrdersPaymentDetailsVerify.Result.Success)
+																									{
+																										resultOrder.Result.orders_payment_details = {};
+																										resultOrder.Result.orders_payment_details.id =  resultOrdersPaymentDetailsVerify.Result.Id; 
+																									}	
 																									return numetricDataConnectorLogic.verifyCreateDatasetNumetric('orders_customer',datasetShopify.DataSetList).then(resultOrdersCustomerVerify=>
 																									{		
 																										console.log("verifyCreateDatasetNumetric orders_customer Completed");
-																										resultOrder.Result.orders_customer = {};
-																										resultOrder.Result.orders_customer.id =  resultOrdersCustomerVerify.Result.Id; 
 																										
+																										if(resultOrdersCustomerVerify.Result.Success)
+																										{
+																											resultOrder.Result.orders_customer = {};
+																											resultOrder.Result.orders_customer.id =  resultOrdersCustomerVerify.Result.Id; 
+																										}	
 																										return numetricDataConnectorLogic.verifyCreateDatasetNumetric('orders_customer_default_address',datasetShopify.DataSetList).then(resultOrdersCustomerDefaultAddressVerify=>
 																										{	
 																											console.log("verifyCreateDatasetNumetric orders_customer_default_address Completed");
-																											resultOrder.Result.orders_customer_default_address = {};
-																											resultOrder.Result.orders_customer_default_address.id =  resultOrdersCustomerDefaultAddressVerify.Result.Id; 
-																											resultOrder.Result.Data = datos;					
 																											
+																											if(resultOrdersCustomerDefaultAddressVerify.Result.Success)
+																											{
+																												resultOrder.Result.orders_customer_default_address = {};
+																												resultOrder.Result.orders_customer_default_address.id =  resultOrdersCustomerDefaultAddressVerify.Result.Id; 
+																												
+																											}
+																											
+																											resultOrder.Result.Data = datos;					
+																												
 																											return ShopifyCon.sendRowsShopifyToNumetric(resultOrder.Result).then(results=>
 																											{
 																												return results;
 																											});
-					
 																										});
 																									});
 																								});																						
