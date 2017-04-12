@@ -5,6 +5,7 @@ const MixPanelCon = require("../DataConnectorLogic/MixPanelDataConnectorLogic")
 const MixPanelData = require("../DataConnectorApi/MixPanelDataConnectorApi/MixPanelDataConnectorApi")
 const inputsMixPanel = require("../SampleData/exampleDataMixPanel")
 const inputsShopify = require("../SampleData/exampleDataShopify")
+const ShopifyCon = require("../DataConnectorLogic/ShopifyDataConnectorLogic")
 const config = require("../Config/Config")
 const promiseRetry = require('promise-retry')
 var nconf = require('nconf');
@@ -61,9 +62,9 @@ var syncData = function syncData(lastUpdated)
     resultEvent.Result.Success = false;
 	
 	return NumetricCon.getDataSetNumetric().then(currentListDataset=>{
-		return syncDataEvents(lastUpdated).then(resultEvents=>{
+		return syncDataEvents(lastUpdated,currentListDataset).then(resultEvents=>{
 			resultEvent.Result.Success = true;
-			return ResultEvent;
+			return resultEvent;
 		});
 	});
 }
@@ -76,7 +77,7 @@ var syncDataEvents = function syncDataEvents(lastUpdated,currentListDataset)
 	
 		
 	//return 	MixPanelData.getEvents(lastUpdated).then(resultEvents=>
-	return 	MixPanelData.getEvents(lastUpdated).then(resultEvents=>{
+	return 	MixPanelData.getEvents(lastUpdated).then(resultEvents=>
 	{			
 		  if(resultEvents.Result.Success)
 		  {  
@@ -85,11 +86,14 @@ var syncDataEvents = function syncDataEvents(lastUpdated,currentListDataset)
 					var datasetMixPanel = MixPanelCon.generateDataSetMixPanelAux(resultEvents.Result);	
 					var datos = resultEvents.Result.Data;
 					utils.WriteFileTxt(JSON.stringify(datos));
-					console.log(datasetMixPanel);
+					
 				  var datasetNames =['MixPanelEvent'];
-
+				console.log(datasetNames);
+				console.log(currentListDataset);
+				console.log(datasetMixPanel.DataSetList);
 				return numetricDataConnectorLogic.verifyCreateManyDatasetNumetric(datasetNames,currentListDataset,datasetMixPanel.DataSetList).then(resultVerify=>
 				{
+						console.log("ddd");
 					for (var i = 0; i < resultVerify.length; i++ ) {
 						if(resultVerify[i].Result.Success){
 							resultEvents.Result[resultVerify[i].Result.datasetName] = {};
@@ -97,7 +101,7 @@ var syncDataEvents = function syncDataEvents(lastUpdated,currentListDataset)
 						}
 					}
 					resultEvents.Result.Data = datos;
-					return ShopifyCon.updateRowsMixPanel(resultEvents.Result).then(results=>
+					return ShopifyCon.sendRowsShopifyToNumetric(resultEvents.Result).then(results=>
 					{
 						return results;
 					});

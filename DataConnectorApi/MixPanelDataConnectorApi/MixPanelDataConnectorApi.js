@@ -23,7 +23,7 @@ var mx = new mixpanel({
 
 var getEvents =  function getEvents(lastUpdated,callback)
 {
-				console.log("entro1");
+			
 			
                 var resultEvent = {};
                 resultEvent.Result = {}
