@@ -29,6 +29,7 @@ var syncDataRetry = function syncDataRetry(lastUpdated)
 		.catch(err=>{
 			//aqui grabas
 			console.log(err);
+			utils.WriteFileTxt(JSON.stringify(err));
 			retry(err);
 		});
 	})
@@ -55,6 +56,7 @@ var syncDataRetry = function syncDataRetry(lastUpdated)
 	}, function (err) 
 	{
 		//aqui grabas si siguio el error despues de los reintentos
+		utils.WriteFileTxt(JSON.stringify(err));
 		console.log(err);
 	});
 }
@@ -413,7 +415,7 @@ var syncDataOrder = function syncDataOrder(lastUpdated)
 			
 				var datasetShopify = ShopifyCon.NumetricShopifyFormat(resultOrder.Result.Data,"id","orders");
 				var datos = resultOrder.Result.Data;	
-				
+				//console.log(datasetShopify);
 				return numetricDataConnectorLogic.verifyCreateDatasetNumetric('orders',datasetShopify.DataSetList).then(resultOrderVerify=>
 				{	
 					console.log("verifyCreateDatasetNumetric orders Completed");
@@ -438,9 +440,11 @@ var syncDataOrder = function syncDataOrder(lastUpdated)
 							return numetricDataConnectorLogic.verifyCreateDatasetNumetric('orders_discount_codes',datasetShopify.DataSetList).then(resultOrdersDiscountCodesVerify=>
 							{			
 								console.log("verifyCreateDatasetNumetric orders_discount_codes Completed");
-								
-								resultOrder.Result.orders_discount_codes = {};
-								resultOrder.Result.orders_discount_codes.id =  resultOrdersDiscountCodesVerify.Result.Id; 
+								if(resultOrdersDiscountCodesVerify.Result.Success){
+
+									resultOrder.Result.orders_discount_codes = {};
+									resultOrder.Result.orders_discount_codes.id =  resultOrdersDiscountCodesVerify.Result.Id; 
+								}
 								
 								return numetricDataConnectorLogic.verifyCreateDatasetNumetric('orders_note_attributes',datasetShopify.DataSetList).then(resultOrdersNoteAttributesVerify=>
 								{							
@@ -604,7 +608,8 @@ var syncDataOrder = function syncDataOrder(lastUpdated)
 
 module.exports = 
 {
-    syncDataRetry : syncDataRetry
+    syncDataRetry : syncDataRetry,
+	syncDataOrder : syncDataOrder
 };
 
 

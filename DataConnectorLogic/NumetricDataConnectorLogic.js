@@ -36,16 +36,21 @@ var verifyCreateDatasetNumetric = function(datasetName,data) //callback
 		if(!found)
 		{
 			var datasetBody = SearchDataSet(datasetName,data);
-			return NumetricCon.generateDataSetNumetric(datasetBody.Data).then(res=>
-			{
-				if(res.Result.Success)
-				{	
-					resultEvent.Result.Id = res.Response.id;					
-				}
-				resultEvent.Result.Success = res.Result.Success;
-				//callback(resultEvent);
-		        return resultEvent;
-			});
+			if(datasetBody.Success){
+				return NumetricCon.generateDataSetNumetric(datasetBody.Data).then(res=>
+				{
+					if(res.Result.Success)
+					{	
+						resultEvent.Result.Id = res.Response.id;					
+					}
+					resultEvent.Result.Success = res.Result.Success;
+					//callback(resultEvent);
+					return resultEvent;
+				});
+			}else{
+				resultEvent.Result.Success = false;
+				return resultEvent;
+			}
 		}
 	//}
 		//return callback(resultEvent);
