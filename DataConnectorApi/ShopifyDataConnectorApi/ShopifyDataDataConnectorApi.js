@@ -103,39 +103,33 @@ var getArticles = function getArticles(lastUpdated){
     var date = toTimeZone(lastUpdated.created_at_min,lastUpdated.timezone);
     var articleList = [];
     return shopify.blog.list({ created_at_min: date}).then(function(blogs) 
-	{
+	{	
+		utils.WriteFileTxt("shopify.blog.list then");
+		utils.WriteFileTxt("\r\n");
+		utils.WriteFileTxt(utils.WriteFileTxt(JSON.stringify(blogs)));
+		utils.WriteFileTxt("\r\n");
 		
-        for(i=0; i<blogs.length;i++){
+        for(i=0; i<blogs.length;i++)
+		{
              shopify.article.list(blogs[i].id,{ created_at_min: date})
               .then(function(articles) {
                   articleList.push(articles);
              })
-        }
+        }		
 		
-		utils.WriteFileTxt("getArticles then");
-		utils.WriteFileTxt("\r\n")
-		
+		utils.WriteFileTxt("articleList");
 		utils.WriteFileTxt("\r\n");
-		utils.WriteFileTxt(JSON.stringify(blogs));
-		utils.WriteFileTxt("\r\n");
-		
-		utils.WriteFileTxt("\r\n");
-		utils.WriteFileTxt(JSON.stringify(articleList));
-		utils.WriteFileTxt("\r\n");
-			
+		utils.WriteFileTxt(utils.WriteFileTxt(JSON.stringify(articleList)));
+		utils.WriteFileTxt("\r\n");		
         resultEvent.Result.Data  = {}; 
         resultEvent.Result.Data.articles = [];
         resultEvent.Result.Data.articles = articleList;
 		resultEvent.Result.Success = true;
-        //callback(resultEvent);
+       
 		return resultEvent;
     })
     .catch(function(err) 
-	{
-		utils.WriteFileTxt("getArticles err");
-		utils.WriteFileTxt("\r\n")
-		utils.WriteFileTxt(JSON.stringify(err));
-		utils.WriteFileTxt("\r\n")
+	{		
         resultEvent.Result.Success = false;
         resultEvent.Result.Error = err;
         //callback(resultEvent);
