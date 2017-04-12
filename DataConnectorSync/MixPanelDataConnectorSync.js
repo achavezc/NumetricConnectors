@@ -5,6 +5,7 @@ const MixPanelCon = require("../DataConnectorLogic/MixPanelDataConnectorLogic")
 const MixPanelData = require("../DataConnectorApi/MixPanelDataConnectorApi/MixPanelDataConnectorApi")
 const inputsMixPanel = require("../SampleData/exampleDataMixPanel")
 const inputsShopify = require("../SampleData/exampleDataShopify")
+const ShopifyCon = require("../DataConnectorLogic/ShopifyDataConnectorLogic")
 const config = require("../Config/Config")
 const promiseRetry = require('promise-retry')
 var nconf = require('nconf');
@@ -56,19 +57,19 @@ var syncDataRetry = function syncDataRetry(lastUpdated)
 
 var syncData = function syncData(lastUpdated) 
 {
-	return syncDataEvents(lastUpdated)
-	/*
     var resultEvent = {};
     resultEvent.Result = {}
     resultEvent.Result.Success = false;
-
-	return syncDataEvents(lastUpdated).then(result=>
-			{
-				return resultEvent.Result.Success= true;
-			});     
-	*/
+	
+	return NumetricCon.getDataSetNumetric().then(currentListDataset=>{
+		return syncDataEvents(lastUpdated,currentListDataset).then(resultEvents=>{
+			resultEvent.Result.Success = true;
+			return resultEvent;
+		});
+	});
 }
-var syncDataEvents = function syncDataEvents(lastUpdated) 
+
+var syncDataEvents = function syncDataEvents(lastUpdated,currentListDataset) 
 {
 	var resultEvent = {};
     resultEvent.Result = {}
@@ -76,25 +77,36 @@ var syncDataEvents = function syncDataEvents(lastUpdated)
 	
 		
 	//return 	MixPanelData.getEvents(lastUpdated).then(resultEvents=>
-	return 	MixPanelData.getEvents(lastUpdated,function(resultEvents)
+	return 	MixPanelData.getEvents(lastUpdated).then(resultEvents=>
 	{			
 		  if(resultEvents.Result.Success)
 		  {  
 			  if(resultEvents.Result.Data.length>0)
 			  {
-					var datasetMixPanel = MixPanelCon.generateDataSetMixPanelAux(resultEvents.Result.Data);	
+					var datasetMixPanel = MixPanelCon.generateDataSetMixPanelAux(resultEvents.Result);	
 					var datos = resultEvents.Result.Data;
 					utils.WriteFileTxt(JSON.stringify(datos));
-					console.log(datasetMixPanel);
-					numetricDataConnectorLogic.verifyCreateDatasetNumetric("MixPanelEvent",datasetMixPanel.DataSetList).then(resultEvents=>{
-						console.log("sssss");	
-						resultEvent.Result.MixPanelEvent = {};
-						resultEvent.Result.MixPanelEvent.id =  resultEvent.Result.Id;
-						resultEvent.Result.Data = datos;
+					
+				  var datasetNames =['MixPanelEvent'];
+				console.log(datasetNames);
+				console.log(currentListDataset);
+				console.log(datasetMixPanel.DataSetList);
+				return numetricDataConnectorLogic.verifyCreateManyDatasetNumetric(datasetNames,currentListDataset,datasetMixPanel.DataSetList).then(resultVerify=>
+				{
+						console.log("ddd");
+					for (var i = 0; i < resultVerify.length; i++ ) {
+						if(resultVerify[i].Result.Success){
+							resultEvents.Result[resultVerify[i].Result.datasetName] = {};
+							resultEvents.Result[resultVerify[i].Result.datasetName].id=resultVerify[i].Result.Id;
+						}
+					}
+					resultEvents.Result.Data = datos;
+					return ShopifyCon.sendRowsShopifyToNumetric(resultEvents.Result).then(results=>
+					{
+						return results;
+					});
 
-						MixPanelCon.updateRowsMixPanel(resultEvent.Result);
-						
-					})
+				}); 
 			  }
 		  }
 	})

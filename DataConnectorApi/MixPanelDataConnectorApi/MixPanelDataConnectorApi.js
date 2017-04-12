@@ -23,33 +23,33 @@ var mx = new mixpanel({
 
 var getEvents =  function getEvents(lastUpdated,callback)
 {
-				console.log("entro1");
+			
 			
                 var resultEvent = {};
                 resultEvent.Result = {}
                 resultEvent.Result.Success = false;
                 resultEvent.Result.Data = [];
-                return mx.export_data({ from_date: lastUpdated.from_date, to_date: lastUpdated.to_date }, function(res) {
-                    res.on('data', function(event_object) 
-					{
-						
+	
+		return new Promise(function(sendData,sendCatch) {
+			
+                 mx.export_data({ from_date: lastUpdated.from_date, to_date: lastUpdated.to_date }, function(res) {
+                    res.on('data', function(event_object){		
                          resultEvent.Result.Data.push(event_object);
                     });
-                    res.on('end', function() {
-						
-						//utils.WriteFileTxt(JSON.stringify(resultEvent));
-						
+                    res.on('end', function() {		
+			//utils.WriteFileTxt(JSON.stringify(resultEvent));
                         resultEvent.Result.Success = true;
-                        callback(resultEvent);
+                        sendData(resultEvent);
                     });
                     res.on('error', function(err) {
                         resultEvent.Result.Success = false;
                         resultEvent.Result.Error = err;
+			sendCatch(resultEvent);
                         //callback(resultEvent);
                         //return resultEvent;
                     });
                 })
-
+		});
                 
 }
 

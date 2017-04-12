@@ -104,26 +104,36 @@ var getArticles = function getArticles(lastUpdated){
     var articleList = [];
     return shopify.blog.list({ created_at_min: date}).then(function(blogs) 
 	{	
-		/*
+		
 		utils.WriteFileTxt("shopify.blog.list then");
 		utils.WriteFileTxt("\r\n");
 		utils.WriteFileTxt(utils.WriteFileTxt(JSON.stringify(blogs)));
 		utils.WriteFileTxt("\r\n");
 		
-		*/
+		utils.WriteFileTxt("blogs length:"+ blogs.length);
+		utils.WriteFileTxt("\r\n");
+		
+		
         for(i=0; i<blogs.length;i++)
 		{
+			utils.WriteFileTxt("\r\n");
+			utils.WriteFileTxt("blogs list: "+ i);
+			utils.WriteFileTxt("\r\n");
              shopify.article.list(blogs[i].id,{ created_at_min: date})
-              .then(function(articles) {
-                  articleList.push(articles);
+              .then(function(articles) 
+			  {
+				utils.WriteFileTxt("\r\n");
+				utils.WriteFileTxt(utils.WriteFileTxt(JSON.stringify(articles)));
+				utils.WriteFileTxt("\r\n");
+                articleList.push(articles);
              })
         }		
-		/*
-		utils.WriteFileTxt("articleList");
+		
+		utils.WriteFileTxt("articles length:"+ articleList.length);
 		utils.WriteFileTxt("\r\n");
 		utils.WriteFileTxt(utils.WriteFileTxt(JSON.stringify(articleList)));
 		utils.WriteFileTxt("\r\n");		
-		*/
+		
         resultEvent.Result.Data  = {}; 
         resultEvent.Result.Data.articles = [];
         resultEvent.Result.Data.articles = articleList;
@@ -147,13 +157,7 @@ var getCustomCollections = function getCustomCollections(lastUpdated)
     resultEvent.Result.Success = false;
     var date = toTimeZone(lastUpdated.created_at_min,lastUpdated.timezone);
     return shopify.customCollection.list({ created_at_min: date}).then(function(customCollections) 
-	{			
-		utils.WriteFileTxt("\r\n");
-		utils.WriteFileTxt("getCustomCollections then");
-		utils.WriteFileTxt("\r\n")
-		utils.WriteFileTxt(JSON.stringify(customCollections));
-		utils.WriteFileTxt("\r\n")
-		
+	{	
         resultEvent.Result.Data  = {}; 
         resultEvent.Result.Data.custom_collection = [];
         resultEvent.Result.Data.custom_collection = customCollections;
@@ -235,13 +239,83 @@ var getCustomers = function getCustomers(lastUpdated) {
     .catch(function(err) {
         //console.log("mal");
         resultEvent.Result.Success = false;
-        resultEvent.Result.Error = err;
-		utils.WriteFileTxt("getCustomers error");
-		utils.WriteFileTxt(err.message);
+        resultEvent.Result.Error = err;		
 	 return resultEvent;
         //callback(resultEvent);
     });
 }
+
+
+var getTransactions = function getTransactions(lastUpdated) 
+{	
+	utils.WriteFileTxt("\r\n");
+	utils.WriteFileTxt("getTransactions api");
+	utils.WriteFileTxt("\r\n");
+			
+    var resultEvent = {};
+    resultEvent.Result = {}
+    resultEvent.Result.Success = false;
+    var date = toTimeZone(lastUpdated.created_at_min,lastUpdated.timezone);
+	
+	var transactionList = [];
+	
+	return shopify.order.list({ created_at_min: date}).then(function(orders) 
+	{
+        for(i=0; i<orders.length;i++)
+		{
+             shopify.transaction.list(orders[i].id,{ created_at_min: date})
+              .then(function(transactions) 
+			  {			
+				utils.WriteFileTxt("\r\n");
+				utils.WriteFileTxt("Agregó Tx");
+				utils.WriteFileTxt("\r\n");			
+                transactionList.push(transactions);
+             })
+        }		
+				
+		utils.WriteFileTxt("\r\n");
+		utils.WriteFileTxt(utils.WriteFileTxt(JSON.stringify(transactionList)));
+		utils.WriteFileTxt("\r\n");		
+		
+        resultEvent.Result.Data  = {}; 
+        resultEvent.Result.Data.transactions = [];
+        resultEvent.Result.Data.transactions = transactionsList;
+		resultEvent.Result.Success = true;
+		
+		utils.WriteFileTxt("\r\n");
+		utils.WriteFileTxt(utils.WriteFileTxt(JSON.stringify(resultEvent)));
+		utils.WriteFileTxt("\r\n");	
+		
+       
+		return resultEvent;
+    })
+    .catch(function(err) {
+        resultEvent.Result.Success = false;
+        resultEvent.Result.Error = err;
+        //callback(resultEvent);
+		return resultEvent;
+    });
+	
+	
+    return shopify.transaction.list({ created_at_min: date})
+    .then(function(transactions) 
+	{
+        resultEvent.Result.Data = {};
+        resultEvent.Result.Data.transactions = [];
+        resultEvent.Result.Data.transactions = transactions;		
+        resultEvent.Result.Success = true;
+        return resultEvent;
+    })
+    .catch(function(err) 
+	{
+        console.log(err);		
+        resultEvent.Result.Success = false;
+        resultEvent.Result.Error = err;
+        return resultEvent;
+    });
+}
+
+
 
 /*
 var getCustomerAddress = function getCustomerAddress(lastUpdated,callback) {
@@ -284,46 +358,7 @@ var getCustomerAddress = function getCustomerAddress(lastUpdated,callback) {
 */
 
 /*
-var getTransactions = function getTransactions(lastUpdated,callback) 
-{
-	
-	utils.WriteFileTxt("\r\n");
-	utils.WriteFileTxt("getTransactions entró");
-	utils.WriteFileTxt("\r\n");
-	
-    var resultEvent = {};
-    resultEvent.Result = {}
-    resultEvent.Result.Success = false;
-    var date = toTimeZone(lastUpdated.created_at_min,lastUpdated.timezone);
-    shopify.transaction.list({ created_at_min: date})
-    .then(function(transactions) 
-	{
-		utils.WriteFileTxt("\r\n");
-		utils.WriteFileTxt("getTransactions then");
-		utils.WriteFileTxt("\r\n")
-		utils.WriteFileTxt(JSON.stringify(transactions));
-		utils.WriteFileTxt("\r\n")
-		
-        resultEvent.Result.Data = {};
-        resultEvent.Result.Data.transactions = [];
-        resultEvent.Result.Data.transactions = transactions;
-		
-        resultEvent.Result.Success = true;
-        callback(resultEvent);
-    })
-    .catch(function(err) 
-	{
-        console.log(err);
-		utils.WriteFileTxt("\r\n");
-		utils.WriteFileTxt("getTransactions err");
-		utils.WriteFileTxt("\r\n")
-		utils.WriteFileTxt(err.message);
-		utils.WriteFileTxt("\r\n")
-        resultEvent.Result.Success = false;
-        resultEvent.Result.Error = err;
-        callback(resultEvent);
-    });
-}
+
 */
 
 
@@ -334,12 +369,6 @@ var getSmartCollections = function getSmartCollections(lastUpdated) {
     var date = toTimeZone(lastUpdated.created_at_min,lastUpdated.timezone);
     return shopify.smartCollection.list({ created_at_min: date}).then(function(smartCollections) 
 	{
-        utils.WriteFileTxt("\r\n");
-		utils.WriteFileTxt("getSmartCollections then");
-		utils.WriteFileTxt("\r\n")
-		utils.WriteFileTxt(JSON.stringify(smartCollections));
-		utils.WriteFileTxt("\r\n")
-		
         resultEvent.Result.Data  = {}; 
         resultEvent.Result.Data.smart_collection = [];
         resultEvent.Result.Data.smart_collection = smartCollections;
@@ -349,7 +378,6 @@ var getSmartCollections = function getSmartCollections(lastUpdated) {
     })
     .catch(function(err) 
 	{
-		utils.WriteFileTxt("getSmartCollections err");
 		resultEvent.Result.Success = false;
         resultEvent.Result.Error = err;
         //callback(resultEvent);
@@ -398,7 +426,7 @@ module.exports = {
     getCustomCollections : getCustomCollections,
 	getBlogs:getBlogs,
     //getCustomerAddress : getCustomerAddress,
-    //getTransactions : getTransactions,
+    getTransactions : getTransactions,
     getSmartCollections : getSmartCollections
 
 };

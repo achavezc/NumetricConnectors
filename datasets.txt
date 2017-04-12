@@ -3,14 +3,42 @@
 
 
 
+[{"id":94147657,"handle":"news","title":"News","updated_at":"2017-03-30T04:38:16-11:00","commentable":"moderate","feedburner":"","feedburner_location":"http://feedproxy.google.com/","created_at":"2017-03-26T17:32:29-11:00","template_suffix":null,"tags":""}]shopify.blog.list then
 
-getSmartCollections then
+
+
+
+
+
+Antes syncDataTransactions
+getTransactions api
+
+
+
+
+
+
+
+
 []
+Despues syncDataTransactions
+
+Agregó Tx
+
+
+
+
+Agregó Tx
 
 
 
 
 
-getCustomCollections then
-[{"id":366773193,"handle":"frontpage","title":"Summer Collections","updated_at":"2017-04-12T08:14:02-11:00","body_html":"<p>Aliquam tincidunt condimentum sem maximus facilisis. Nullam interdum sollicitudin congue. Nulla aliquet turpis at ex sollicitudin, ac commodo massa finibus. Proin finibus dui in ultricies lobortis. Quisque nec tellus lacus. Aenean mollis ultricies ornare. Quisque lacinia velit tristique mauris consectetur, ac congue risus gravida. Suspendisse tristique id nibh pellentesque commodo.</p>\r\n<p>Quisque iaculis ligula ac orci mollis, condimentum pharetra neque volutpat. Praesent eleifend varius lacus id ullamcorper. Aenean venenatis convallis mauris nec tristique. Curabitur efficitur, erat non lobortis lacinia, ante nulla lobortis nibh, eu tincidunt felis tortor sed lacus. Nunc porttitor hendrerit viverra. Aliquam aliquet enim ac odio euismod dignissim pellentesque et quam. Aliquam eleifend, tortor vitae vehicula pharetra, dui tellus egestas ligula, nec accumsan massa turpis non mi. Etiam non tristique lectus, ac vehicula nunc. Donec vestibulum neque velit, eu porttitor nisi consequat pharetra. Pellentesque semper quam at varius ornare. Donec sed sem in diam vehicula condimentum sed eu nunc. Aliquam cursus fringilla molestie. Vivamus et mauris finibus, molestie metus a, egestas lectus. Nullam pretium quam ut efficitur commodo. Phasellus consectetur volutpat sapien, id pretium neque laoreet id. Nullam quis placerat mi.</p>","published_at":"2017-03-26T17:32:00-11:00","sort_order":"best-selling","template_suffix":null,"published_scope":"global","image":{"created_at":"2017-03-30T04:51:45-11:00","src":"https://cdn.shopify.com/s/files/1/1879/3543/collections/summer_shop.jpg?v=1490889105"}}]
 
+
+
+
+Agregó Tx
+
+
+Agregó Tx
