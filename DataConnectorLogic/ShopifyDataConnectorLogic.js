@@ -4,7 +4,7 @@ const config = require("../Config/Config")
 const utils = require("../Helper/Util")
 const datasetsShopify = require("../Model/datasetsShopify")
 const NumetricCon = require("../DataConnectorApi/NumetricDataConnectorApi/NumetricDataConnectorApi")
-
+var conf = new config();
 
 var NumetricShopifyFormat = function(inputData,namePk,fieldsName){
 	return utils.GenerateDataSetsNumetricFromShopify(inputData,"Shopify",namePk,fieldsName);
@@ -26,7 +26,7 @@ var sendRowsShopifyToNumetric = function(inputsShopify){
 	var JsonResult = {};
 	var props = Object.keys(inputsShopify.Data);
 	var nameParent;
-	var SizeListData = config.parameters().SizeListData;
+	var SizeListData = conf.parameters().SizeListData;
 	
 	if(props.length>0){
 		nameParent = props[0]; 

@@ -2,8 +2,8 @@
 
 
 
-
-[{"id":94147657,"handle":"news","title":"News","updated_at":"2017-03-30T04:38:16-11:00","commentable":"moderate","feedburner":"","feedburner_location":"http://feedproxy.google.com/","created_at":"2017-03-26T17:32:29-11:00","template_suffix":null,"tags":""}]shopify.blog.list then
+shopify.blog.list then
+[{"id":94147657,"handle":"news","title":"News","updated_at":"2017-03-30T04:38:16-11:00","commentable":"moderate","feedburner":"","feedburner_location":"http://feedproxy.google.com/","created_at":"2017-03-26T17:32:29-11:00","template_suffix":null,"tags":""}]
 
 
 
@@ -11,8 +11,9 @@
 
 
 Antes syncDataTransactions
-getTransactions api
 
+
+getTransactions api
 
 
 
@@ -23,22 +24,46 @@ getTransactions api
 []
 Despues syncDataTransactions
 
-Agregó Tx
+
+
+shopify.blog.list then[{"id":94147657,"handle":"news","title":"News","updated_at":"2017-03-30T04:38:16-11:00","commentable":"moderate","feedburner":"","feedburner_location":"http://feedproxy.google.com/","created_at":"2017-03-26T17:32:29-11:00","template_suffix":null,"tags":""}]
+
+
+
+
+
+
+Antes syncDataTransactions
+
+
+
+getTransactions api
+
+
+
+
+
+[]Despues syncDataTransactions
+
+
+
+
+
+
+
+
 
 
 
 
 Agregó Tx
 
+Agregó TxAgregó Tx
 
 
 
 
 
-
-
-
-Agregó Tx
 
 
 Agregó Tx
