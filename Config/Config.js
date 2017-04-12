@@ -4,6 +4,7 @@ var keyUser='rJuUQBduBXsQGUN9AWmeUgC1SmYBKWISj8FTVrNzjZM%3D';
 
 
 config.prototype.parameters = function(data){ return {
+	SizeListData: 1000,
 	keyUser: keyUser,
 	apiSecretMixPanel: '447e92839ec3755e52b7c559ebe15d31',
 	shopNameShopify : 'alshopping',
