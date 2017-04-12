@@ -56,19 +56,19 @@ var syncDataRetry = function syncDataRetry(lastUpdated)
 
 var syncData = function syncData(lastUpdated) 
 {
-	return syncDataEvents(lastUpdated)
-	/*
     var resultEvent = {};
     resultEvent.Result = {}
     resultEvent.Result.Success = false;
-
-	return syncDataEvents(lastUpdated).then(result=>
-			{
-				return resultEvent.Result.Success= true;
-			});     
-	*/
+	
+	return NumetricCon.getDataSetNumetric().then(currentListDataset=>{
+		return syncDataEvents(lastUpdated).then(resultEvents=>{
+			resultEvent.Result.Success = true;
+			return ResultEvent;
+		});
+	});
 }
-var syncDataEvents = function syncDataEvents(lastUpdated) 
+
+var syncDataEvents = function syncDataEvents(lastUpdated,currentListDataset) 
 {
 	var resultEvent = {};
     resultEvent.Result = {}
@@ -76,25 +76,33 @@ var syncDataEvents = function syncDataEvents(lastUpdated)
 	
 		
 	//return 	MixPanelData.getEvents(lastUpdated).then(resultEvents=>
-	return 	MixPanelData.getEvents(lastUpdated,function(resultEvents)
+	return 	MixPanelData.getEvents(lastUpdated).then(resultEvents=>{
 	{			
 		  if(resultEvents.Result.Success)
 		  {  
 			  if(resultEvents.Result.Data.length>0)
 			  {
-					var datasetMixPanel = MixPanelCon.generateDataSetMixPanelAux(resultEvents.Result.Data);	
+					var datasetMixPanel = MixPanelCon.generateDataSetMixPanelAux(resultEvents.Result);	
 					var datos = resultEvents.Result.Data;
 					utils.WriteFileTxt(JSON.stringify(datos));
 					console.log(datasetMixPanel);
-					numetricDataConnectorLogic.verifyCreateDatasetNumetric("MixPanelEvent",datasetMixPanel.DataSetList).then(resultEvents=>{
-						console.log("sssss");	
-						resultEvent.Result.MixPanelEvent = {};
-						resultEvent.Result.MixPanelEvent.id =  resultEvent.Result.Id;
-						resultEvent.Result.Data = datos;
+				  var datasetNames =['MixPanelEvent'];
 
-						MixPanelCon.updateRowsMixPanel(resultEvent.Result);
-						
-					})
+				return numetricDataConnectorLogic.verifyCreateManyDatasetNumetric(datasetNames,currentListDataset,datasetMixPanel.DataSetList).then(resultVerify=>
+				{
+					for (var i = 0; i < resultVerify.length; i++ ) {
+						if(resultVerify[i].Result.Success){
+							resultEvents.Result[resultVerify[i].Result.datasetName] = {};
+							resultEvents.Result[resultVerify[i].Result.datasetName].id=resultVerify[i].Result.Id;
+						}
+					}
+					resultEvents.Result.Data = datos;
+					return ShopifyCon.updateRowsMixPanel(resultEvents.Result).then(results=>
+					{
+						return results;
+					});
+
+				}); 
 			  }
 		  }
 	})
