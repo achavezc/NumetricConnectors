@@ -42,13 +42,15 @@ var sendRowsShopifyToNumetric = function(inputsShopify){
 			if(utils.isInclude(props,property)){
 				if(inputsShopify[property].id !== ''){
 					
-					var dimensionList = JsonResult[property].length;
+					var dimensionList = JsonResult[property].rows.length;
 					var numberList= Math.ceil((dimensionList/SizeListData));
 					for (var i = 1; i < numberList+1; i++ ){
 						var start = ( i - 1 ) * SizeListData;
 						var end = (i * SizeListData)-1;
-						var segmentListRows = JsonResult[property].slice(start,end);
+						var segmentListRows = JsonResult[property].rows.slice(start,end);
 						var inputRow = {};
+						var bodyData = {};
+						bodyData.rows = segmentListRows;
 						inputRow = utils.CreateProp(inputRow,"id",inputsShopify[property].id);
 						inputRow = utils.CreateProp(inputRow,"rows",segmentListRows);
 						listInputs.push(inputRow);
