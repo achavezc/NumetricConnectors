@@ -323,12 +323,13 @@ var getTransactions = function getTransactions(lastUpdated,callback)
 }
 */
 
+
 var getSmartCollections = function getSmartCollections(lastUpdated) {
     var resultEvent = {};
     resultEvent.Result = {}
     resultEvent.Result.Success = false;
     var date = toTimeZone(lastUpdated.created_at_min,lastUpdated.timezone);
-    shopify.smartCollection.list({ created_at_min: date}).then(function(smartCollections) 
+    return shopify.smartCollection.list({ created_at_min: date}).then(function(smartCollections) 
 	{
         
         resultEvent.Result.Data  = {}; 
@@ -350,6 +351,34 @@ var getSmartCollections = function getSmartCollections(lastUpdated) {
 
 
 
+
+var getBlogs = function getBlogs (lastUpdated) 
+{
+    var resultEvent = {};
+    resultEvent.Result = {}
+    resultEvent.Result.Success = false;
+    var date = toTimeZone(lastUpdated.created_at_min,lastUpdated.timezone);
+    return shopify.blog.list({ created_at_min: date}).then(function(blogs) 
+	{		
+        resultEvent.Result.Data  = {}; 
+        resultEvent.Result.Data.blogs = [];
+        resultEvent.Result.Data.blogs = blogs
+		resultEvent.Result.Success = true;		
+		
+        //callback(resultEvent);
+		return resultEvent;
+    })
+    .catch(function(err)
+	{		
+        resultEvent.Result.Success = false;
+        resultEvent.Result.Error = err;
+        //callback(resultEvent);
+		return resultEvent;
+    });
+}
+
+
+
 module.exports = {
     getTimeZone : getTimeZone,
 	getCustomers : getCustomers,
@@ -359,6 +388,7 @@ module.exports = {
     getProducts : getProducts,
     getArticles : getArticles,
     getCustomCollections : getCustomCollections,
+	getBlogs:getBlogs,
     //getCustomerAddress : getCustomerAddress,
     //getTransactions : getTransactions,
     getSmartCollections : getSmartCollections
