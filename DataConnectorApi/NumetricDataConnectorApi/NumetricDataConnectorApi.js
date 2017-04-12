@@ -61,9 +61,8 @@ var generateDataSetNumetric = function(data){
 	});*/
 }
 
-var updateRowsDataSetNumetric = function(datasetId,data){
-
-	console.log(datasetId);
+var updateRowsDataSetNumetric = function(datasetId,data)
+{
 	var conf = new config(datasetId);
 	var resultEvent = {};
     resultEvent.Result = {}

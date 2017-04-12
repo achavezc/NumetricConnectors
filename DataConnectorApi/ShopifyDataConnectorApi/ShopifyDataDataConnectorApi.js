@@ -104,11 +104,13 @@ var getArticles = function getArticles(lastUpdated){
     var articleList = [];
     return shopify.blog.list({ created_at_min: date}).then(function(blogs) 
 	{	
+		/*
 		utils.WriteFileTxt("shopify.blog.list then");
 		utils.WriteFileTxt("\r\n");
 		utils.WriteFileTxt(utils.WriteFileTxt(JSON.stringify(blogs)));
 		utils.WriteFileTxt("\r\n");
 		
+		*/
         for(i=0; i<blogs.length;i++)
 		{
              shopify.article.list(blogs[i].id,{ created_at_min: date})
@@ -116,11 +118,12 @@ var getArticles = function getArticles(lastUpdated){
                   articleList.push(articles);
              })
         }		
-		
+		/*
 		utils.WriteFileTxt("articleList");
 		utils.WriteFileTxt("\r\n");
 		utils.WriteFileTxt(utils.WriteFileTxt(JSON.stringify(articleList)));
 		utils.WriteFileTxt("\r\n");		
+		*/
         resultEvent.Result.Data  = {}; 
         resultEvent.Result.Data.articles = [];
         resultEvent.Result.Data.articles = articleList;
@@ -145,9 +148,15 @@ var getCustomCollections = function getCustomCollections(lastUpdated)
     var date = toTimeZone(lastUpdated.created_at_min,lastUpdated.timezone);
     return shopify.customCollection.list({ created_at_min: date}).then(function(customCollections) 
 	{			
+		utils.WriteFileTxt("\r\n");
+		utils.WriteFileTxt("getCustomCollections then");
+		utils.WriteFileTxt("\r\n")
+		utils.WriteFileTxt(JSON.stringify(customCollections));
+		utils.WriteFileTxt("\r\n")
+		
         resultEvent.Result.Data  = {}; 
-        resultEvent.Result.Data.custom_Collection = [];
-        resultEvent.Result.Data.custom_Collection = customCollections;
+        resultEvent.Result.Data.custom_collection = [];
+        resultEvent.Result.Data.custom_collection = customCollections;
 		resultEvent.Result.Success = true;		
         //callback(resultEvent);
 		return resultEvent;
@@ -325,10 +334,15 @@ var getSmartCollections = function getSmartCollections(lastUpdated) {
     var date = toTimeZone(lastUpdated.created_at_min,lastUpdated.timezone);
     return shopify.smartCollection.list({ created_at_min: date}).then(function(smartCollections) 
 	{
-        
+        utils.WriteFileTxt("\r\n");
+		utils.WriteFileTxt("getSmartCollections then");
+		utils.WriteFileTxt("\r\n")
+		utils.WriteFileTxt(JSON.stringify(smartCollections));
+		utils.WriteFileTxt("\r\n")
+		
         resultEvent.Result.Data  = {}; 
-        resultEvent.Result.Data.smart_Collection = [];
-        resultEvent.Result.Data.smart_Collection = smartCollections;
+        resultEvent.Result.Data.smart_collection = [];
+        resultEvent.Result.Data.smart_collection = smartCollections;
 		resultEvent.Result.Success = true;
         //callback(resultEvent);
 		return resultEvent;

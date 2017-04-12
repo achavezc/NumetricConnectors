@@ -19,29 +19,32 @@ var options = {
 
 var syncDataRetry = function syncDataRetry(lastUpdated) 
 {	
-	console.log("syncDataRetry");
-
 	promiseRetry(options,function (retry, number) 
 	{
-		console.log('attempt number', number);
-
+		console.log('Started Sync Shopify Data attempt number: '+ number);
+		
 		return syncData(lastUpdated)
-		.catch(err=>{
-			//aqui grabas
+		.catch(err=>
+		{
+			console.log('Error Sync Shopify Data: '+ err);
+			
+			/*
 			console.log(err);
 			utils.WriteFileTxt(JSON.stringify(err));
 			retry(err);
+			*/
 		});
 	})
 	.then(function (value) 
 	{
-		console.log('syncDataRetry completed');
-		// save datetime
+		console.log('Completed Sync Shopify Data');
+				
+		// save Last DateTime Sync
+		
 		nconf.load();
 		
 		var dt = datetime.create();
 		var fomratted = dt.format('m/d/Y H:M:S');
-		console.log(fomratted);
 		nconf.set('lastUpdateShopify',fomratted);
 		
 		nconf.save(function (err) 
@@ -51,63 +54,59 @@ var syncDataRetry = function syncDataRetry(lastUpdated)
 				console.error(err.message);
 				return;
 			}
-			console.log('Shopify last updated saved successfully.');
+			//console.log('Shopify last updated saved successfully.');
 		});
 	}, function (err) 
 	{
 		//aqui grabas si siguio el error despues de los reintentos
-		utils.WriteFileTxt(JSON.stringify(err));
-		console.log(err);
+		console.log('Error Sync Shopify Data:'+ err);
 	});
 }
 
 var syncData = function syncData(lastUpdated) 
-{
-	console.log(lastUpdated);
-	
-	console.log("syncData");
-	
+{	
     var resultEvent = {};
     resultEvent.Result = {}
     resultEvent.Result.Success = false;
 
-    return NumetricCon.getDataSetNumetric().then(currentListDataset=>{
-
+    return NumetricCon.getDataSetNumetric().then(currentListDataset=>
+	{	
 		 return syncDataCustomer(lastUpdated,currentListDataset).then(resultCustome=>
 		 {
-			console.log("syncDataCustomer Completed");
-			
 			return syncDataEvents(lastUpdated,currentListDataset).then(resultEvents=>
 			{
-				console.log("syncDataEvents Completed");
-				
-					return syncDataComments(lastUpdated,currentListDataset).then(resultComments=>
+				//console.log("Started Sync Shopify Events Data");
+						
+				return syncDataComments(lastUpdated,currentListDataset).then(resultComments=>
+				{
+					//console.log("Completed Sync Shopify Events Data");
+					
+					return syncDataProducts(lastUpdated,currentListDataset).then(resultProducts=>
 					{
-						console.log("syncDataComments Completed");
-						return syncDataProducts(lastUpdated,currentListDataset).then(resultProducts=>
-						{
-
-							return syncDataBlogs(lastUpdated,currentListDataset).then(resultBlogs=>
-							{							
-								console.log("syncDataBlogs Completed");			
-								
-								return syncDataArticles(lastUpdated,currentListDataset).then(resultArticles=>
-								{			
-									console.log("syncDataArticles Completed");	
-									return syncDataSmartCollections(lastUpdated,currentListDataset).then(resultSmartCollections=>
+						return syncDataBlogs(lastUpdated,currentListDataset).then(resultBlogs=>
+						{							
+							//console.log("syncDataBlogs Completed");			
+							
+							return syncDataArticles(lastUpdated,currentListDataset).then(resultArticles=>
+							{			
+								//console.log("syncDataArticles Completed");	
+								return syncDataSmartCollections(lastUpdated,currentListDataset).then(resultSmartCollections=>
+								{
+									return syncDataCustomCollections(lastUpdated,currentListDataset).then(resultCustomCollections=>
 									{
-										console.log("syncSmartCollections Completed");
+										//console.log("syncCustomCollections Completed");
 										
 										return syncDataOrder(lastUpdated,currentListDataset).then(resultOrder=>
 										{
-											console.log("syncDataOrder Completed");
+											//console.log("syncDataOrder Completed");
 											return resultEvent.Result.Success= true;
 										});
 									});
 								});
 							});
-						});     
-					});
+						});
+					});     
+				});
 		   });
 		});
 	});
@@ -115,8 +114,8 @@ var syncData = function syncData(lastUpdated)
 
 var syncDataBlogs = function syncDataBlogs(lastUpdated,currentListDataset) 
 {
-	console.log("syncDataBlogs Init");
-	
+	console.log("Started Sync Shopify Blog Data");
+		
 	var resultEvent = {};
     resultEvent.Result = {}
     resultEvent.Result.Success = false;
@@ -140,6 +139,9 @@ var syncDataBlogs = function syncDataBlogs(lastUpdated,currentListDataset)
 						}
 					}
 					resultBlogs.Result.Data = datos;
+					
+					console.log("Shopify Blog Data to Sync: "+ resultBlogs.Result.Data.blogs.length);
+					
 					return ShopifyCon.sendRowsShopifyToNumetric(resultBlogs.Result).then(results=>
 					{
 						return results;
@@ -159,17 +161,18 @@ var syncDataBlogs = function syncDataBlogs(lastUpdated,currentListDataset)
 
 var syncDataCustomer = function syncDataCustomer(lastUpdated,currentListDataset) 
 {
-	console.log("syncDataCustomer Init");
+	console.log("Started Sync Shopify Customer Data");	
 	
 	var resultEvent = {};
     resultEvent.Result = {}
     resultEvent.Result.Success = false;
 
 	return 	ShopifyData.getCustomers(lastUpdated).then(resultCustomer=>
-	{ 		
-			
+	{ 				
 		if(resultCustomer.Result.Success)
-		{					
+		{	
+			console.log("Shopify Customer Data to Sync: "+ resultCustomer.Result.Data.customers.length);
+			
 			if(resultCustomer.Result.Data.customers.length>0)
 			{		
 				var datasetShopify = ShopifyCon.NumetricShopifyFormat(resultCustomer.Result.Data,"id","customers");
@@ -185,8 +188,11 @@ var syncDataCustomer = function syncDataCustomer(lastUpdated,currentListDataset)
 						}
 					}
 					resultCustomer.Result.Data = datos;
+									
+					
 					return ShopifyCon.sendRowsShopifyToNumetric(resultCustomer.Result).then(results=>
 					{
+						console.log("Completed Sync Shopify Customer Data");
 						return results;
 					});
 
@@ -203,8 +209,8 @@ var syncDataCustomer = function syncDataCustomer(lastUpdated,currentListDataset)
 
 var syncDataSmartCollections = function syncDataSmartCollections(lastUpdated,currentListDataset) 
 {
-	console.log("syncDataSmartCollections Init");
-	
+	console.log("Started Sync Shopify Smart Collections Data");
+
 	var resultEvent = {};
     resultEvent.Result = {}
     resultEvent.Result.Success = false;
@@ -212,13 +218,15 @@ var syncDataSmartCollections = function syncDataSmartCollections(lastUpdated,cur
 	return 	ShopifyData.getSmartCollections(lastUpdated).then(resultSmartCollection=>		
 	{ 
 		if(resultSmartCollection.Result.Success)
-		{						
-			if(resultSmartCollection.Result.Data.smart_Collection.length>0)
-			{
-				var datasetShopify = ShopifyCon.NumetricShopifyFormat(resultSmartCollection.Result.Data,"id","smart_Collection");
+		{					
+			console.log("Shopify Smart Collections Data to Sync: "+ resultSmartCollection.Result.Data.smart_collection.length);
+			
+			if(resultSmartCollection.Result.Data.smart_collection.length>0)
+			{			
+				var datasetShopify = ShopifyCon.NumetricShopifyFormat(resultSmartCollection.Result.Data,"id","smart_collection");
 				var datos = resultSmartCollection.Result.Data;
-				var datasetNames =['smart_Collection'];
-
+				var datasetNames =['smart_collection'];				
+				
 				return numetricDataConnectorLogic.verifyCreateManyDatasetNumetric(datasetNames,currentListDataset,datasetShopify.DataSetList).then(resultVerify=>
 				{
 					for (var i = 0; i < resultVerify.length; i++ ) {
@@ -230,6 +238,7 @@ var syncDataSmartCollections = function syncDataSmartCollections(lastUpdated,cur
 					resultSmartCollection.Result.Data = datos;
 					return ShopifyCon.sendRowsShopifyToNumetric(resultSmartCollection.Result).then(results=>
 					{
+						console.log("Completed Sync Shopify Smart Collections Data");
 						return results;
 					});
 
@@ -248,9 +257,7 @@ var syncDataSmartCollections = function syncDataSmartCollections(lastUpdated,cur
 
 
 var syncDataEvents = function syncDataEvents(lastUpdated,currentListDataset) 
-{
-	console.log("syncDataEvents Init");
-	
+{	
 	var resultEvent = {};
     resultEvent.Result = {}
     resultEvent.Result.Success = false;
@@ -292,8 +299,6 @@ var syncDataEvents = function syncDataEvents(lastUpdated,currentListDataset)
 
 var syncDataComments = function syncDataComments(lastUpdated,currentListDataset) 
 {
-	console.log("syncDataComments Init");
-
 	var resultEvent = {};
     resultEvent.Result = {}
     resultEvent.Result.Success = false;
@@ -334,7 +339,6 @@ var syncDataComments = function syncDataComments(lastUpdated,currentListDataset)
 
 var syncDataProducts = function syncDataProducts(lastUpdated,currentListDataset) 
 {
-	console.log("syncDataProducts Init");
 	
 	var resultEvent = {};
     resultEvent.Result = {}
@@ -378,8 +382,6 @@ var syncDataProducts = function syncDataProducts(lastUpdated,currentListDataset)
 
 var syncDataArticles = function syncDataArticles(lastUpdated,currentListDataset) 
 {
-	console.log("syncArticles Init");
-	
 	var resultEvent = {};
     resultEvent.Result = {}
     resultEvent.Result.Success = false;
@@ -422,7 +424,8 @@ var syncDataArticles = function syncDataArticles(lastUpdated,currentListDataset)
 
 var syncDataCustomCollections = function syncDataCustomCollections(lastUpdated,currentListDataset) 
 {
-	console.log("syncDataCustomCollections Init");
+	
+	console.log("Started Sync Shopify Custom Collections Data");
 	
 	var resultEvent = {};
     resultEvent.Result = {}
@@ -431,12 +434,15 @@ var syncDataCustomCollections = function syncDataCustomCollections(lastUpdated,c
 	return 	ShopifyData.getCustomCollections(lastUpdated).then(resultCustomCollection=>		
 	{ 
 		if(resultCustomCollection.Result.Success)
-		{						
-			if(resultCustomCollection.Result.Data.custom_Collection.length>0)
+		{		
+		
+			console.log("Shopify Smart Collections Data to Sync: "+ resultCustomCollection.Result.Data.custom_collection.length);
+			
+			if(resultCustomCollection.Result.Data.custom_collection.length>0)
 			{
-				var datasetShopify = ShopifyCon.NumetricShopifyFormat(resultCustomCollection.Result.Data,"id","custom_Collection");
+				var datasetShopify = ShopifyCon.NumetricShopifyFormat(resultCustomCollection.Result.Data,"id","custom_collection");
 				var datos = resultCustomCollection.Result.Data;
-				var datasetNames =['custom_Collection'];
+				var datasetNames =['custom_collection'];
 				return numetricDataConnectorLogic.verifyCreateManyDatasetNumetric(datasetNames,currentListDataset,datasetShopify.DataSetList).then(resultVerify=>
 				{
 					for (var i = 0; i < resultVerify.length; i++ ) {
@@ -448,6 +454,7 @@ var syncDataCustomCollections = function syncDataCustomCollections(lastUpdated,c
 					resultCustomCollection.Result.Data = datos;
 					return ShopifyCon.sendRowsShopifyToNumetric(resultCustomCollection.Result).then(results=>
 					{
+						console.log("Completed Sync Shopify Custom Collections Data");
 						return results;
 					});
 
@@ -465,7 +472,6 @@ var syncDataCustomCollections = function syncDataCustomCollections(lastUpdated,c
 
 var syncDataOrder = function syncDataOrder(lastUpdated,currentListDataset) 
 {
-	console.log("syncDataOrder Init");
 	
 	var resultEvent = {};
     resultEvent.Result = {}
@@ -531,8 +537,7 @@ var syncDataOrder = function syncDataOrder(lastUpdated,currentListDataset)
 
 module.exports = 
 {
-    syncDataRetry : syncDataRetry,
-	syncDataOrder : syncDataOrder
+    syncDataRetry : syncDataRetry
 };
 
 
