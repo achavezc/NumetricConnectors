@@ -9,26 +9,36 @@ const NumetricCon = require("../DataConnectorApi/NumetricDataConnectorApi/Numetr
 var conf = new config();
 
 
+var verifyCreateManyDatasetNumetric = function(arrDataSetNames,currentListDataSet,dataSetBodys){
+	var actions = arrDataSetNames.map(function(input){ return verifyCreateDatasetNumetric(input,dataSetBodys,currentListDataSet);});
+	var results = Promise.all(actions);
+	return results;
+}
 
-var verifyCreateDatasetNumetric = function(datasetName,data) //callback
+
+var verifyCreateDatasetNumetric = function(datasetName,data,currentListDataset) //callback
 {	
 	var found = false;
 	var resultEvent = {};
     resultEvent["Result"] = {}
     resultEvent.Result["Success"] = false;
+    resultEvent.Result["datasetName"] = datasetName;
 	resultEvent.Result["Id"] = '';
 
-	return NumetricCon.getDataSetNumetric().then(result=>
-	{ 
+	//return NumetricCon.getDataSetNumetric().then(result=>{
+	return new Promise(function(sendDataSetId,sendCatch) {
+	 
 	//if(result.Result.Success==false){
-		for (var i = 0; i < result.Response.length; i++ )
+		for (var i = 0; i < currentListDataset.Response.length; i++ )
 		{
-			if(result.Response[i].name==datasetName)
+			if(currentListDataset.Response[i].name==datasetName)
 			{										
 				found=true;
-				resultEvent.Result.Id = result.Response[i].id;
+				resultEvent.Result.Id = currentListDataset.Response[i].id;
 				resultEvent.Result.Success = true;
-				return resultEvent
+  						sendDataSetId(resultEvent);
+				//});
+				//return resultEvent
 		        //callback(resultEvent);
 			}
 		}
@@ -36,7 +46,7 @@ var verifyCreateDatasetNumetric = function(datasetName,data) //callback
 		if(!found)
 		{
 			var datasetBody = SearchDataSet(datasetName,data);
-			return NumetricCon.generateDataSetNumetric(datasetBody.Data).then(res=>
+			NumetricCon.generateDataSetNumetric(datasetBody.Data).then(res=>
 			{
 				if(res.Result.Success)
 				{	
@@ -44,11 +54,16 @@ var verifyCreateDatasetNumetric = function(datasetName,data) //callback
 				}
 				resultEvent.Result.Success = res.Result.Success;
 				//callback(resultEvent);
-		        return resultEvent;
+		        //return resultEvent;
+		        sendDataSetId(resultEvent);
+			})
+			.catch(err=>{
+				sendCatch(err);
 			});
 		}
 	//}
 		//return callback(resultEvent);
+		sendDataSetId(resultEvent);
 	});
 }
 
@@ -77,5 +92,5 @@ var SearchDataSet = function(datsetName,dataSetList){
 
 module.exports=
 {	
-	verifyCreateDatasetNumetric : verifyCreateDatasetNumetric
+	verifyCreateManyDatasetNumetric : verifyCreateManyDatasetNumetric
 }
