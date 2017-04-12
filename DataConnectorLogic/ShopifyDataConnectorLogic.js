@@ -44,7 +44,7 @@ var sendRowsShopifyToNumetric = function(inputsShopify){
 					
 					var dimensionList = JsonResult[property].length;
 					var numberList= Math.ceil((dimensionList/SizeListData));
-					for (var i = 0; i < numberList; i++ ){
+					for (var i = 1; i < numberList+1; i++ ){
 						var start = ( i - 1 ) * SizeListData;
 						var end = (i * SizeListData)-1;
 						var segmentListRows = JsonResult[property].slice(start,end);
