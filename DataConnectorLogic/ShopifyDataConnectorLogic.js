@@ -52,7 +52,7 @@ var sendRowsShopifyToNumetric = function(inputsShopify){
 						var bodyData = {};
 						bodyData.rows = segmentListRows;
 						inputRow = utils.CreateProp(inputRow,"id",inputsShopify[property].id);
-						inputRow = utils.CreateProp(inputRow,"rows",segmentListRows);
+						inputRow = utils.CreateProp(inputRow,"rows",bodyData);
 						listInputs.push(inputRow);
 					}
 				}
