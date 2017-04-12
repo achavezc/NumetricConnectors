@@ -26,6 +26,8 @@ var sendRowsShopifyToNumetric = function(inputsShopify){
 	var JsonResult = {};
 	var props = Object.keys(inputsShopify.Data);
 	var nameParent;
+	var SizeListData = config.parameters().SizeListData;
+	
 	if(props.length>0){
 		nameParent = props[0]; 
 	}
@@ -39,10 +41,18 @@ var sendRowsShopifyToNumetric = function(inputsShopify){
 		for(var property in JsonResult){
 			if(utils.isInclude(props,property)){
 				if(inputsShopify[property].id !== ''){
-					var inputRow = {};
-					inputRow = utils.CreateProp(inputRow,"id",inputsShopify[property].id);
-					inputRow = utils.CreateProp(inputRow,"rows",JsonResult[property]);
-					listInputs.push(inputRow);
+					
+					var dimensionList = JsonResult[property].length;
+					var numberList= Math.ceil((dimensionList/SizeListData));
+					for (var i = 0; i < numberList; i++ ){
+						var start = ( i - 1 ) * SizeListData;
+						var end = (i * SizeListData)-1;
+						var segmentListRows = JsonResult[property].slice(start,end);
+						var inputRow = {};
+						inputRow = utils.CreateProp(inputRow,"id",inputsShopify[property].id);
+						inputRow = utils.CreateProp(inputRow,"rows",segmentListRows);
+						listInputs.push(inputRow);
+					}
 				}
 			}
 		}
