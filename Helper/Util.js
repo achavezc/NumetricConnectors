@@ -104,14 +104,19 @@ var GetDefaultValue = function (type) {
 }
 
 var formatField = function(NameField,ValueField){
+
 	var BodyJson = {};
 	var dataType = ObtenerTipoDatoJsonObject(ValueField);
+	
 	var defaultValue = GetDefaultValue(dataType);
+	
 	BodyJson = CreateProp(BodyJson,"field",NameField);
 	BodyJson = CreateProp(BodyJson,"displayName",NameField);
 	BodyJson = CreateProp(BodyJson,"autocomplete",false);
 	BodyJson = CreateProp(BodyJson,"type",dataType);
+	
 	if(dataType !=='string'){BodyJson = CreateProp(BodyJson,"default",defaultValue)};
+	
 	return BodyJson;
 }
 
@@ -148,6 +153,7 @@ var props = Object.keys(inputJson);
 	for ( var prop in inputJson ) {
 
 	    if(isArray(inputJson[prop])) {
+			
 	    	//se usuara para cuando se obtenga los rows
 	    	//for (var i = 0; i < inputJson[prop].length; i++ ){GenerarFieldListDataSetNumetric(inputJson[prop][i],fieldsName,baseJson,count);}
 	    	if(inputJson[prop].length>0){
@@ -162,13 +168,16 @@ var props = Object.keys(inputJson);
 	    		}
 	    	}
 	    } else if(isJsonObject(inputJson[prop])){
+			
 	    	//if is an JsonObject try generate a particular dataset for him
 	    	GenerarFieldListDataSetNumetric(inputJson[prop],fieldsName+"_"+prop,baseJson,foreignKeyName,foreignKeyValue,true);
 	    }
 	    else {
+			
 	    	baseJson[fieldsNameActual].push(formatField(prop,inputJson[prop]));
 	    }
 	}
+	
 
 	if(fkName !==null && fkValue !== null){
 		baseJson[fieldsNameActual].push(formatField(fkName,fkValue));
@@ -218,7 +227,11 @@ var JsonFieldsList = {};
 var fieldsName = "fields";
 var count =0;
 
+var categories = ["MixPanel"];
+
+
 GenerarFieldListDataSetNumetric(inputDataMixPanel, fieldsName, JsonFieldsList,count,null,null,false);
+
 count =0;
 
 	for(var element in JsonFieldsList){
@@ -227,6 +240,7 @@ count =0;
 		DataSet = CreateProp(DataSet,"name","MixPanelEvent");
 		DataSet = CreateProp(DataSet,"fields",JsonFieldsList[element]);
 		DataSet = CreateProp(DataSet,"primaryKey","distinct_id");
+		DataSet = CreateProp(DataSet,"categories",categories); 
 	    DataSet = CreateProp(DataSet,"description","MixPanel Event");
 	    JsonResult["DataSetList"].push(DataSet);
 	}

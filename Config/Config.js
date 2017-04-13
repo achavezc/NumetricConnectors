@@ -68,7 +68,7 @@ config.prototype.parameters = function(data){ return {
 	operations:[{
       run: function (value) {
         var d = new Date(value);
-        var n = d.toISOString();
+        var n =  d.toISOString();
         return n;
       },
       on: "time"
@@ -78,17 +78,17 @@ config.prototype.parameters = function(data){ return {
 	"event":"$.event",
 	"distinct_id":"$.properties.distinct_id",
 	"time":"$.properties.time",
-	"origin":"$.properties.origin",
-	"origin_referrer":"$.properties.origin_referrer",
+	//"origin":"$.properties.origin",
+	//"origin_referrer":"$.properties.origin_referrer",
 	"initial_referring_domain":"$.properties.$initial_referring_domain",
 	"referrer":"$.properties.$referrer",
 	"initial_referrer":"$.properties.$initial_referrer",
 	"referring_domain":"$.properties.$referring_domain",
 	"os":"$.properties.$os",
-	"origin_domain":"$.properties.origin_domain",
-	"tab":"$.properties.tab",
+	//"origin_domain":"$.properties.origin_domain",
+	//"tab":"$.properties.tab",
 	"browser":"$.properties.$browser",
-	"Project ID":"$.properties.Project ID",
+	//"Project ID":"$.properties.Project ID",
 	"mp_country_code":"$.properties.mp_country_code"
 	}
 }

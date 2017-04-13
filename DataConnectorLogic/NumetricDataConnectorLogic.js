@@ -45,9 +45,10 @@ var verifyCreateDatasetNumetric = function(datasetName,data,currentListDataset) 
 		
 		if(!found)
 		{			
+
+			
 			var datasetBody = SearchDataSet(datasetName,data);
 			
-			console.log("Started Create Shopify "+ datasetName + " Dataset");
 			
 			NumetricCon.generateDataSetNumetric(datasetBody.Data).then(res=>
 			{

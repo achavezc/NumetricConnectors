@@ -10,14 +10,16 @@ const datasetsMixPanel = require("../Model/datasetsMixPanel")
 function NumetricMixPanelFormat(inputData,namePk,fieldsName)
 {
 	var conf = new config();
-	return  mapper.transform(inputData, conf.parameters().templateMixPanelEvents, conf.parameters().operations);
+	//return  mapper.transform(inputData, conf.parameters().plantillaJsonDestino, conf.parameters().operations);
+	var result = mapper.transform(inputData, conf.parameters().plantillaJsonDestino, conf.operations);
+    return result[""];
 }
 
-/*
+
 var NumetricShopifyFormat = function(inputData,namePk,fieldsName){
-	return utils.GenerateDataSetsNumetricFromShopify(inputData,"Shopify",namePk,fieldsName);
+	return utils.GenerateDataSetsNumetricFromShopify(inputData,"MixPanel",namePk,fieldsName);
 }
-*/
+
 
 
 function updateRowsMixPanel(inputMixPanel){
@@ -59,17 +61,23 @@ function updateRowsMixPanel(inputMixPanel){
 
 var generateDataSetMixPanelAux = function(inputMixPanel){
 
-var conf = new config();
+
 var inputData;
+var conf = new config();
+
 if(utils.isArray(inputMixPanel.Data)){
-	inputData = inputMixPanel[0];
+    
+	inputData = inputMixPanel.Data[0];
 }else{
 	inputData = inputMixPanel;
 }
 
+
 var finalFormatMixPanel = NumetricMixPanelFormat(inputData);
+
+
 var datasetmixpanel = utils.GenerateDataSetsNumetricFromMixPanel(finalFormatMixPanel);
-//console.log(datasetmixpanel.DataSetList[0])
+
  return datasetmixpanel;
 } 
 

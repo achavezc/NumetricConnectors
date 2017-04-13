@@ -85,15 +85,10 @@ var syncDataEvents = function syncDataEvents(lastUpdated,currentListDataset)
 			  {
 					var datasetMixPanel = MixPanelCon.generateDataSetMixPanelAux(resultEvents.Result);	
 					var datos = resultEvents.Result.Data;
-					utils.WriteFileTxt(JSON.stringify(datos));
-					
 				  var datasetNames =['MixPanelEvent'];
-				console.log(datasetNames);
-				console.log(currentListDataset);
-				console.log(datasetMixPanel.DataSetList);
 				return numetricDataConnectorLogic.verifyCreateManyDatasetNumetric(datasetNames,currentListDataset,datasetMixPanel.DataSetList).then(resultVerify=>
 				{
-						console.log("ddd");
+					
 					for (var i = 0; i < resultVerify.length; i++ ) {
 						if(resultVerify[i].Result.Success){
 							resultEvents.Result[resultVerify[i].Result.datasetName] = {};
