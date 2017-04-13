@@ -29,7 +29,7 @@ else
 
 var lastUpdated = 
 {
-  created_at_min : dateInitial,
+  created_at_min : conf.parameters().initialDateTimeShopify, //dateInitial,
   timezone :conf.parameters().timezone 
 }
 
@@ -46,9 +46,12 @@ ShopifyData.getTimeZone(function(resultTimeZone)
 		ShopifyDataConSync.syncDataRetry(lastUpdated);
 	}
 });
-
-
-
+/*
+ return NumetricCon.getDataSetNumetric().then(currentListDataset=>
+	{	
+		ShopifyDataConSync.syncDataCustomer(lastUpdated,currentListDataset);
+	})
+*/
 
 
 

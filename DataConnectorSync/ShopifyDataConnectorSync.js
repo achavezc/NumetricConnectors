@@ -65,46 +65,48 @@ var syncDataRetry = function syncDataRetry(lastUpdated)
 
 var syncData = function syncData(lastUpdated) 
 {	
+	var lstDataSet = []
     var resultEvent = {};
     resultEvent.Result = {}
     resultEvent.Result.Success = false;
 
     return NumetricCon.getDataSetNumetric().then(currentListDataset=>
 	{	
-		 return syncDataCustomer(lastUpdated,currentListDataset).then(resultCustome=>
+		var lstDataSet = currentListDataset
+		 return syncDataCustomer(lastUpdated,lstDataSet).then(resultCustome=>
 		 {
-			return syncDataEvents(lastUpdated,currentListDataset).then(resultEvents=>
+			return syncDataEvents(lastUpdated,lstDataSet).then(resultEvents=>
 			{
 				//console.log("Started Sync Shopify Events Data");
 						
-				return syncDataComments(lastUpdated,currentListDataset).then(resultComments=>
+				return syncDataComments(lastUpdated,lstDataSet).then(resultComments=>
 				{
 					//console.log("Completed Sync Shopify Events Data");
 					
-					return syncDataProducts(lastUpdated,currentListDataset).then(resultProducts=>
+					return syncDataProducts(lastUpdated,lstDataSet).then(resultProducts=>
 					{
-						return syncDataBlogs(lastUpdated,currentListDataset).then(resultBlogs=>
+						return syncDataBlogs(lastUpdated,lstDataSet).then(resultBlogs=>
 						{							
 							//console.log("syncDataBlogs Completed");			
 							
-							return syncDataArticles(lastUpdated,currentListDataset).then(resultArticles=>
+							return syncDataArticles(lastUpdated,lstDataSet).then(resultArticles=>
 							{			
 								//console.log("syncDataArticles Completed");	
-								return syncDataSmartCollections(lastUpdated,currentListDataset).then(resultSmartCollections=>
+								return syncDataSmartCollections(lastUpdated,lstDataSet).then(resultSmartCollections=>
 								{
-									return syncDataCustomCollections(lastUpdated,currentListDataset).then(resultCustomCollections=>
+									return syncDataCustomCollections(lastUpdated,lstDataSet).then(resultCustomCollections=>
 									{
 										utils.WriteFileTxt("\r\n");
 										utils.WriteFileTxt("Antes syncDataTransactions");
 										utils.WriteFileTxt("\r\n");
 										
-										return syncDataTransactions(lastUpdated,currentListDataset).then(resultTransactions=>
+										return syncDataTransactions(lastUpdated,lstDataSet).then(resultTransactions=>
 										{				
 											utils.WriteFileTxt("\r\n");
 											utils.WriteFileTxt("Despues syncDataTransactions");
 											utils.WriteFileTxt("\r\n");
 										
-											return syncDataOrder(lastUpdated,currentListDataset).then(resultOrder=>
+											return syncDataOrder(lastUpdated,lstDataSet).then(resultOrder=>
 											{
 												//console.log("syncDataOrder Completed");
 												return resultEvent.Result.Success= true;
@@ -187,9 +189,11 @@ var syncDataCustomer = function syncDataCustomer(lastUpdated,currentListDataset)
 				var datasetShopify = ShopifyCon.NumetricShopifyFormat(resultCustomer.Result.Data,"id","customers");
 				var datos = resultCustomer.Result.Data;
 				var datasetNames =['customers','customers_addresses','customers_default_address'];
-
+				
+				
 				return numetricDataConnectorLogic.verifyCreateManyDatasetNumetric(datasetNames,currentListDataset,datasetShopify.DataSetList).then(resultVerify=>
 				{
+					
 					for (var i = 0; i < resultVerify.length; i++ ) {
 						if(resultVerify[i].Result.Success){
 							resultCustomer.Result[resultVerify[i].Result.datasetName] = {};
@@ -588,7 +592,8 @@ var syncDataTransactions = function syncDataProducts(lastUpdated,currentListData
 
 module.exports = 
 {
-    syncDataRetry : syncDataRetry
+    syncDataRetry : syncDataRetry,
+	syncDataCustomer: syncDataCustomer
 };
 
 

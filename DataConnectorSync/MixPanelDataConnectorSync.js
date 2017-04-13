@@ -96,6 +96,7 @@ var syncDataEvents = function syncDataEvents(lastUpdated,currentListDataset)
 						}
 					}
 					resultEvents.Result.Data = datos;
+					//utils.WriteFileTxt(JSON.stringify(resultEvents.Result));
 					return ShopifyCon.sendRowsShopifyToNumetric(resultEvents.Result).then(results=>
 					{
 						return results;
