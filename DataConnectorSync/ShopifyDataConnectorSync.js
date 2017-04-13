@@ -26,13 +26,7 @@ var syncDataRetry = function syncDataRetry(lastUpdated)
 		return syncData(lastUpdated)
 		.catch(err=>
 		{
-			console.log('Error Sync Shopify Data: '+ err);
-			
-			/*
-			console.log(err);
-			utils.WriteFileTxt(JSON.stringify(err));
-			retry(err);
-			*/
+			console.log('Error Sync Shopify Data: '+ err);				
 		});
 	})
 	.then(function (value) 
@@ -54,7 +48,7 @@ var syncDataRetry = function syncDataRetry(lastUpdated)
 				console.error(err.message);
 				return;
 			}
-			//console.log('Shopify last updated saved successfully.');
+			console.log('Shopify last updated saved successfully.');
 		});
 	}, function (err) 
 	{
@@ -97,13 +91,13 @@ var syncData = function syncData(lastUpdated)
 									return syncDataCustomCollections(lastUpdated,lstDataSet).then(resultCustomCollections=>
 									{
 										utils.WriteFileTxt("\r\n");
-										utils.WriteFileTxt("Antes syncDataTransactions");
+										utils.WriteFileTxt("Before syncDataTransactions");
 										utils.WriteFileTxt("\r\n");
 										
 										return syncDataTransactions(lastUpdated,lstDataSet).then(resultTransactions=>
 										{				
 											utils.WriteFileTxt("\r\n");
-											utils.WriteFileTxt("Despues syncDataTransactions");
+											utils.WriteFileTxt("After syncDataTransactions");
 											utils.WriteFileTxt("\r\n");
 										
 											return syncDataOrder(lastUpdated,lstDataSet).then(resultOrder=>

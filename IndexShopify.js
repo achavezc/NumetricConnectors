@@ -8,49 +8,66 @@ const utils = require("./Helper/Util")
 const ShopifyDataConSync = require("./DataConnectorSync/ShopifyDataConnectorSync")
 const promiseRetry = require('promise-retry')
 var conf = new config();
-//const format = require("node.date-time");
 var datetime = require('node-datetime');
-var nconf = require('nconf');
-nconf.use('file', { file: './ConfigDate/DateTimeLastSync.json' });
-nconf.load();
+var cron = require('node-cron');
+
+var shopifyJobFrequency = conf.parameters().shopifyJobFrequency ;
 
 
-
-var dateInitial = "";
-
-if(nconf.get('lastUpdateShopify')!= "")
+var onJobStarted = function()
 {
-	dateInitial = nconf.get('lastUpdateShopify');
-}
-else
-{
-	dateInitial = conf.parameters().initialDateTimeShopify;
-}
+	var nconf = require('nconf');
+	nconf.use('file', { file: './ConfigDate/DateTimeLastSync.json' });
+	nconf.load();
 
-var lastUpdated = 
-{
-  created_at_min : conf.parameters().initialDateTimeShopify, //dateInitial,
-  timezone :conf.parameters().timezone 
-}
+    var date = new Date();
+    console.log('Job started on \t' + date);
+	
+	var dateInitial = "";
 
-//'01/06/2017 4:52:48 PM',
-ShopifyData.getTimeZone(function(resultTimeZone)
-{	
-	if(resultTimeZone.Result.Success) 
+	if(nconf.get('lastUpdateShopify')!= "")
 	{
-		if(resultTimeZone.Result.TimeZone != "")
-		{
-			lastUpdated.timezone = resultTimeZone.Result.TimeZone
-		} 
-		
-		ShopifyDataConSync.syncDataRetry(lastUpdated);
+		dateInitial = nconf.get('lastUpdateShopify');
 	}
-});
-/*
- return NumetricCon.getDataSetNumetric().then(currentListDataset=>
+	else
+	{
+		dateInitial = conf.parameters().initialDateTimeShopify;
+	}
+
+	var lastUpdated = 
+	{
+	  created_at_min : conf.parameters().initialDateTimeShopify, //dateInitial,
+	  timezone :conf.parameters().timezone 
+	}
+
+	//'01/06/2017 4:52:48 PM',
+
+	ShopifyData.getTimeZone(function(resultTimeZone)
 	{	
-		ShopifyDataConSync.syncDataCustomer(lastUpdated,currentListDataset);
-	})
+		if(resultTimeZone.Result.Success) 
+		{
+			if(resultTimeZone.Result.TimeZone != "")
+			{
+				lastUpdated.timezone = resultTimeZone.Result.TimeZone
+			} 
+			
+			ShopifyDataConSync.syncDataRetry(lastUpdated);
+		}
+	});
+	
+    return;
+};
+
+
+cron.schedule(shopifyJobFrequency, onJobStarted);
+
+
+/*
+return NumetricCon.getDataSetNumetric().then(currentListDataset=>
+{	
+	ShopifyDataConSync.syncDataCustomer(lastUpdated,currentListDataset);
+})
+
 */
 
 

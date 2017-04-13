@@ -40,7 +40,7 @@ var syncDataRetry = function syncDataRetry(lastUpdated)
 		nconf.load();
 		var dt = datetime.create();
 		var fomratted = dt.format('Y-m-d');
-		console.log(fomratted);
+		//console.log(fomratted);
 		nconf.set('lastUpdateMixPanelEvent',fomratted);
 		nconf.save(function (err) {
 			if (err) {

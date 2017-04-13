@@ -10,7 +10,8 @@ config.prototype.parameters = function(data){ return {
 	shopNameShopify : 'alshopping',
     apiKeyShopify : '1d27b7ede1453ec10bfa360eab134478',
     passwordShopify : 'ef0a6f9c267ff5498d1db4aae742273d',
-
+	shopifyJobFrequency : '* * * * *',
+	mixPanelJobFrequency : '* * * * *',
 	initialDateTimeMixPanel:'2017-04-10',
 	initialDateTimeShopify:'01/01/2017 4:52:48 PM',
 	retriesCount: 1,

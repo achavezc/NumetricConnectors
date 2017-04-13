@@ -9,33 +9,47 @@ const config = require("./Config/Config")
 const MixPanelDataConSync = require("./DataConnectorSync/MixPanelDataConnectorSync")
 const promiseRetry = require('promise-retry')
 var datetime = require('node-datetime');
-var nconf = require('nconf');
-nconf.use('file', { file: './ConfigDate/DateTimeLastSync.json' });
-nconf.load();
-
-var moment = require('moment-timezone');
-
 var conf = new config();
+var cron = require('node-cron');
+
+var mixPanelJobFrequency = conf.parameters().mixPanelJobFrequency ;
 
 
-//console.log(moment().tz("America/Los_Angeles").format("YYYY-MM-DD"));
-var dateEnd = moment().tz("America/Los_Angeles").format("YYYY-MM-DD");
-var dateInitial = "";
-if(nconf.get('lastUpdateMixPanelEvent')!= ""){
-	dateInitial = nconf.get('lastUpdateMixPanelEvent');
-}else{
-	dateInitial = conf.parameters().initialDateTimeMixPanel;
-}
+var onJobStarted = function()
+{
+	var nconf = require('nconf');
+	nconf.use('file', { file: './ConfigDate/DateTimeLastSync.json' });
+	nconf.load();
 
-var dt = datetime.create();
-var fomratted = dt.format('Y-m-d');
+	var date = new Date();
+	var moment = require('moment-timezone');
+	
+    console.log('Job started on \t' + date);
+	
+	//console.log(moment().tz("America/Los_Angeles").format("YYYY-MM-DD"));
+	var dateEnd = moment().tz("America/Los_Angeles").format("YYYY-MM-DD");
+	var dateInitial = "";
+	if(nconf.get('lastUpdateMixPanelEvent')!= ""){
+		dateInitial = nconf.get('lastUpdateMixPanelEvent');
+	}else{
+		dateInitial = conf.parameters().initialDateTimeMixPanel;
+	}
+
+	var dt = datetime.create();
+	var fomratted = dt.format('Y-m-d');
 
 
-var lastUpdated = {
-  from_date :  conf.parameters().initialDateTimeMixPanel,//dateInitial,
-  to_date : dateEnd//fomratted
-}
-console.log(lastUpdated);
-MixPanelDataConSync.syncDataRetry(lastUpdated);
+	var lastUpdated = {
+	  from_date :  conf.parameters().initialDateTimeMixPanel,//dateInitial,
+	  to_date : dateEnd//formatted
+	}
+	//console.log(lastUpdated);
+	MixPanelDataConSync.syncDataRetry(lastUpdated);
+	
+    return;
+};
+
+
+cron.schedule(mixPanelJobFrequency, onJobStarted);
 
 
