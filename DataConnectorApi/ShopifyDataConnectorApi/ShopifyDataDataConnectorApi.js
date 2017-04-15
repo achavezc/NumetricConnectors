@@ -245,15 +245,13 @@ var getCustomers = function getCustomers(lastUpdated) {
     });
 }
 
-
+/*
 var getTransactions = function getTransactions(lastUpdated) 
-{	
-	utils.WriteFileTxt("\r\n");
-	utils.WriteFileTxt("getTransactions api");
-	utils.WriteFileTxt("\r\n");
-			
+{		
     var resultEvent = {};
     resultEvent.Result = {}
+	resultEvent.Result.Data  = {}; 
+    resultEvent.Result.Data.transactions = [];
     resultEvent.Result.Success = false;
 
     var date = toTimeZone(lastUpdated.created_at_min,lastUpdated.timezone);
@@ -263,9 +261,7 @@ var getTransactions = function getTransactions(lastUpdated)
 	console.log("inicio transactionListFinal.length="+transactionList.length);
 
 	return shopify.order.list({ created_at_min: date}).then(function(orders) 
-	{	
-		//console.log(JSON.stringify(orders));
-	
+	{		
 		var listInputs=[];
 		
 		for(i=0; i<orders.length;i++)
@@ -275,88 +271,83 @@ var getTransactions = function getTransactions(lastUpdated)
 		
 		console.log(JSON.stringify(listInputs));
 		
-		/*
-		var lists=orders.map(function(input)
-		{				
-			console.log("orders id:"+input.id);
-			console.log("date:"+date);
-			listInputs.push(inputRow);
-			
-			
-				return shopify.transaction.list(input.id,{ created_at_min: date}).then(function(transactions) 
-				  {	
-					transactionList.push(transactions);				
-				 })
-						 
-		});
-		*/
 		
+
 		var actions = listInputs.map(function(input)
 		{ 			
-			return shopify.transaction.list(input,{ created_at_min: date}).then(function(transactions) 
-			  {	
-				transactionList.push(transactions);		
-				//resultEvent.Result.Success = true;
-				//resultEvent.Result.Data.transactions = transactionList;
-			 })			 
+			return shopify.transaction.list(input,{ created_at_min: date});
 		});
 		
-		var returns = Promise.all (actions);
 		
-		console.log("returns");
-		console.log(JSON.stringify(returns));
-		console.log("transactionList");
-		console.log(JSON.stringify(transactionList));
-		
-		return resultEvent;
-		/*
-		
-		console.log("listInputs");
-		console.log(JSON.stringify(listInputs));
-		
-		var returns = Promise.all (lists);
+		// var actions = listInputs.map(function(input)
+		// { 			
+			// return shopify.transaction.list(input,{ created_at_min: date}).then(function(transactions) 
+			  // {	
+				// transactionList.push(transactions);		
+				// console.log("shopify.transaction.list OrderId=" + input);
+				// console.log(JSON.stringify(transactionList));
+			 // })			 
+		// });
 		
 		
-		console.log("transactionListAux.length="+transactionList.length);
-		console.log("transactionListAux");
-		console.log(JSON.stringify(transactionList));
-			
 		
-		console.log("returns");
-		console.log(JSON.stringify(returns));
 		
-		return returns.then(transactionList=>
+		var returns = Promise.all(actions);
+		
+		return returns.then(TransactionListReturn =>
 		{	
-			console.log("returns.then");
-			resultEvent.Result.Success = true;
-			resultEvent.Result.Data.transactions = [];
-			resultEvent.Result.Data.transactions = transactionList;
-			console.log("fin transactionListFinal.length="+transactionList.length);
-			console.log(JSON.stringify(transactionList));
-			return resultEvent;
-		});
-*/
+			// utils.WriteFileTxt("\r\n");
+			// utils.WriteFileTxt("returns.then TransactionListReturn");
+			// utils.WriteFileTxt("\r\n");
+			// utils.WriteFileTxt(utils.WriteFileTxt(JSON.stringify(TransactionListReturn)));
+			// utils.WriteFileTxt("\r\n");					
+			
+			resultEvent.Result.Success =true;
+			
+			
+			// utils.WriteFileTxt("\r\n");
+			// utils.WriteFileTxt("TransactionListReturn.length TransactionListReturn="+TransactionListReturn.length);
+			// utils.WriteFileTxt("\r\n");
+			
+			
+			for(var i = 0; i< TransactionListReturn.length;i++)
+			{	
+				if(utils.isArray(inputShopify)
+				{
+					for(var j =0; j <TransactionListReturn[i].rows;j++)
+					{
+						// utils.WriteFileTxt("\r\n");
+						// utils.WriteFileTxt("TransactionListReturn[i].rows");
+						// utils.WriteFileTxt(JSON.stringify(TransactionListReturn[i].rows));
+						// utils.WriteFileTxt("\r\n");
+						
+						
+						resultEvent.Result.Data.transactions.push(TransactionListReturn[i].rows[j]);
+						// utils.WriteFileTxt("\r\n");
+						// utils.WriteFileTxt("resultEvent.Result.Data.transactions");
+						// utils.WriteFileTxt(JSON.stringify(resultEvent));
+						// utils.WriteFileTxt("\r\n");
+					}
+				}
+			}
+			
+			
+			utils.WriteFileTxt("\r\n");
+			utils.WriteFileTxt("\r\n");
+			utils.WriteFileTxt("resultEvent");
+			utils.WriteFileTxt("\r\n");
+			utils.WriteFileTxt("\r\n");
+			utils.WriteFileTxt(JSON.stringify(resultEvent));
+			utils.WriteFileTxt("\r\n");
+			utils.WriteFileTxt("\r\n");	
+			
 
-	
-	/*
-        for(i=0; i<orders.length;i++)
-		{
-              shopify.transaction.list(orders[i].id,{ created_at_min: date})
-              .then(function(transactions) 
-			  {	
-                transactionList.push(transactions);				
-             })
-        }	
-	
-		console.log("transactionListFinal.length="+transactionList.length);
-				
-        resultEvent.Result.Data  = {}; 
-        resultEvent.Result.Data.transactions = [];
-        resultEvent.Result.Data.transactions = transactionsList;
-		resultEvent.Result.Success = true;			
-       
+		})			 
+		
+		
+			
 		return resultEvent;
-		*/
+		
     })
     .catch(function(err) 
 	{
@@ -368,7 +359,7 @@ var getTransactions = function getTransactions(lastUpdated)
     
 }
 
-
+*/
 
 /*
 var getCustomerAddress = function getCustomerAddress(lastUpdated,callback) {
@@ -479,7 +470,7 @@ module.exports = {
     getCustomCollections : getCustomCollections,
 	getBlogs:getBlogs,
     //getCustomerAddress : getCustomerAddress,
-    getTransactions : getTransactions,
+    //getTransactions : getTransactions,
     getSmartCollections : getSmartCollections
 
 };

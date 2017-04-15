@@ -90,22 +90,27 @@ var syncData = function syncData(lastUpdated)
 								{
 									return syncDataCustomCollections(lastUpdated,lstDataSet).then(resultCustomCollections=>
 									{
-										utils.WriteFileTxt("\r\n");
-										utils.WriteFileTxt("Before syncDataTransactions");
-										utils.WriteFileTxt("\r\n");
 										
-										return syncDataTransactions(lastUpdated,lstDataSet).then(resultTransactions=>
-										{				
-											utils.WriteFileTxt("\r\n");
-											utils.WriteFileTxt("After syncDataTransactions");
-											utils.WriteFileTxt("\r\n");
-										
-											return syncDataOrder(lastUpdated,lstDataSet).then(resultOrder=>
-											{
-												//console.log("syncDataOrder Completed");
-												return resultEvent.Result.Success= true;
-											});
+										return syncDataOrder(lastUpdated,lstDataSet).then(resultOrder=>
+										{
+											console.log("syncDataOrder Completed");
+											return resultEvent.Result.Success= true;
 										});
+											
+										
+										
+										// utils.WriteFileTxt("\r\n");
+										// utils.WriteFileTxt("Before syncDataTransactions");
+										// utils.WriteFileTxt("\r\n");
+																	
+										// return syncDataTransactions(lastUpdated,lstDataSet).then(resultTransactions=>
+										// {				
+											// utils.WriteFileTxt("\r\n");
+											// utils.WriteFileTxt("After syncDataTransactions");
+											// utils.WriteFileTxt("\r\n");
+										
+											
+										// });
 									});
 								});
 							});
