@@ -245,7 +245,7 @@ var getCustomers = function getCustomers(lastUpdated) {
     });
 }
 
-/*
+
 var getTransactions = function getTransactions(lastUpdated) 
 {		
     var resultEvent = {};
@@ -267,11 +267,7 @@ var getTransactions = function getTransactions(lastUpdated)
 		for(i=0; i<orders.length;i++)
 		{
 			listInputs.push(orders[i].id);
-		}
-		
-		console.log(JSON.stringify(listInputs));
-		
-		
+		}			
 
 		var actions = listInputs.map(function(input)
 		{ 			
@@ -279,15 +275,15 @@ var getTransactions = function getTransactions(lastUpdated)
 		});
 		
 		
-		// var actions = listInputs.map(function(input)
-		// { 			
-			// return shopify.transaction.list(input,{ created_at_min: date}).then(function(transactions) 
-			  // {	
-				// transactionList.push(transactions);		
-				// console.log("shopify.transaction.list OrderId=" + input);
-				// console.log(JSON.stringify(transactionList));
-			 // })			 
-		// });
+		 var actions = listInputs.map(function(input)
+		 { 			
+			 return shopify.transaction.list(input,{ created_at_min: date}).then(function(transactions) 
+			   {	
+				 transactionList.push(transactions);		
+				 console.log("shopify.transaction.list OrderId=" + input);
+				 console.log(JSON.stringify(transactionList));
+			  })			 
+		 });
 		
 		
 		
@@ -296,11 +292,11 @@ var getTransactions = function getTransactions(lastUpdated)
 		
 		return returns.then(TransactionListReturn =>
 		{	
-			// utils.WriteFileTxt("\r\n");
-			// utils.WriteFileTxt("returns.then TransactionListReturn");
-			// utils.WriteFileTxt("\r\n");
-			// utils.WriteFileTxt(utils.WriteFileTxt(JSON.stringify(TransactionListReturn)));
-			// utils.WriteFileTxt("\r\n");					
+			utils.WriteFileTxt("\r\n");
+			utils.WriteFileTxt("returns.then TransactionListReturn");
+			utils.WriteFileTxt("\r\n");
+			utils.WriteFileTxt(utils.WriteFileTxt(JSON.stringify(TransactionListReturn)));
+			utils.WriteFileTxt("\r\n");					
 			
 			resultEvent.Result.Success =true;
 			
@@ -312,23 +308,36 @@ var getTransactions = function getTransactions(lastUpdated)
 			
 			for(var i = 0; i< TransactionListReturn.length;i++)
 			{	
-				if(utils.isArray(inputShopify)
+				utils.WriteFileTxt("\r\n");
+				utils.WriteFileTxt("\r\n");
+				utils.WriteFileTxt("i:"+i);
+				utils.WriteFileTxt("\r\n");
+				utils.WriteFileTxt("\r\n");
+				utils.WriteFileTxt(JSON.stringify(TransactionListReturn[i].rows));
+				utils.WriteFileTxt("\r\n");
+					
+				for(var j =0; j <TransactionListReturn[i].rows.length;j++)
 				{
-					for(var j =0; j <TransactionListReturn[i].rows;j++)
-					{
-						// utils.WriteFileTxt("\r\n");
-						// utils.WriteFileTxt("TransactionListReturn[i].rows");
-						// utils.WriteFileTxt(JSON.stringify(TransactionListReturn[i].rows));
-						// utils.WriteFileTxt("\r\n");
-						
-						
-						resultEvent.Result.Data.transactions.push(TransactionListReturn[i].rows[j]);
-						// utils.WriteFileTxt("\r\n");
-						// utils.WriteFileTxt("resultEvent.Result.Data.transactions");
-						// utils.WriteFileTxt(JSON.stringify(resultEvent));
-						// utils.WriteFileTxt("\r\n");
-					}
+					utils.WriteFileTxt("\r\n");
+					utils.WriteFileTxt("\r\n");
+					utils.WriteFileTxt("j:"+j);
+					utils.WriteFileTxt("\r\n");
+					utils.WriteFileTxt("\r\n");	
+					utils.WriteFileTxt(JSON.stringify(TransactionListReturn[i].rows[j]));
+					utils.WriteFileTxt("\r\n");
+					// utils.WriteFileTxt("\r\n");
+					// utils.WriteFileTxt("TransactionListReturn[i].rows");
+					// utils.WriteFileTxt(JSON.stringify(TransactionListReturn[i].rows));
+					// utils.WriteFileTxt("\r\n");
+					
+					
+					resultEvent.Result.Data.transactions.push(TransactionListReturn[i].rows[j]);
+					// utils.WriteFileTxt("\r\n");
+					// utils.WriteFileTxt("resultEvent.Result.Data.transactions");
+					// utils.WriteFileTxt(JSON.stringify(resultEvent));
+					// utils.WriteFileTxt("\r\n");
 				}
+				
 			}
 			
 			
@@ -359,7 +368,7 @@ var getTransactions = function getTransactions(lastUpdated)
     
 }
 
-*/
+
 
 /*
 var getCustomerAddress = function getCustomerAddress(lastUpdated,callback) {
