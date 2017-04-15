@@ -30,21 +30,28 @@ var getEvents =  function getEvents(lastUpdated,callback)
                 resultEvent.Result.Success = false;
                 resultEvent.Result.Data = [];
 	
-		return new Promise(function(sendData,sendCatch) {
-			
-                 mx.export_data({ from_date: lastUpdated.from_date, to_date: lastUpdated.to_date }, function(res) {
-                    res.on('data', function(event_object){		
+		return new Promise(function(sendData,sendCatch) 
+		{
+				console.log("lastUpdated.from_date:" + lastUpdated.from_date );
+				console.log("lastUpdated.to_date:" + lastUpdated.to_date );
+				
+                 mx.export_data({ from_date: lastUpdated.from_date, to_date: lastUpdated.to_date }, function(res) 
+				 {
+                    res.on('data', function(event_object)
+					{		
                          resultEvent.Result.Data.push(event_object);
                     });
-                    res.on('end', function() {		
-			//utils.WriteFileTxt(JSON.stringify(resultEvent));
+                    res.on('end', function() 
+					{		
+						//utils.WriteFileTxt(JSON.stringify(resultEvent));
                         resultEvent.Result.Success = true;
                         sendData(resultEvent);
                     });
-                    res.on('error', function(err) {
+                    res.on('error', function(err) 
+					{
                         resultEvent.Result.Success = false;
                         resultEvent.Result.Error = err;
-			sendCatch(resultEvent);
+						sendCatch(resultEvent);
                         //callback(resultEvent);
                         //return resultEvent;
                     });

@@ -255,64 +255,117 @@ var getTransactions = function getTransactions(lastUpdated)
     var resultEvent = {};
     resultEvent.Result = {}
     resultEvent.Result.Success = false;
+
     var date = toTimeZone(lastUpdated.created_at_min,lastUpdated.timezone);
-	
+
 	var transactionList = [];
 	
+	console.log("inicio transactionListFinal.length="+transactionList.length);
+
 	return shopify.order.list({ created_at_min: date}).then(function(orders) 
-	{
+	{	
+		//console.log(JSON.stringify(orders));
+	
+		var listInputs=[];
+		
+		for(i=0; i<orders.length;i++)
+		{
+			listInputs.push(orders[i].id);
+		}
+		
+		console.log(JSON.stringify(listInputs));
+		
+		/*
+		var lists=orders.map(function(input)
+		{				
+			console.log("orders id:"+input.id);
+			console.log("date:"+date);
+			listInputs.push(inputRow);
+			
+			
+				return shopify.transaction.list(input.id,{ created_at_min: date}).then(function(transactions) 
+				  {	
+					transactionList.push(transactions);				
+				 })
+						 
+		});
+		*/
+		
+		var actions = listInputs.map(function(input)
+		{ 			
+			return shopify.transaction.list(input,{ created_at_min: date}).then(function(transactions) 
+			  {	
+				transactionList.push(transactions);		
+				//resultEvent.Result.Success = true;
+				//resultEvent.Result.Data.transactions = transactionList;
+			 })			 
+		});
+		
+		var returns = Promise.all (actions);
+		
+		console.log("returns");
+		console.log(JSON.stringify(returns));
+		console.log("transactionList");
+		console.log(JSON.stringify(transactionList));
+		
+		return resultEvent;
+		/*
+		
+		console.log("listInputs");
+		console.log(JSON.stringify(listInputs));
+		
+		var returns = Promise.all (lists);
+		
+		
+		console.log("transactionListAux.length="+transactionList.length);
+		console.log("transactionListAux");
+		console.log(JSON.stringify(transactionList));
+			
+		
+		console.log("returns");
+		console.log(JSON.stringify(returns));
+		
+		return returns.then(transactionList=>
+		{	
+			console.log("returns.then");
+			resultEvent.Result.Success = true;
+			resultEvent.Result.Data.transactions = [];
+			resultEvent.Result.Data.transactions = transactionList;
+			console.log("fin transactionListFinal.length="+transactionList.length);
+			console.log(JSON.stringify(transactionList));
+			return resultEvent;
+		});
+*/
+
+	
+	/*
         for(i=0; i<orders.length;i++)
 		{
-             shopify.transaction.list(orders[i].id,{ created_at_min: date})
+              shopify.transaction.list(orders[i].id,{ created_at_min: date})
               .then(function(transactions) 
-			  {			
-				utils.WriteFileTxt("\r\n");
-				utils.WriteFileTxt("Agregó Tx");
-				utils.WriteFileTxt("\r\n");			
-                transactionList.push(transactions);
+			  {	
+                transactionList.push(transactions);				
              })
-        }		
+        }	
+	
+		console.log("transactionListFinal.length="+transactionList.length);
 				
-		utils.WriteFileTxt("\r\n");
-		utils.WriteFileTxt(utils.WriteFileTxt(JSON.stringify(transactionList)));
-		utils.WriteFileTxt("\r\n");		
-		
         resultEvent.Result.Data  = {}; 
         resultEvent.Result.Data.transactions = [];
         resultEvent.Result.Data.transactions = transactionsList;
-		resultEvent.Result.Success = true;
-		
-		utils.WriteFileTxt("\r\n");
-		utils.WriteFileTxt(utils.WriteFileTxt(JSON.stringify(resultEvent)));
-		utils.WriteFileTxt("\r\n");	
-		
+		resultEvent.Result.Success = true;			
        
 		return resultEvent;
+		*/
     })
-    .catch(function(err) {
+    .catch(function(err) 
+	{
         resultEvent.Result.Success = false;
         resultEvent.Result.Error = err;
         //callback(resultEvent);
 		return resultEvent;
     });
-	
-	
-    return shopify.transaction.list({ created_at_min: date})
-    .then(function(transactions) 
-	{
-        resultEvent.Result.Data = {};
-        resultEvent.Result.Data.transactions = [];
-        resultEvent.Result.Data.transactions = transactions;		
-        resultEvent.Result.Success = true;
-        return resultEvent;
-    })
-    .catch(function(err) 
-	{
-        console.log(err);		
-        resultEvent.Result.Success = false;
-        resultEvent.Result.Error = err;
-        return resultEvent;
-    });
+    
 }
 
 

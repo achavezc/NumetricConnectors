@@ -541,7 +541,7 @@ var syncDataOrder = function syncDataOrder(lastUpdated,currentListDataset)
 }
 
 
-var syncDataTransactions = function syncDataProducts(lastUpdated,currentListDataset) 
+var syncDataTransactions = function syncDataTransactions(lastUpdated,currentListDataset) 
 {	
 	var resultEvent = {};
     resultEvent.Result = {}
@@ -551,6 +551,13 @@ var syncDataTransactions = function syncDataProducts(lastUpdated,currentListData
 	{ 
 		if(resultTransactions.Result.Success)
 		{	
+			utils.WriteFileTxt("\r\n");
+			utils.WriteFileTxt("resultTransactions.Result.Success");
+			utils.WriteFileTxt(utils.WriteFileTxt(JSON.stringify(resultTransactions)));
+			utils.WriteFileTxt("\r\n");	
+		
+			utils.WriteFileTxt("resultTransactions.Result.Data.transactions.length="+resultTransactions.Result.Data.transactions.length);
+			
 			if(resultTransactions.Result.Data.transactions.length>0)
 			{
 				var datasetShopify = ShopifyCon.NumetricShopifyFormat(resultTransactions.Result.Data,"id","transactions");
@@ -576,8 +583,10 @@ var syncDataTransactions = function syncDataProducts(lastUpdated,currentListData
 		}
 		else
 		{
+				utils.WriteFileTxt("resultTransactions.Result.Success=false");
 				resultEvent.Result.Success = true;
 				return resultEvent;
+				
 		}
 	})	
 }
@@ -587,7 +596,8 @@ var syncDataTransactions = function syncDataProducts(lastUpdated,currentListData
 module.exports = 
 {
     syncDataRetry : syncDataRetry,
-	syncDataCustomer: syncDataCustomer
+	syncDataCustomer: syncDataCustomer,
+	syncDataTransactions: syncDataTransactions
 };
 
 

@@ -59,7 +59,29 @@ var onJobStarted = function()
 };
 
 
-cron.schedule(shopifyJobFrequency, onJobStarted);
+//cron.schedule(shopifyJobFrequency, onJobStarted);
+
+
+var nconf = require('nconf');
+nconf.use('file', { file: './ConfigDate/DateTimeLastSync.json' });
+nconf.load();
+	
+var dateInitial = "";
+
+if(nconf.get('lastUpdateShopify')!= "")
+{
+	dateInitial = nconf.get('lastUpdateShopify');
+}
+else
+{
+	dateInitial = conf.parameters().initialDateTimeShopify;
+}
+	
+
+return NumetricCon.getDataSetNumetric().then(currentListDataset=>
+{	
+	ShopifyDataConSync.syncDataTransactions(lastUpdated,currentListDataset);
+})
 
 
 /*
@@ -67,6 +89,10 @@ return NumetricCon.getDataSetNumetric().then(currentListDataset=>
 {	
 	ShopifyDataConSync.syncDataCustomer(lastUpdated,currentListDataset);
 })
+
+
+
+
 
 */
 
