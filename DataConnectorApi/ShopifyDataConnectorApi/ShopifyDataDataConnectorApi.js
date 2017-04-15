@@ -479,7 +479,7 @@ module.exports = {
     getCustomCollections : getCustomCollections,
 	getBlogs:getBlogs,
     //getCustomerAddress : getCustomerAddress,
-    //getTransactions : getTransactions,
+    getTransactions : getTransactions,
     getSmartCollections : getSmartCollections
 
 };
