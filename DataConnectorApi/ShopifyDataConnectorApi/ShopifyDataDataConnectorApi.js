@@ -256,9 +256,7 @@ var getTransactions = function getTransactions(lastUpdated)
 
     var date = toTimeZone(lastUpdated.created_at_min,lastUpdated.timezone);
 
-	var transactionList = [];
-	
-	console.log("inicio transactionListFinal.length="+transactionList.length);
+	var transactionList = [];	
 
 	return shopify.order.list({ created_at_min: date}).then(function(orders) 
 	{		
@@ -277,86 +275,27 @@ var getTransactions = function getTransactions(lastUpdated)
 		
 		 var actions = listInputs.map(function(input)
 		 { 			
-			 return shopify.transaction.list(input,{ created_at_min: date}).then(function(transactions) 
-			   {	
-				 transactionList.push(transactions);		
-				 console.log("shopify.transaction.list OrderId=" + input);
-				 console.log(JSON.stringify(transactionList));
-			  })			 
+			 return shopify.transaction.list(input,{ created_at_min: date});		 
 		 });
-		
-		
-		
 		
 		var returns = Promise.all(actions);
 		
 		return returns.then(TransactionListReturn =>
 		{	
-			utils.WriteFileTxt("\r\n");
-			utils.WriteFileTxt("returns.then TransactionListReturn");
-			utils.WriteFileTxt("\r\n");
-			utils.WriteFileTxt(utils.WriteFileTxt(JSON.stringify(TransactionListReturn)));
-			utils.WriteFileTxt("\r\n");					
-			
-			resultEvent.Result.Success =true;
-			
-			
-			// utils.WriteFileTxt("\r\n");
-			// utils.WriteFileTxt("TransactionListReturn.length TransactionListReturn="+TransactionListReturn.length);
-			// utils.WriteFileTxt("\r\n");
-			
-			
 			for(var i = 0; i< TransactionListReturn.length;i++)
-			{	
-				utils.WriteFileTxt("\r\n");
-				utils.WriteFileTxt("\r\n");
-				utils.WriteFileTxt("i:"+i);
-				utils.WriteFileTxt("\r\n");
-				utils.WriteFileTxt("\r\n");
-				utils.WriteFileTxt(JSON.stringify(TransactionListReturn[i].rows));
-				utils.WriteFileTxt("\r\n");
-					
-				for(var j =0; j <TransactionListReturn[i].rows.length;j++)
-				{
-					utils.WriteFileTxt("\r\n");
-					utils.WriteFileTxt("\r\n");
-					utils.WriteFileTxt("j:"+j);
-					utils.WriteFileTxt("\r\n");
-					utils.WriteFileTxt("\r\n");	
-					utils.WriteFileTxt(JSON.stringify(TransactionListReturn[i].rows[j]));
-					utils.WriteFileTxt("\r\n");
-					// utils.WriteFileTxt("\r\n");
-					// utils.WriteFileTxt("TransactionListReturn[i].rows");
-					// utils.WriteFileTxt(JSON.stringify(TransactionListReturn[i].rows));
-					// utils.WriteFileTxt("\r\n");
-					
-					
-					resultEvent.Result.Data.transactions.push(TransactionListReturn[i].rows[j]);
-					// utils.WriteFileTxt("\r\n");
-					// utils.WriteFileTxt("resultEvent.Result.Data.transactions");
-					// utils.WriteFileTxt(JSON.stringify(resultEvent));
-					// utils.WriteFileTxt("\r\n");
-				}
-				
-			}
+			{					
+				for(var j =0; j < TransactionListReturn[i].length;j++)
+				{	
+					transactionList.push(TransactionListReturn[i][j])					
+				}				
+			}			
 			
-			
-			utils.WriteFileTxt("\r\n");
-			utils.WriteFileTxt("\r\n");
-			utils.WriteFileTxt("resultEvent");
-			utils.WriteFileTxt("\r\n");
-			utils.WriteFileTxt("\r\n");
-			utils.WriteFileTxt(JSON.stringify(resultEvent));
-			utils.WriteFileTxt("\r\n");
-			utils.WriteFileTxt("\r\n");	
-			
+					
+			resultEvent.Result.Success =true;
+			resultEvent.Result.Data.transactions = transactionList;		
 
-		})			 
-		
-		
-			
-		return resultEvent;
-		
+			return resultEvent;			
+		})
     })
     .catch(function(err) 
 	{

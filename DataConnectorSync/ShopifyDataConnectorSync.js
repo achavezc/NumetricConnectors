@@ -90,13 +90,13 @@ var syncData = function syncData(lastUpdated)
 								{
 									return syncDataCustomCollections(lastUpdated,lstDataSet).then(resultCustomCollections=>
 									{
-										
-										return syncDataOrder(lastUpdated,lstDataSet).then(resultOrder=>
-										{
-											console.log("syncDataOrder Completed");
-											return resultEvent.Result.Success= true;
-										});
-											
+										 return syncDataTransactions(lastUpdated,lstDataSet).then(resultTransactions=>
+										 {
+											return syncDataOrder(lastUpdated,lstDataSet).then(resultOrder=>
+											{												
+												return resultEvent.Result.Success= true;
+											});
+										 });	
 										
 										
 										// utils.WriteFileTxt("\r\n");
@@ -552,21 +552,17 @@ var syncDataTransactions = function syncDataTransactions(lastUpdated,currentList
     resultEvent.Result = {}
     resultEvent.Result.Success = false;
 	
-	return 	ShopifyData.getTransactions(lastUpdated).then(resultTransactions=>																																																									//{
+	return 	ShopifyData.getTransactions(lastUpdated).then(resultTransactions=>									
 	{ 
 		if(resultTransactions.Result.Success)
 		{	
-			utils.WriteFileTxt("\r\n");
-			utils.WriteFileTxt("resultTransactions.Result.Success");
-			utils.WriteFileTxt(utils.WriteFileTxt(JSON.stringify(resultTransactions)));
-			utils.WriteFileTxt("\r\n");	
-		
-			utils.WriteFileTxt("resultTransactions.Result.Data.transactions.length="+resultTransactions.Result.Data.transactions.length);
-			
 			if(resultTransactions.Result.Data.transactions.length>0)
-			{
-				var datasetShopify = ShopifyCon.NumetricShopifyFormat(resultTransactions.Result.Data,"id","transactions");
+			{			
+				var datasetShopify = ShopifyCon.NumetricShopifyFormat(resultTransactions.Result.Data,"id","transactions");						
+				
 				var datos = resultTransactions.Result.Data;
+								
+				
 				var datasetNames =['transactions'];
 				return numetricDataConnectorLogic.verifyCreateManyDatasetNumetric(datasetNames,currentListDataset,datasetShopify.DataSetList).then(resultVerify=>
 				{
@@ -575,14 +571,17 @@ var syncDataTransactions = function syncDataTransactions(lastUpdated,currentList
 						if(resultVerify[i].Result.Success)
 						{
 							resultTransactions.Result[resultVerify[i].Result.datasetName] = {};
-							resultPresultTransactionsroducts.Result[resultVerify[i].Result.datasetName].id=resultVerify[i].Result.Id;
+							resultTransactions.Result[resultVerify[i].Result.datasetName].id=resultVerify[i].Result.Id;							
 						}
 					}
+				
 					resultTransactions.Result.Data = datos;
 					return ShopifyCon.sendRowsShopifyToNumetric(resultTransactions.Result).then(results=>
 					{
+						console.log("Completed Sync Shopify Transactions Data");
 						return results;
 					});
+					
 				});  
 			}  
 		}

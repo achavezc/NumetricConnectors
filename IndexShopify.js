@@ -59,7 +59,7 @@ var onJobStarted = function()
 };
 
 
-//cron.schedule(shopifyJobFrequency, onJobStarted);
+cron.schedule(shopifyJobFrequency, onJobStarted);
 
 
 var nconf = require('nconf');
@@ -77,11 +77,12 @@ else
 	dateInitial = conf.parameters().initialDateTimeShopify;
 }
 	
-
+/*
  return NumetricCon.getDataSetNumetric().then(currentListDataset=>
  {	
 	 ShopifyDataConSync.syncDataTransactions(lastUpdated,currentListDataset);
  })
+ */
 
 
 /*
