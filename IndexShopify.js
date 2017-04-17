@@ -38,7 +38,8 @@ var onJobStarted = function()
 	var lastUpdated = 
 	{
 	  created_at_min : conf.parameters().initialDateTimeShopify, //dateInitial,
-	  timezone :conf.parameters().timezone 
+	  timezone :conf.parameters().timezone,
+	  limit: conf.parameters().limitShopify
 	}
 
 	//'01/06/2017 4:52:48 PM',
