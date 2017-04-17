@@ -36,7 +36,7 @@ var verifyCreateDatasetNumetric = function(datasetName,data,currentListDataset) 
 				found=true;
 				resultEvent.Result.Id = currentListDataset.Response[i].id;
 				resultEvent.Result.Success = true;
-  						sendDataSetId(resultEvent);
+  				sendDataSetId(resultEvent);
 				//});
 				//return resultEvent
 		        //callback(resultEvent);
@@ -44,17 +44,14 @@ var verifyCreateDatasetNumetric = function(datasetName,data,currentListDataset) 
 		}
 		
 		if(!found)
-		{			
-
-			
-			var datasetBody = SearchDataSet(datasetName,data);
-			
+		{				
+			var datasetBody = SearchDataSet(datasetName,data);			
 			
 			return NumetricCon.generateDataSetNumetric(datasetBody.Data).then(res=>
 			{
 				if(res.Result.Success)
 				{	
-					console.log("Completed Create Shopify "+ datasetName + " Dataset");
+					console.log("Completed Create "+ datasetName + " Dataset");
 					
 					resultEvent.Result.Id = res.Response.id;					
 				}
@@ -63,13 +60,18 @@ var verifyCreateDatasetNumetric = function(datasetName,data,currentListDataset) 
 		        //return resultEvent;
 		        sendDataSetId(resultEvent);
 			})
-			.catch(err=>{
+			.catch(err=>
+			{
 				sendCatch(err);
 			});
 		}
-	//}
+		else
+		{
+	//}		
+		console.log("The "+ datasetName + " Dataset already exists");
 		//return callback(resultEvent);
-		sendDataSetId(resultEvent);
+			sendDataSetId(resultEvent);
+		}
 	});
 }
 
