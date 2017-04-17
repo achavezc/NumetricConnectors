@@ -639,8 +639,8 @@ var syncDataTransactions = function syncDataTransactions(lastUpdated,currentList
 					{
 						console.log("Completed Sync Shopify Transactions Data");
 						utils.WriteFileTxt("Completed Sync Shopify Transactions Data");
-						console.log("Shopify Transactions Data Synchronized:"+ JSON.stringify(resultCustomCollection.Result.Data));
-						utils.WriteFileTxt("Shopify Transactions Data Synchronized:"+ JSON.stringify(resultCustomCollection.Result.Data));
+						console.log("Shopify Transactions Data Synchronized:"+ JSON.stringify(resultTransactions.Result.Data));
+						utils.WriteFileTxt("Shopify Transactions Data Synchronized:"+ JSON.stringify(resultTransactions.Result.Data));
 						return results;
 					});
 					
