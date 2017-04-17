@@ -14,7 +14,8 @@ const shopify = new Shopify({
 
 lastUpdated = {
   created_at_min : '01/01/2017 4:52:48 PM',
-  timezone : 'GMT-11:00'
+  timezone : 'GMT-11:00',
+  limit: 50
 }
 
 function toTimeZone(time, zone) {
@@ -224,24 +225,51 @@ var getCustomers = function getCustomers(lastUpdated) {
     var resultEvent = {};
     resultEvent.Result = {}
     resultEvent.Result.Success = false;
-    //console.log(resultEvent);
+
+    resultEvent.Result.Data = {};
+    resultEvent.Result.Data.customers = [];
+
     var date = toTimeZone(lastUpdated.created_at_min,lastUpdated.timezone);
-    return shopify.customer.list({ created_at_min: date})
-    .then(function(customers) {
-       // console.log(customers);
-        resultEvent.Result.Data = {};
-        resultEvent.Result.Data.customers = [];
-        resultEvent.Result.Data.customers = customers;
-        resultEvent.Result.Success = true;
-	return resultEvent;
-        //callback(resultEvent);
+    var customerList = [];	
+    return shopify.customer.count()
+    .then(function(count){
+        var listInputs=[];
+        var countEnd = parseInt(count/lastUpdated.limit) + 1 ;
+		for(i=1; i<countEnd;i++)
+		{
+			listInputs.push(i);
+		}	
+		 var actions = listInputs.map(function(input)
+		 { 			
+			 return shopify.customer.list({ created_at_min: date, limit: lastUpdated.limit, page:input});
+		 });
+        
+        var returns = Promise.all(actions);
+		
+		return returns.then(CustomerListReturn =>
+		{	
+			for(var i = 0; i< CustomerListReturn.length;i++)
+			{					
+				for(var j =0; j < CustomerListReturn[i].length;j++)
+				{	
+					customerList.push(CustomerListReturn[i][j])					
+				}				
+			}			
+			
+					
+			resultEvent.Result.Success =true;
+			resultEvent.Result.Data.customers = customerList;		
+
+			return resultEvent;			
+		})
+      
     })
     .catch(function(err) {
-        //console.log("mal");
+        console.log("fallo count")
+         console.log(err);
         resultEvent.Result.Success = false;
         resultEvent.Result.Error = err;		
-	 return resultEvent;
-        //callback(resultEvent);
+	    return resultEvent;
     });
 }
 
@@ -471,3 +499,10 @@ module.exports = {
     getSmartCollections : getSmartCollections
 
 };
+/*
+getCustomers(lastUpdated).then(resultCustomer=>
+{ 			
+     utils.WriteFileTxt(JSON.stringify(resultCustomer));	
+    
+ })
+ */
