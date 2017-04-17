@@ -177,12 +177,15 @@ var getCustomers = function getCustomers(lastUpdated) {
     var customerList = [];	
     return shopify.customer.count()
     .then(function(count){
+        console.log(count);
         var listInputs=[];
         var countEnd = parseInt(count/lastUpdated.limit) + 1 ;
-		for(i=1; i<countEnd;i++)
+		for(i=1; i<=countEnd;i++)
 		{
 			listInputs.push(i);
 		}	
+        console.log(countEnd);
+        console.log(listInputs);
 		 var actions = listInputs.map(function(input)
 		 { 			
 			 return shopify.customer.list({ created_at_min: date, limit: lastUpdated.limit, page:input});
@@ -388,6 +391,7 @@ module.exports = {
     getSmartCollections : getSmartCollections
 
 };
+
 /*
 getCustomers(lastUpdated).then(resultCustomer=>
 { 			
