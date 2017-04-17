@@ -70,8 +70,10 @@ var syncData = function syncData(lastUpdated){
 		 {
 			return syncDataEvents(lastUpdated,lstDataSet).then(resultEvents=>
 			{
+				return resultEvent.Result.Success= true;
 				//console.log("Started Sync Shopify Events Data");
-						
+				
+/*				
 				return syncDataComments(lastUpdated,lstDataSet).then(resultComments=>
 				{
 					//console.log("Completed Sync Shopify Events Data");
@@ -104,6 +106,7 @@ var syncData = function syncData(lastUpdated){
 						});
 					});     
 				});
+				*/
 		   });
 		});
 	});
