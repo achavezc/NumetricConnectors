@@ -22,12 +22,14 @@ function toTimeZone(time, zone) {
     return  new Date(time + ' ' +  zone).toISOString();
 }
 
-var getTimeZone = function getTimeZone(callback) {
+var getTimeZone = function getTimeZone(callback){
+	
     var resultEvent = {};
     resultEvent.Result = {}
     resultEvent.Result.Success = false;
     shopify.shop.get({ })
-    .then(function(shop) {
+    .then(function(shop) 
+	{
         var timezoneEnd = "";
         var lstEnd = [];
         var lst1 = shop.timezone.split(')');
@@ -49,8 +51,7 @@ var getTimeZone = function getTimeZone(callback) {
     });
 }
 
-var getOrders = function getOrders(lastUpdated) 
-{    
+var getOrders = function getOrders(lastUpdated){    
     var resultEvent = {};
     resultEvent.Result = {}
     resultEvent.Result.Success = false;
@@ -72,8 +73,7 @@ var getOrders = function getOrders(lastUpdated)
     });
 }
 
-var getEvents = function getEvents(lastUpdated) 
-{
+var getEvents = function getEvents(lastUpdated){
     var resultEvent = {};
     resultEvent.Result = {}
     resultEvent.Result.Success = false;
@@ -95,64 +95,9 @@ var getEvents = function getEvents(lastUpdated)
         //callback(resultEvent);
 		return resultEvent;
     });
-}
+}   
 
-var getArticles = function getArticles(lastUpdated){
-     var resultEvent = {};
-    resultEvent.Result = {}
-    resultEvent.Result.Success = false;
-    var date = toTimeZone(lastUpdated.created_at_min,lastUpdated.timezone);
-    var articleList = [];
-    return shopify.blog.list({ created_at_min: date}).then(function(blogs) 
-	{	
-		
-		utils.WriteFileTxt("shopify.blog.list then");
-		utils.WriteFileTxt("\r\n");
-		utils.WriteFileTxt(utils.WriteFileTxt(JSON.stringify(blogs)));
-		utils.WriteFileTxt("\r\n");
-		
-		utils.WriteFileTxt("blogs length:"+ blogs.length);
-		utils.WriteFileTxt("\r\n");
-		
-		
-        for(i=0; i<blogs.length;i++)
-		{
-			utils.WriteFileTxt("\r\n");
-			utils.WriteFileTxt("blogs list: "+ i);
-			utils.WriteFileTxt("\r\n");
-             shopify.article.list(blogs[i].id,{ created_at_min: date})
-              .then(function(articles) 
-			  {
-				utils.WriteFileTxt("\r\n");
-				utils.WriteFileTxt(utils.WriteFileTxt(JSON.stringify(articles)));
-				utils.WriteFileTxt("\r\n");
-                articleList.push(articles);
-             })
-        }		
-		
-		utils.WriteFileTxt("articles length:"+ articleList.length);
-		utils.WriteFileTxt("\r\n");
-		utils.WriteFileTxt(utils.WriteFileTxt(JSON.stringify(articleList)));
-		utils.WriteFileTxt("\r\n");		
-		
-        resultEvent.Result.Data  = {}; 
-        resultEvent.Result.Data.articles = [];
-        resultEvent.Result.Data.articles = articleList;
-		resultEvent.Result.Success = true;
-       
-		return resultEvent;
-    })
-    .catch(function(err) 
-	{		
-        resultEvent.Result.Success = false;
-        resultEvent.Result.Error = err;
-        //callback(resultEvent);
-		return resultEvent;
-    });
-}
-
-var getCustomCollections = function getCustomCollections(lastUpdated)
- {
+var getCustomCollections = function getCustomCollections(lastUpdated){
 	var resultEvent = {};
     resultEvent.Result = {}
     resultEvent.Result.Success = false;
@@ -197,8 +142,7 @@ var getComments = function getComments(lastUpdated) {
     });
 }
 
-var getProducts = function getProducts(lastUpdated) 
-{
+var getProducts = function getProducts(lastUpdated) {
     var resultEvent = {};
     resultEvent.Result = {}
     resultEvent.Result.Success = false;
@@ -273,9 +217,7 @@ var getCustomers = function getCustomers(lastUpdated) {
     });
 }
 
-
-var getTransactions = function getTransactions(lastUpdated) 
-{		
+var getTransactions = function getTransactions(lastUpdated){		
     var resultEvent = {};
     resultEvent.Result = {}
 	resultEvent.Result.Data  = {}; 
@@ -329,9 +271,7 @@ var getTransactions = function getTransactions(lastUpdated)
     
 }
 
-
-var getArticles = function getArticles(lastUpdated) 
-{		
+var getArticles = function getArticles(lastUpdated){		
     var resultEvent = {};
     resultEvent.Result = {}
 	resultEvent.Result.Data  = {}; 
@@ -385,53 +325,7 @@ var getArticles = function getArticles(lastUpdated)
     
 }
 
-
-/*
-var getCustomerAddress = function getCustomerAddress(lastUpdated,callback) {
-  var resultEvent = {};
-  resultEvent.Result = {}
-  resultEvent.Result.Success = false;
-  var date = toTimeZone(lastUpdated.created_at_min,lastUpdated.timezone);
-  var addresList = [];
-  shopify.customer.list({created_at_min: date})
-    .then(function(customers) 
-	{
-		utils.WriteFileTxt("shopify.customer.list then");
-		utils.WriteFileTxt("\r\n");
-		utils.WriteFileTxt(utils.WriteFileTxt(JSON.stringify(customers)));
-		utils.WriteFileTxt("\r\n");
-		
-          for(i=0; i<customers.length;i++){
-           shopify.customerAddress.list( customers[i].id,{created_at_min: date})
-            .then(function(customerAddresss) {
-                addresList.push(customerAddresss);
-            })
-          }
-			resultEvent.Result.Data  = {}; 
-			resultEvent.Result.Data.customer_Address = [];
-			resultEvent.Result.Data.customer_Address = addresList;
-			resultEvent.Result.Success = true;
-          callback(resultEvent);
-    })
-    .catch(function(err) 
-	{
-		utils.WriteFileTxt("shopify.customer.list error");
-		console.log(err);
-		utils.WriteFileTxt(err.message);
-        resultEvent.Result.Success = false;
-        resultEvent.Result.Error = err;
-        callback(resultEvent);
-    });
-}
-
-*/
-
-/*
-
-*/
-
-
-var getSmartCollections = function getSmartCollections(lastUpdated) {
+var getSmartCollections = function getSmartCollections(lastUpdated){
     var resultEvent = {};
     resultEvent.Result = {}
     resultEvent.Result.Success = false;
@@ -454,11 +348,7 @@ var getSmartCollections = function getSmartCollections(lastUpdated) {
     });
 }
 
-
-
-
-var getBlogs = function getBlogs (lastUpdated) 
-{
+var getBlogs = function getBlogs (lastUpdated){
     var resultEvent = {};
     resultEvent.Result = {}
     resultEvent.Result.Success = false;
@@ -481,7 +371,6 @@ var getBlogs = function getBlogs (lastUpdated)
 		return resultEvent;
     });
 }
-
 
 
 module.exports = {

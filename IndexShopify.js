@@ -21,7 +21,8 @@ var onJobStarted = function()
 	nconf.load();
 
     var date = new Date();
-    console.log('Job started on \t' + date);
+    console.log('Shopify Job Sync started on \t' + date);	
+	utils.WriteFileTxt('Shopify Job Sync started on \t' + date);
 	
 	var dateInitial = "";
 
@@ -62,6 +63,7 @@ var onJobStarted = function()
 
 cron.schedule(shopifyJobFrequency, onJobStarted);
 
+/*
 
 var nconf = require('nconf');
 nconf.use('file', { file: './ConfigDate/DateTimeLastSync.json' });
@@ -78,7 +80,7 @@ else
 	dateInitial = conf.parameters().initialDateTimeShopify;
 }
 	
-/*
+
  return NumetricCon.getDataSetNumetric().then(currentListDataset=>
  {	
 	 ShopifyDataConSync.syncDataTransactions(lastUpdated,currentListDataset);

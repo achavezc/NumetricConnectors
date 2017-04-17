@@ -39,10 +39,13 @@ var sendRowsShopifyToNumetric = function(inputsShopify){
 	getRowsShopify(inputsShopify.Data[nameParent],JsonResult,nameParent); 
 	var props = Object.keys(inputsShopify);
 	var listInputs=[];
-	utils.WriteFileTxt(JSON.stringify(JsonResult));
-		for(var property in JsonResult){
-			if(utils.isInclude(props,property)){
-				if(inputsShopify[property].id !== ''){
+	
+		for(var property in JsonResult)
+		{
+			if(utils.isInclude(props,property))
+			{
+				if(inputsShopify[property].id !== '')
+				{
 					var inputRow = {};
  					/*
 					inputRow = utils.CreateProp(inputRow,"id",inputsShopify[property].id);

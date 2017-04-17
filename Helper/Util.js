@@ -334,7 +334,10 @@ var logger = fs.createWriteStream('datasets.txt', {
   flags: 'a' // 'a' means appending (old data will be preserved)
 });
 logger.write("\r\n");
+logger.write("\r\n");
 logger.write(dataWrite);
+logger.write("\r\n");
+logger.write("\r\n");
 logger.end();
 }
 
