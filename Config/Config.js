@@ -18,7 +18,7 @@ config.prototype.parameters = function(data){ return {
 	initialDateTimeShopify:'01/01/2017 4:52:48 PM',
 	retriesCount: 1,
 	timezone:'GMT-11:00',
-	limitShopify = 50,
+	limitShopify : 50,
 	optionsGetDataSet:{
 		uri: 'https://api-qa.numetric.com/v2/dataset',
 		//port:80,
