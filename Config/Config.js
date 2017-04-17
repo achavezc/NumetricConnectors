@@ -13,7 +13,7 @@ config.prototype.parameters = function(data){ return {
 	//shopifyJobFrequency : '30 * * * *',
 	shopifyJobFrequency : '* * * * *',
 	//mixPanelJobFrequency : '30 * * * *',
-	mixPanelJobFrequency : '30 * * * *',
+	mixPanelJobFrequency : '* * * * *',
 	initialDateTimeMixPanel:'2017-04-10',
 	initialDateTimeShopify:'01/01/2017 4:52:48 PM',
 	retriesCount: 1,
