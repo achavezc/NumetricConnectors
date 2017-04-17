@@ -130,13 +130,15 @@ var getEvents = function getEvents(lastUpdated)
     var resultEvent = {};
     resultEvent.Result = {}
     resultEvent.Result.Success = false;
+	 
+	resultEvent.Result.Data = {};
+    resultEvent.Result.Data.events = [];
 	
-    var date = toTimeZone(lastUpdated.created_at_min,lastUpdated.timezone);
-	
+	var date = toTimeZone(lastUpdated.created_at_min,lastUpdated.timezone);
 	var eventList = [];
 	
 	return shopify.event.count({updated_at_min: date}).then(function(count)
-	{        
+	{		  
         var listInputs=[];
         var countEnd = parseInt(count/lastUpdated.limit) + 1 ;
 	
@@ -180,7 +182,9 @@ var getCustomCollections = function getCustomCollections(lastUpdated)
 	var resultEvent = {};
     resultEvent.Result = {}
     resultEvent.Result.Success = false;
-    
+    resultEvent.Result.Data = {};
+    resultEvent.Result.Data.custom_collection = [];
+	
 	var date = toTimeZone(lastUpdated.created_at_min,lastUpdated.timezone);
 	
 	var customCollectionsList = [];
@@ -230,6 +234,9 @@ var getComments = function getComments(lastUpdated)
     var resultEvent = {};
     resultEvent.Result = {}
     resultEvent.Result.Success = false;
+	resultEvent.Result.Data = {};
+    resultEvent.Result.Data.comments = [];
+	
     var date = toTimeZone(lastUpdated.created_at_min,lastUpdated.timezone);
 	
 	var commentList = [];
@@ -281,6 +288,8 @@ var getProducts = function getProducts(lastUpdated)
     var resultEvent = {};
     resultEvent.Result = {}
     resultEvent.Result.Success = false;
+	resultEvent.Result.Data = {};
+    resultEvent.Result.Data.products = [];
 	
     var date = toTimeZone(lastUpdated.created_at_min,lastUpdated.timezone);
 	
@@ -338,15 +347,14 @@ var getCustomers = function getCustomers(lastUpdated)
     var date = toTimeZone(lastUpdated.created_at_min,lastUpdated.timezone);
     var customerList = [];	
     return shopify.customer.count({updated_at_min: date}).then(function(count){
-        console.log(count);
+       
         var listInputs=[];
         var countEnd = parseInt(count/lastUpdated.limit) + 1 ;
 		for(i=1; i<=countEnd;i++)
 		{
 			listInputs.push(i);
 		}	
-        console.log(countEnd);
-        console.log(listInputs);
+        
 		 var actions = listInputs.map(function(input)
 		 { 			
 			 return shopify.customer.list({ updated_at_min: date, limit: lastUpdated.limit, page:input});
@@ -492,7 +500,9 @@ var getSmartCollections = function getSmartCollections(lastUpdated)
     var resultEvent = {};
     resultEvent.Result = {}
     resultEvent.Result.Success = false;
-    
+    resultEvent.Result.Data = {};
+    resultEvent.Result.Data.smart_collection = [];
+	
 	var date = toTimeZone(lastUpdated.created_at_min,lastUpdated.timezone);
 
 	var smartCollectionList = [];
@@ -535,56 +545,119 @@ var getSmartCollections = function getSmartCollections(lastUpdated)
 		return resultEvent;
 	});
 }  
-	
 
-var getBlogs = function getBlogs (lastUpdated)
+var getBlogs = function getBlogs(lastUpdated) 
 {
     var resultEvent = {};
     resultEvent.Result = {}
     resultEvent.Result.Success = false;
 
-    var date = toTimeZone(lastUpdated.created_at_min,lastUpdated.timezone);
+    resultEvent.Result.Data = {};
+    resultEvent.Result.Data.blogs = [];
 
-	var blogList = [];
-	
-	return shopify.blog.count({updated_at_min: date}).then(function(count)
-	{        
+    var date = toTimeZone(lastUpdated.created_at_min,lastUpdated.timezone);
+    var blogList = [];	
+    return shopify.blog.count({updated_at_min: date}).then(function(count){
+       
         var listInputs=[];
         var countEnd = parseInt(count/lastUpdated.limit) + 1 ;
-	
 		for(i=1; i<=countEnd;i++)
 		{
 			listInputs.push(i);
 		}	
+        
+		 var actions = listInputs.map(function(input)
+		 { 			
+			 return shopify.blog.list({ updated_at_min: date, limit: lastUpdated.limit, page:input});
+		 });
+        
+        var returns = Promise.all(actions);
 		
-		var actions = listInputs.map(function(input)
-		{
-			return shopify.blog.list({ updated_at_min: date, limit: lastUpdated.limit, page:input }); 
-		});
-
-		var returns = Promise.all(actions);		
-	
 		return returns.then(BlogListReturn =>
 		{	
 			for(var i = 0; i< BlogListReturn.length;i++)
 			{					
-				for(var j =0; j < BlogListReturn [i].length;j++)
+				for(var j =0; j < BlogListReturn[i].length;j++)
 				{	
-					blogList.push(BlogListReturn [i][j])					
+					blogList.push(BlogListReturn[i][j])					
 				}				
 			}					
 			resultEvent.Result.Success =true;
-			resultEvent.Result.Data.blogs = BlogListReturn;	
+			resultEvent.Result.Data.blogs = blogList;		
+
 			return resultEvent;			
 		})
-	})
-	.catch(function(err)
-	{      
+      
+    })
+    .catch(function(err) 
+	{		
 		resultEvent.Result.Success = false;
-		resultEvent.Result.Error = err;		
-		return resultEvent;
-	});
-}  
+        resultEvent.Result.Error = err;		
+	    return resultEvent;
+    });
+}
+
+
+
+
+	
+/*	
+var getBlogs = function getBlogs(lastUpdated) 
+{
+    var resultEvent = {};
+    resultEvent.Result = {}
+    resultEvent.Result.Success = false;
+
+    resultEvent.Result.Data = {};
+    resultEvent.Result.Data.blogs = [];
+	
+
+    var date = toTimeZone(lastUpdated.created_at_min,lastUpdated.timezone);
+    var blogList = [];	
+    return shopify.blog.count({updated_at_min: date}).then(function(count){
+       
+        var listInputs=[];
+        var countEnd = parseInt(count/lastUpdated.limit) + 1 ;
+		for(i=1; i<=countEnd;i++)
+		{
+			listInputs.push(i);
+		}	
+        
+		 var actions = listInputs.map(function(input)
+		 { 			
+			 return shopify.blog.list({ updated_at_min: date, limit: lastUpdated.limit, page:input});
+		 });
+        
+        var returns = Promise.all(actions);
+		
+		return returns.then(BlogListReturn =>
+		{	
+			for(var i = 0; i< BlogListReturn.length;i++)
+			{					
+				for(var j =0; j < BlogListReturn[i].length;j++)
+				{	
+					blogList.push(BlogListReturn[i][j])					
+				}				
+			}					
+			resultEvent.Result.Success =true;
+			resultEvent.Result.Data.blogs = blogList;		
+
+			return resultEvent;			
+		})
+      
+    })
+    .catch(function(err) 
+	{		
+		resultEvent.Result.Success = false;
+        resultEvent.Result.Error = err;		
+	    return resultEvent;
+    });
+}
+
+*/
+
+
+
 
    
 

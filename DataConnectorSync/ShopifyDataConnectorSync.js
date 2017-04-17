@@ -26,7 +26,8 @@ var syncDataRetry = function syncDataRetry(lastUpdated)
 		return syncData(lastUpdated)
 		.catch(err=>
 		{
-			console.log('Error Sync Shopify Data: '+ err);				
+			console.log('Error Sync Shopify Data: '+ err);	
+			utils.WriteFileTxt('Error Sync Shopify Data: '+ err);				
 		});
 	})
 	.then(function (value) 
@@ -46,6 +47,7 @@ var syncDataRetry = function syncDataRetry(lastUpdated)
 			if (err) 
 			{
 				console.error(err.message);
+				utils.WriteFileTxt('Error Sync Shopify Data: '+ err.message);	
 				return;
 			}
 			console.log('Shopify last updated saved successfully.');
@@ -69,31 +71,22 @@ var syncData = function syncData(lastUpdated){
 		 return syncDataCustomer(lastUpdated,lstDataSet).then(resultCustome=>
 		 {
 			return syncDataEvents(lastUpdated,lstDataSet).then(resultEvents=>
-			{
-				return resultEvent.Result.Success= true;
-				//console.log("Started Sync Shopify Events Data");
-				
-/*				
+			{			
 				return syncDataComments(lastUpdated,lstDataSet).then(resultComments=>
 				{
-					//console.log("Completed Sync Shopify Events Data");
 					
 					return syncDataProducts(lastUpdated,lstDataSet).then(resultProducts=>
 					{
 						return syncDataBlogs(lastUpdated,lstDataSet).then(resultBlogs=>
-						{							
-							//console.log("syncDataBlogs Completed");			
-							
+						{
 							return syncDataArticles(lastUpdated,lstDataSet).then(resultArticles=>
 							{			
-								//console.log("syncDataArticles Completed");	
 								return syncDataSmartCollections(lastUpdated,lstDataSet).then(resultSmartCollections=>
 								{
 									return syncDataCustomCollections(lastUpdated,lstDataSet).then(resultCustomCollections=>
 									{
 										 return syncDataTransactions(lastUpdated,lstDataSet).then(resultTransactions=>
-										 {
-											
+										 {											
 											return syncDataOrder(lastUpdated,lstDataSet).then(resultOrder=>
 											{												
 												return resultEvent.Result.Success= true;
@@ -106,12 +99,13 @@ var syncData = function syncData(lastUpdated){
 						});
 					});     
 				});
-				*/
+				
 		   });
 		});
 	});
 }
 
+/*
 var syncDataBlogs = function syncDataBlogs(lastUpdated,currentListDataset) 
 {
 	console.log("Started Sync Shopify Blog Data");
@@ -131,17 +125,23 @@ var syncDataBlogs = function syncDataBlogs(lastUpdated,currentListDataset)
 			if(resultBlogs.Result.Data.blogs.length>0)
 			{
 				var datos = resultBlogs.Result.Data;
+				var datos = resultCustomer.Result.Data;
 				
 				console.log("Shopify Blog Data to Sync:"+ JSON.stringify(datos));
 				utils.WriteFileTxt("Shopify Blog Data to Sync:"+ JSON.stringify(datos));
 				
 				var datasetShopify = ShopifyCon.NumetricShopifyFormat(resultBlogs.Result.Data,"id","blogs");
-								
+				
+				console.log("Shopify Blog Data Dataset:"+ JSON.stringify(datasetShopify));
+				utils.WriteFileTxt("Shopify Blog Data Dataset:"+ JSON.stringify(datasetShopify));
+				
+				
 				var datasetNames =['blogs'];
 
 				return numetricDataConnectorLogic.verifyCreateManyDatasetNumetric(datasetNames,currentListDataset,datasetShopify.DataSetList).then(resultVerify=>
 				{
-					for (var i = 0; i < resultVerify.length; i++ ) {
+					for (var i = 0; i < resultVerify.length; i++ ) 
+					{
 						if(resultVerify[i].Result.Success){
 							resultBlogs.Result[resultVerify[i].Result.datasetName] = {};
 							resultBlogs.Result[resultVerify[i].Result.datasetName].id=resultVerify[i].Result.Id;
@@ -169,6 +169,7 @@ var syncDataBlogs = function syncDataBlogs(lastUpdated,currentListDataset)
 	})
 	
 }
+*/
 
 var syncDataCustomer = function syncDataCustomer(lastUpdated,currentListDataset) 
 {
@@ -391,6 +392,67 @@ var syncDataComments = function syncDataComments(lastUpdated,currentListDataset)
 						utils.WriteFileTxt("Completed Sync Shopify Comments Data");
 						console.log("Shopify Comments Data Synchronized:"+ JSON.stringify(resultComments.Result.Data));
 						utils.WriteFileTxt("Shopify Comments Data Synchronized:"+ JSON.stringify(resultComments.Result.Data));
+						return results;
+					});
+
+				});  
+			} 
+		}
+		else
+		{
+				resultEvent.Result.Success = true;
+				return resultEvent;
+		}
+	})
+}
+
+
+
+var syncDataBlogs = function syncDataBlogs(lastUpdated,currentListDataset) 
+{
+	console.log("Started Sync Shopify Blogs Data");
+	utils.WriteFileTxt("Started Sync Shopify Blogs Data");
+	
+	var resultEvent = {};
+    resultEvent.Result = {}
+    resultEvent.Result.Success = false;
+	
+	return 	ShopifyData.getBlogs(lastUpdated).then(resultBlogs=>		
+	{ 
+		if(resultBlogs.Result.Success)
+		{			
+			console.log("Shopify Blogs Data to Sync Row Count: "+ resultBlogs.Result.Data.blogs.length);
+			utils.WriteFileTxt("Shopify Blogs Data to Sync Row Count: "+ resultBlogs.Result.Data.blogs.length);
+			
+			if(resultBlogs.Result.Data.blogs.length>0)
+			{				
+				var datos = resultBlogs.Result.Data;
+				
+				console.log("Shopify Blogs Data to Sync:"+ JSON.stringify(datos));
+				utils.WriteFileTxt("Shopify Blogs Data to Sync:"+ JSON.stringify(datos));
+			
+				var datasetShopify = ShopifyCon.NumetricShopifyFormat(resultBlogs.Result.Data,"id","blogs");
+				
+				var datasetNames =['blogs'];
+				
+				return numetricDataConnectorLogic.verifyCreateManyDatasetNumetric(datasetNames,currentListDataset,datasetShopify.DataSetList).then(resultVerify=>
+				{
+					for (var i = 0; i < resultVerify.length; i++ ) 
+					{
+						if(resultVerify[i].Result.Success)
+						{
+							resultBlogs.Result[resultVerify[i].Result.datasetName] = {};
+							resultBlogs.Result[resultVerify[i].Result.datasetName].id=resultVerify[i].Result.Id;
+						}
+					}
+					resultBlogs.Result.Data = datos;
+					
+					return ShopifyCon.sendRowsShopifyToNumetric(resultBlogs.Result).then(results=>
+					{
+						console.log("Completed Sync Shopify Blogs Data");
+						utils.WriteFileTxt("Completed Sync Shopify Blogs Data");
+						console.log("Shopify Blogs Data Synchronized:"+ JSON.stringify(resultBlogs.Result.Data));
+						utils.WriteFileTxt("Shopify Blogs Data Synchronized:"+ JSON.stringify(resultBlogs.Result.Data));
 						return results;
 					});
 
