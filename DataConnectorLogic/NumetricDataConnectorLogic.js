@@ -45,30 +45,41 @@ var verifyCreateDatasetNumetric = function(datasetName,data,currentListDataset) 
 		
 		if(!found)
 		{				
-			var datasetBody = SearchDataSet(datasetName,data);			
+			var datasetBody = SearchDataSet(datasetName,data);	
+			utils.WriteFileTxt("AQUI ESTA");
+			utils.WriteFileTxt(JSON.stringify(datasetBody));
 			
-			return NumetricCon.generateDataSetNumetric(datasetBody.Data).then(res=>
-			{
-				if(res.Result.Success)
-				{	
-					console.log("Completed Create "+ datasetName + " Dataset");
+			//if(datasetBody.Result.Data.length>0){
+				return NumetricCon.generateDataSetNumetric(datasetBody.Data).then(res=>
+				{
+					if(res.Result.Success)
+					{	
+						console.log("Completed Create "+ datasetName + " Dataset ID:" + res.Response.id);
+						utils.WriteFileTxt("Completed Create "+ datasetName + " Dataset ID:" + res.Response.id);
+											
+						resultEvent.Result.Id = res.Response.id;					
+					}
+					resultEvent.Result.Success = res.Result.Success;
+					//callback(resultEvent);
+					//return resultEvent;
+					sendDataSetId(resultEvent);
+				})
+				.catch(err=>
+				{
+					console.log("verifyCreateDatasetNumetric error DataSet "+ datasetName + " Error:" + err);
+					//utils.WriteFileTxt("verifyCreateDatasetNumetric error DataSet "+ datasetName + " Error:" + err);
 					
-					resultEvent.Result.Id = res.Response.id;					
-				}
-				resultEvent.Result.Success = res.Result.Success;
-				//callback(resultEvent);
-		        //return resultEvent;
-		        sendDataSetId(resultEvent);
-			})
-			.catch(err=>
-			{
-				sendCatch(err);
-			});
+					sendCatch(err);
+				});
+			//}else{
+			//	return resultEvent.Result.Success = false;
+			//}
 		}
 		else
 		{
 	//}		
 		console.log("The "+ datasetName + " Dataset already exists");
+		utils.WriteFileTxt("The "+ datasetName + " Dataset already exists");
 		//return callback(resultEvent);
 			sendDataSetId(resultEvent);
 		}

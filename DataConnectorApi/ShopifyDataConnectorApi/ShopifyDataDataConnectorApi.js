@@ -51,29 +51,6 @@ var getTimeZone = function getTimeZone(callback){
     });
 }
 
-/*
-var getOrders = function getOrders(lastUpdated){    
-    var resultEvent = {};
-    resultEvent.Result = {}
-    resultEvent.Result.Success = false;
-    var date = toTimeZone(lastUpdated.created_at_min,lastUpdated.timezone);
-    return shopify.order.list({ created_at_min: date}).then(function(orders) 
-	{
-        resultEvent.Result.Data  = {}; 
-        resultEvent.Result.Data.orders = [];
-        resultEvent.Result.Data.orders = orders
-        resultEvent.Result.Success = true;
-        //callback(resultEvent);
-		return resultEvent;
-    })
-    .catch(function(err) {
-        resultEvent.Result.Success = false;
-        resultEvent.Result.Error = err;
-        //callback(resultEvent);
-		return resultEvent;
-    });
-}
-*/
 
 var getOrders = function getOrders(lastUpdated)
 {    
@@ -81,11 +58,14 @@ var getOrders = function getOrders(lastUpdated)
     resultEvent.Result = {}
     resultEvent.Result.Success = false;
 
+	resultEvent.Result.Data = {};
+    resultEvent.Result.Data.orders = [];
+	
     var date = toTimeZone(lastUpdated.created_at_min,lastUpdated.timezone);
 
 	var orderList = [];	
 	
-	return shopify.order.count({updated_at_min: date}).then(function(count)
+	return shopify.order.count({updated_at_min:date}).then(function(count)
 	{        
         var listInputs=[];
         var countEnd = parseInt(count/lastUpdated.limit) + 1 ;
@@ -599,69 +579,6 @@ var getBlogs = function getBlogs(lastUpdated)
 
 
 
-
-	
-/*	
-var getBlogs = function getBlogs(lastUpdated) 
-{
-    var resultEvent = {};
-    resultEvent.Result = {}
-    resultEvent.Result.Success = false;
-
-    resultEvent.Result.Data = {};
-    resultEvent.Result.Data.blogs = [];
-	
-
-    var date = toTimeZone(lastUpdated.created_at_min,lastUpdated.timezone);
-    var blogList = [];	
-    return shopify.blog.count({updated_at_min: date}).then(function(count){
-       
-        var listInputs=[];
-        var countEnd = parseInt(count/lastUpdated.limit) + 1 ;
-		for(i=1; i<=countEnd;i++)
-		{
-			listInputs.push(i);
-		}	
-        
-		 var actions = listInputs.map(function(input)
-		 { 			
-			 return shopify.blog.list({ updated_at_min: date, limit: lastUpdated.limit, page:input});
-		 });
-        
-        var returns = Promise.all(actions);
-		
-		return returns.then(BlogListReturn =>
-		{	
-			for(var i = 0; i< BlogListReturn.length;i++)
-			{					
-				for(var j =0; j < BlogListReturn[i].length;j++)
-				{	
-					blogList.push(BlogListReturn[i][j])					
-				}				
-			}					
-			resultEvent.Result.Success =true;
-			resultEvent.Result.Data.blogs = blogList;		
-
-			return resultEvent;			
-		})
-      
-    })
-    .catch(function(err) 
-	{		
-		resultEvent.Result.Success = false;
-        resultEvent.Result.Error = err;		
-	    return resultEvent;
-    });
-}
-
-*/
-
-
-
-
-   
-
-
 module.exports = {
     getTimeZone : getTimeZone,
 	getCustomers : getCustomers,
@@ -679,9 +596,9 @@ module.exports = {
 };
 
 /*
-getCustomers(lastUpdated).then(resultCustomer=>
+getOrders(lastUpdated).then(resultCustomer=>
 { 			
      utils.WriteFileTxt(JSON.stringify(resultCustomer));	
     
  })
- */
+*/ 
