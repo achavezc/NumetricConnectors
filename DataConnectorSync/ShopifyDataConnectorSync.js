@@ -415,8 +415,8 @@ var syncDataProducts = function syncDataProducts(lastUpdated,currentListDataset)
 	{ 
 		if(resultProducts.Result.Success)
 		{	
-			console.log("Shopify Products Data to Sync Row Count: "+ resultEvents.Result.Data.products.length);
-			utils.WriteFileTxt("Shopify Products Data to Sync Row Count: "+ resultEvents.Result.Data.products.length);
+			console.log("Shopify Products Data to Sync Row Count: "+ resultProducts.Result.Data.products.length);
+			utils.WriteFileTxt("Shopify Products Data to Sync Row Count: "+ resultProducts.Result.Data.products.length);
 			
 			if(resultProducts.Result.Data.products.length>0)
 			{				
