@@ -15,7 +15,7 @@ const shopify = new Shopify({
 lastUpdated = {
   created_at_min : '01/01/2017 4:52:48 PM',
   timezone : 'GMT-11:00',
-  limit: 50
+  limit: 250
 }
 
 function toTimeZone(time, zone) {
@@ -390,45 +390,59 @@ var getTransactions = function getTransactions(lastUpdated)
     var date = toTimeZone(lastUpdated.created_at_min,lastUpdated.timezone);
 
 	var transactionList = [];	
-
-	return shopify.order.list({ updated_at_min: date}).then(function(orders) 
-	{		
+ 	return shopify.order.count({updated_at_min: date}).then(function(count){
 		var listInputs=[];
-		
-		for(i=0; i<orders.length;i++)
+        var countEnd = parseInt(count/lastUpdated.limit) + 1 ;
+		for(i=1; i<=countEnd;i++)
 		{
-			listInputs.push(orders[i].id);
+			listInputs.push(i);
 		}	
-		
+        
 		 var actions = listInputs.map(function(input)
 		 { 			
-			 return shopify.transaction.list(input,{ updated_at_min: date});		 
+			 return shopify.order.list({ updated_at_min: date, limit: lastUpdated.limit, page:input});
 		 });
-		
-		var returns = Promise.all(actions);
-		
-		return returns.then(TransactionListReturn =>
+        
+        var returns = Promise.all(actions);
+		return returns.then(orders =>
 		{	
-			for(var i = 0; i< TransactionListReturn.length;i++)
-			{					
-				for(var j =0; j < TransactionListReturn[i].length;j++)
-				{	
-					transactionList.push(TransactionListReturn[i][j])					
-				}				
-			}			
+			var listInputsIdOrder=[];
+		
+			for(i=0; i<orders.length;i++)
+			{
+				for(j=0; j<orders[i].length;j++){
+					listInputsIdOrder.push(orders[i][j].id);
+				}
+			}	
 			
-					
-			resultEvent.Result.Success =true;
-			resultEvent.Result.Data.transactions = transactionList;		
+			var actions = listInputsIdOrder.map(function(input)
+			{ 			
+				return shopify.transaction.list(input,{ updated_at_min: date});		 
+			});
+			
+			var returns = Promise.all(actions);
+			
+			return returns.then(TransactionListReturn =>
+			{	
+				for(var i = 0; i< TransactionListReturn.length;i++)
+				{					
+					for(var j =0; j < TransactionListReturn[i].length;j++)
+					{	
+						transactionList.push(TransactionListReturn[i][j])					
+					}				
+				}				
+				resultEvent.Result.Success =true;
+				resultEvent.Result.Data.transactions = transactionList;		
 
-			return resultEvent;			
+				return resultEvent;			
+			})
 		})
-    })
+		
+	})   
     .catch(function(err) 
 	{
         resultEvent.Result.Success = false;
         resultEvent.Result.Error = err;
-        //callback(resultEvent);
 		return resultEvent;
     });
     
@@ -608,10 +622,10 @@ module.exports = {
 
 };
 
-/*
-getOrders(lastUpdated).then(resultCustomer=>
-{ 			
+
+getTransactions(lastUpdated).then(resultCustomer=>
+{ 		
      utils.WriteFileTxt(JSON.stringify(resultCustomer));	
     
  })
-*/ 
+ 
