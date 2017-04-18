@@ -19,7 +19,12 @@ lastUpdated = {
 }
 
 function toTimeZone(time, zone) {
-    return  new Date(time + ' ' +  zone).toISOString();
+	zone = zone.replace('-','+');
+	var date = new Date(time);
+	var dateLocal = date.getUTCMonth() + 1 + "/" + date.getUTCDate() + "/" + date.getUTCFullYear() 
+					+ " " + date.getUTCHours() + ":" + date.getUTCMinutes() +":" + date.getUTCSeconds() ;
+	
+    return  new Date(dateLocal + ' ' +  zone).toISOString();
 }
 
 var getTimeZone = function getTimeZone(callback){
