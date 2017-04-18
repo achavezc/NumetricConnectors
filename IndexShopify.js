@@ -35,8 +35,7 @@ var onJobStarted = function()
 		dateInitial = conf.parameters().initialDateTimeShopify;
 	}
 	
-	console.log('dateInitial: '+ dateInitial);
-	utils.WriteFileTxt('dateInitial: '+ dateInitial);	
+		
 	
 
 	var lastUpdated = 
