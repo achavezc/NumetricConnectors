@@ -76,34 +76,33 @@ var syncData = function syncData(lastUpdated)
 		return syncDataCustomer(lastUpdated,lstDataSet).then(resultCustome=>
 		 {				
 			 return syncDataComments(lastUpdated,lstDataSet).then(resultComments=>
-			{		
-				return resultEvent.Result.Success= true;
-				 // return syncDataProducts(lastUpdated,lstDataSet).then(resultProducts=>
-				 // {
-					 // return syncDataBlogs(lastUpdated,lstDataSet).then(resultBlogs=>
-					 // {
-						 // return syncDataArticles(lastUpdated,lstDataSet).then(resultArticles=>
-						 // {			
-							 // return syncDataSmartCollections(lastUpdated,lstDataSet).then(resultSmartCollections=>
-							 // {
-								 // return syncDataCustomCollections(lastUpdated,lstDataSet).then(resultCustomCollections=>
-								 // {
-									  // return syncDataTransactions(lastUpdated,lstDataSet).then(resultTransactions=>
-									  // {											
-										// return syncDataEvents(lastUpdated,lstDataSet).then(resultEvents=>
-											 // {	
-												// return syncDataOrder(lastUpdated,lstDataSet).then(resultOrder=>
-												// {												
-													// return resultEvent.Result.Success= true;
-												// });
-											 // });	
+			{					
+				 return syncDataProducts(lastUpdated,lstDataSet).then(resultProducts=>
+				 {
+					 return syncDataBlogs(lastUpdated,lstDataSet).then(resultBlogs=>
+					 {
+						 return syncDataArticles(lastUpdated,lstDataSet).then(resultArticles=>
+						 {			
+							 return syncDataSmartCollections(lastUpdated,lstDataSet).then(resultSmartCollections=>
+							 {
+								 return syncDataCustomCollections(lastUpdated,lstDataSet).then(resultCustomCollections=>
+								 {
+									  return syncDataTransactions(lastUpdated,lstDataSet).then(resultTransactions=>
+									  {											
+										return syncDataEvents(lastUpdated,lstDataSet).then(resultEvents=>
+											 {	
+												return syncDataOrder(lastUpdated,lstDataSet).then(resultOrder=>
+												{												
+													return resultEvent.Result.Success= true;
+												});
+											 });	
 										
-									  // });											
-								 // });
-							 // });
-						 // });
-					 // });
-				 // });     
+									  });											
+								 });
+							 });
+						 });
+					 });
+				 });     
 			 });		   
 		});
 	});
