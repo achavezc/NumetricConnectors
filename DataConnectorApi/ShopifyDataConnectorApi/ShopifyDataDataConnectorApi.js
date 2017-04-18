@@ -219,6 +219,9 @@ var getComments = function getComments(lastUpdated)
 	
     var date = toTimeZone(lastUpdated.created_at_min,lastUpdated.timezone);
 	
+	console.log('getComments date: '+ date);
+	utils.WriteFileTxt('getComments date: '+ date);
+	
 	var commentList = [];
 	
 	return shopify.comment.count({updated_at_min: date}).then(function(count)
@@ -325,6 +328,11 @@ var getCustomers = function getCustomers(lastUpdated)
     resultEvent.Result.Data.customers = [];
 
     var date = toTimeZone(lastUpdated.created_at_min,lastUpdated.timezone);
+	
+	console.log('getCustomers date: '+ date);
+	utils.WriteFileTxt('getCustomers date: '+ date);
+	
+	
     var customerList = [];	
     return shopify.customer.count({updated_at_min: date}).then(function(count){
        

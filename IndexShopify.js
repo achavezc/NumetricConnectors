@@ -34,10 +34,14 @@ var onJobStarted = function()
 	{
 		dateInitial = conf.parameters().initialDateTimeShopify;
 	}
+	
+	console.log('dateInitial: '+ dateInitial);
+	utils.WriteFileTxt('dateInitial: '+ dateInitial);	
+	
 
 	var lastUpdated = 
 	{
-	  created_at_min : conf.parameters().initialDateTimeShopify, //dateInitial,
+	  created_at_min : dateInitial,
 	  timezone :conf.parameters().timezone,
 	  limit: conf.parameters().limitShopify
 	}

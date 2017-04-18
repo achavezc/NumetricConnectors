@@ -72,8 +72,8 @@ var updateRowsDataSetNumetric = function(datasetId,data)
 	return rp(conf.parameters(data).optionsUpdateRowsDataSet).then(response =>{
      		 resultEvent.Response  = response;
         	 resultEvent.Result.Success = true;
-			 console.log("updateRowsDataSetNumetric DataSetId "+ datasetId);
-			 utils.WriteFileTxt("updateRowsDataSetNumetric DataSetId "+ datasetId);
+			 // console.log("updateRowsDataSetNumetric DataSetId "+ datasetId);
+			 // utils.WriteFileTxt("updateRowsDataSetNumetric DataSetId "+ datasetId);
 	
 				
 		     return resultEvent;
@@ -81,8 +81,7 @@ var updateRowsDataSetNumetric = function(datasetId,data)
 	{
 			console.log("updateRowsDataSetNumetric error DataSet "+ datasetName + " Error:" + err);
 			utils.WriteFileTxt("updateRowsDataSetNumetric error DataSet "+ datasetName + " Error:" + err);
-			
-			console.log(err);
+		
 			resultEvent.Result.Success = false;
         	resultEvent.Result.Error = err;
         	return resultEvent;

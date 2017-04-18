@@ -28,7 +28,7 @@ var verifyCreateDatasetNumetric = function(datasetName,data,currentListDataset) 
 	//return NumetricCon.getDataSetNumetric().then(result=>{
 	return new Promise(function(sendDataSetId,sendCatch) {
 	 
-	//if(result.Result.Success==false){
+	
 		for (var i = 0; i < currentListDataset.Response.length; i++ )
 		{
 			if(currentListDataset.Response[i].name==datasetName)
@@ -36,20 +36,15 @@ var verifyCreateDatasetNumetric = function(datasetName,data,currentListDataset) 
 				found=true;
 				resultEvent.Result.Id = currentListDataset.Response[i].id;
 				resultEvent.Result.Success = true;
-  				sendDataSetId(resultEvent);
-				//});
-				//return resultEvent
-		        //callback(resultEvent);
+  				sendDataSetId(resultEvent);				
 			}
 		}
 		
 		if(!found)
 		{				
-			var datasetBody = SearchDataSet(datasetName,data);	
-			utils.WriteFileTxt("AQUI ESTA");
-			utils.WriteFileTxt(JSON.stringify(datasetBody));
+			var datasetBody = SearchDataSet(datasetName,data);				
 			
-			//if(datasetBody.Result.Data.length>0){
+			
 				return NumetricCon.generateDataSetNumetric(datasetBody.Data).then(res=>
 				{
 					if(res.Result.Success)
@@ -67,20 +62,17 @@ var verifyCreateDatasetNumetric = function(datasetName,data,currentListDataset) 
 				.catch(err=>
 				{
 					console.log("verifyCreateDatasetNumetric error DataSet "+ datasetName + " Error:" + err);
-					//utils.WriteFileTxt("verifyCreateDatasetNumetric error DataSet "+ datasetName + " Error:" + err);
+					utils.WriteFileTxt("verifyCreateDatasetNumetric error DataSet "+ datasetName + " Error:" + err);
 					
 					sendCatch(err);
 				});
-			//}else{
-			//	return resultEvent.Result.Success = false;
-			//}
+			
 		}
 		else
 		{
-	//}		
-		console.log("The "+ datasetName + " Dataset already exists");
-		utils.WriteFileTxt("The "+ datasetName + " Dataset already exists");
-		//return callback(resultEvent);
+			console.log("The "+ datasetName + " Dataset already exists");
+			utils.WriteFileTxt("The "+ datasetName + " Dataset already exists");
+		
 			sendDataSetId(resultEvent);
 		}
 	});

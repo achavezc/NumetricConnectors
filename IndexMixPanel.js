@@ -29,9 +29,12 @@ var onJobStarted = function()
 	//console.log(moment().tz("America/Los_Angeles").format("YYYY-MM-DD"));
 	var dateEnd = moment().tz("America/Los_Angeles").format("YYYY-MM-DD");
 	var dateInitial = "";
-	if(nconf.get('lastUpdateMixPanelEvent')!= ""){
+	if(nconf.get('lastUpdateMixPanelEvent')!= "")
+	{
 		dateInitial = nconf.get('lastUpdateMixPanelEvent');
-	}else{
+	}
+	else
+	{
 		dateInitial = conf.parameters().initialDateTimeMixPanel;
 	}
 
@@ -39,8 +42,9 @@ var onJobStarted = function()
 	var fomratted = dt.format('Y-m-d');
 
 
-	var lastUpdated = {
-	  from_date :  conf.parameters().initialDateTimeMixPanel,//dateInitial,
+	var lastUpdated = 
+	{
+	  from_date :  dateInitial,
 	  to_date : dateEnd//formatted
 	}
 	//console.log(lastUpdated);
