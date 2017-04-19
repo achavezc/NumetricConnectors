@@ -39,6 +39,6 @@ var onJobStarted = function()
 };
 
 
-cron.schedule(mixPanelJobFrequency, onJobStarted);
+cron.schedule(mixPanelJobFrequency, onJobStarted,true);
 
 

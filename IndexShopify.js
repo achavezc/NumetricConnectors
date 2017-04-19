@@ -7,13 +7,13 @@ const ShopifyDataConSync = require("./DataConnectorSync/ShopifyDataConnectorSync
 var conf = new config();
 var datetime = require('node-datetime');
 var cron = require('node-cron');
-
+var nconf = require('nconf');
 var shopifyJobFrequency = conf.parameters().shopifyJobFrequency ;
 
 
 var onJobStarted = function()
 {
-	var nconf = require('nconf');
+
 	nconf.use('file', { file: './ConfigDate/DateTimeLastSync.json' });
 	nconf.load();
 
@@ -59,7 +59,7 @@ var onJobStarted = function()
 };
 
 
-cron.schedule(shopifyJobFrequency, onJobStarted);
+cron.schedule(shopifyJobFrequency, onJobStarted,true);
 
 
 
