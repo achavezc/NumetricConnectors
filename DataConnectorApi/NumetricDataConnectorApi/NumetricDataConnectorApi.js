@@ -1,32 +1,32 @@
-'use strict'
+'use strict';
 
-const config = require("../../Config/Config")
-const rp = require('request-promise')
-const utils = require("./../../Helper/Util")
+const config = require("../../Config/Config");
+const rp = require('request-promise');
+const utils = require("./../../Helper/Util");
 //const seq = require("../../sequence").Sequence
 
 var getDataSetNumetric = function(){
 	var conf = new config();
 	var resultEvent = {};
-    resultEvent.Result = {}
+    resultEvent.Result = {};
     resultEvent.Result.Success = false;
 
     return rp(conf.parameters().optionsGetDataSet).then(response =>{
 		     resultEvent.Response  = response;
         	 resultEvent.Result.Success = true;
 		     return resultEvent;
-			})
+			});
 			/*.catch(function(err){ 
 			    resultEvent.Result.Success = false;
         		resultEvent.Result.Error = err;
         		return resultEvent;
 			});*/
-}
+};
 
 var getDataSetNumetricById = function(datasetId){
 	var conf = new config(datasetId);
 	var resultEvent = {};
-    resultEvent.Result = {}
+    resultEvent.Result = {};
     resultEvent.Result.Success = false;
 
 	return rp(conf.parameters().optionsGetDataSetById).then(response =>{
@@ -39,12 +39,12 @@ var getDataSetNumetricById = function(datasetId){
         	resultEvent.Result.Error = err;
         	return resultEvent;
 	});
-}
+};
 
 var generateDataSetNumetric = function(data){
 	var conf = new config();
 	var resultEvent = {};
-    resultEvent.Result = {}
+    resultEvent.Result = {};
     resultEvent.Result.Success = false;
 
 	return rp(conf.parameters(data).optionsCreateDataSet).then(response =>{
@@ -52,20 +52,20 @@ var generateDataSetNumetric = function(data){
      		 resultEvent.Response  = response;
         	 resultEvent.Result.Success = true;
 		     return resultEvent;
-	})
+	});
 	/*.catch(function(err){ 
 		    
 			resultEvent.Result.Success = false;
         	resultEvent.Result.Error = err;
         	return resultEvent;
 	});*/
-}
+};
 
 var updateRowsDataSetNumetric = function(datasetId,data)
 {
 	var conf = new config(datasetId);
 	var resultEvent = {};
-    resultEvent.Result = {}
+    resultEvent.Result = {};
     resultEvent.Result.Success = false;    
 	
 		
@@ -88,12 +88,12 @@ var updateRowsDataSetNumetric = function(datasetId,data)
 	});
 	
 	
-}
+};
 
 var getRowsDataSetNumetric = function(datasetId){
 	var conf = new config(datasetId);
 	var resultEvent = {};
-    resultEvent.Result = {}
+    resultEvent.Result = {};
     resultEvent.Result.Success = false;
 
 	return rp(conf.parameters().optionsGetRowsDataSet).then(response =>{
@@ -106,12 +106,12 @@ var getRowsDataSetNumetric = function(datasetId){
         	resultEvent.Result.Error = err;
         	return resultEvent;
 	});
-}
+};
 
 var deleteRowsDataSetNumetric = function(datasetId,data){
 	var conf = new config(datasetId);
 	var resultEvent = {};
-    resultEvent.Result = {}
+    resultEvent.Result = {};
     resultEvent.Result.Success = false;
 
 	return rp(conf.parameters(data).optionsDeleteRowsDataSet).then(response =>{
@@ -124,7 +124,7 @@ var deleteRowsDataSetNumetric = function(datasetId,data){
         	resultEvent.Result.Error = err;
         	return resultEvent;
 	});
-}
+};
 
 module.exports = {
 	getDataSetNumetric: getDataSetNumetric,
@@ -133,4 +133,4 @@ module.exports = {
 	updateRowsDataSetNumetric : updateRowsDataSetNumetric,
 	getRowsDataSetNumetric: getRowsDataSetNumetric,
 	deleteRowsDataSetNumetric : deleteRowsDataSetNumetric
-}
+};

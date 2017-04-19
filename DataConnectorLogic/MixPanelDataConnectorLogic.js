@@ -1,13 +1,13 @@
-'use strict'
+'use strict';
 
-const mapper = require("json2json-transform")
-const config = require("../Config/Config")
-const utils = require("../Helper/Util")
-const NumetricCon = require("../DataConnectorApi/NumetricDataConnectorApi/NumetricDataConnectorApi")
-const datasetsMixPanel = require("../Model/datasetsMixPanel")
+const mapper = require("json2json-transform");
+const config = require("../Config/Config");
+const utils = require("../Helper/Util");
+const NumetricCon = require("../DataConnectorApi/NumetricDataConnectorApi/NumetricDataConnectorApi");
+//const datasetsMixPanel = require("../Model/datasetsMixPanel");
 
 
-function NumetricMixPanelFormat(inputData,namePk,fieldsName)
+function NumetricMixPanelFormat(inputData)
 {
 	var conf = new config();
 	//return  mapper.transform(inputData, conf.parameters().plantillaJsonDestino, conf.parameters().operations);
@@ -15,11 +15,11 @@ function NumetricMixPanelFormat(inputData,namePk,fieldsName)
     return result[""];
 }
 
-
+/*
 var NumetricShopifyFormat = function(inputData,namePk,fieldsName){
 	return utils.GenerateDataSetsNumetricFromShopify(inputData,"MixPanel",namePk,fieldsName);
-}
-
+};
+*/
 
 
 function updateRowsMixPanel(inputMixPanel){
@@ -54,8 +54,7 @@ function updateRowsMixPanel(inputMixPanel){
 					}
 	
 	var actions = listInputs.map(function(input){ return NumetricCon.updateRowsDataSetNumetric(input.id,input.rows);});
-	var results = Promise.all(actions);
-	return results;
+	return Promise.all(actions);
 	//NumetricCon.updateRowsDataSetNumetric(inputMixPanel.MixPanelEvent.id,JsonResult);
 }
 
@@ -63,7 +62,7 @@ var generateDataSetMixPanelAux = function(inputMixPanel){
 
 
 var inputData;
-var conf = new config();
+
 
 if(utils.isArray(inputMixPanel.Data)){
     
@@ -76,16 +75,14 @@ if(utils.isArray(inputMixPanel.Data)){
 var finalFormatMixPanel = NumetricMixPanelFormat(inputData);
 
 
-var datasetmixpanel = utils.GenerateDataSetsNumetricFromMixPanel(finalFormatMixPanel);
-
- return datasetmixpanel;
-} 
-
+return utils.GenerateDataSetsNumetricFromMixPanel(finalFormatMixPanel);
+};
+/*
 var verifyDatasetMixPanel = function(){
 
 	var found = false;
 	var resultEvent = {};
-    resultEvent.Result = {}
+    resultEvent.Result = {};
     resultEvent.Result.Success = false;
 	return NumetricCon.getDataSetNumetric().then(result=>{ 
 	//if(result.Result.Success==false){
@@ -111,11 +108,12 @@ var verifyDatasetMixPanel = function(){
 	//}
 	return result;
 });
-}
+};
+*/
 
 
 module.exports={
 	updateRowsMixPanel : updateRowsMixPanel,
-	verifyDatasetMixPanel : verifyDatasetMixPanel,
+	//verifyDatasetMixPanel : verifyDatasetMixPanel,
 	generateDataSetMixPanelAux : generateDataSetMixPanelAux
-}
+};

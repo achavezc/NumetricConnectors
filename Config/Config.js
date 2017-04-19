@@ -72,8 +72,7 @@ config.prototype.parameters = function(data){ return {
 	operations:[{
       run: function (value) {
         var d = new Date(value);
-        var n =  d.toISOString();
-        return n;
+        return d.toISOString();
       },
       on: "time"
     },

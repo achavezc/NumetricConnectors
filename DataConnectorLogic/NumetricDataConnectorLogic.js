@@ -1,26 +1,19 @@
-'use strict'
-
-const mapper = require("json2json-transform")
-const config = require("../Config/Config")
-const utils = require("../Helper/Util")
-const NumetricCon = require("../DataConnectorApi/NumetricDataConnectorApi/NumetricDataConnectorApi")
-
-
-var conf = new config();
+'use strict';
+const utils = require("../Helper/Util");
+const NumetricCon = require("../DataConnectorApi/NumetricDataConnectorApi/NumetricDataConnectorApi");
 
 
 var verifyCreateManyDatasetNumetric = function(arrDataSetNames,currentListDataSet,dataSetBodys){
 	var actions = arrDataSetNames.map(function(input){ return verifyCreateDatasetNumetric(input,dataSetBodys,currentListDataSet);});
-	var results = Promise.all(actions);
-	return results;
-}
+	return Promise.all(actions);
+};
 
 
 var verifyCreateDatasetNumetric = function(datasetName,data,currentListDataset) //callback
 {	
 	var found = false;
 	var resultEvent = {};
-    resultEvent["Result"] = {}
+    resultEvent["Result"] = {};
     resultEvent.Result["Success"] = false;
     resultEvent.Result["datasetName"] = datasetName;
 	resultEvent.Result["Id"] = '';
@@ -76,13 +69,13 @@ var verifyCreateDatasetNumetric = function(datasetName,data,currentListDataset) 
 			sendDataSetId(resultEvent);
 		}
 	});
-}
+};
 
 var SearchDataSet = function(datsetName,dataSetList){
 
 	var found = false;
 	var resultEvent = {};
-    resultEvent["Result"] = {}
+    resultEvent["Result"] = {};
     resultEvent.Result["Success"] = false;
 	resultEvent.Result["Data"] = {};
 
@@ -98,10 +91,10 @@ var SearchDataSet = function(datsetName,dataSetList){
 		resultEvent.Success = false;
 		return resultEvent;
 	}
-}
+};
 
 
 module.exports=
 {	
 	verifyCreateManyDatasetNumetric : verifyCreateManyDatasetNumetric
-}
+};

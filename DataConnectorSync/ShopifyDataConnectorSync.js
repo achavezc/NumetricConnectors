@@ -1,11 +1,11 @@
-'use strict'
-const NumetricCon = require("../DataConnectorApi/NumetricDataConnectorApi/NumetricDataConnectorApi")
-const ShopifyCon = require("../DataConnectorLogic/ShopifyDataConnectorLogic")
-const numetricDataConnectorLogic = require("../DataConnectorLogic/NumetricDataConnectorLogic")
-const ShopifyData = require("../DataConnectorApi/ShopifyDataConnectorApi/ShopifyDataDataConnectorApi")
-const config = require("../Config/Config")
-const utils = require("../Helper/Util")
-const promiseRetry = require('promise-retry')
+'use strict';
+const NumetricCon = require("../DataConnectorApi/NumetricDataConnectorApi/NumetricDataConnectorApi");
+const ShopifyCon = require("../DataConnectorLogic/ShopifyDataConnectorLogic");
+const numetricDataConnectorLogic = require("../DataConnectorLogic/NumetricDataConnectorLogic");
+const ShopifyData = require("../DataConnectorApi/ShopifyDataConnectorApi/ShopifyDataDataConnectorApi");
+const config = require("../Config/Config");
+const utils = require("../Helper/Util");
+const promiseRetry = require('promise-retry');
 var nconf = require('nconf');
 nconf.use('file', { file: '../ConfigDate/DateTimeLastSync.json' });
 var conf = new config();
@@ -14,7 +14,7 @@ var datetime = require('node-datetime');
 
 var options = {
   retries: conf.parameters().retriesCount
-}
+};
 
 
 var syncDataRetry = function syncDataRetry(lastUpdated) 
@@ -30,7 +30,7 @@ var syncDataRetry = function syncDataRetry(lastUpdated)
 			utils.WriteFileTxt('Error Sync Shopify Data: '+ err);				
 		});
 	})
-	.then(function (value) 
+	.then(function ()
 	{
 		console.log('Completed Sync Shopify Data');
 				
@@ -57,13 +57,12 @@ var syncDataRetry = function syncDataRetry(lastUpdated)
 		//aqui grabas si siguio el error despues de los reintentos
 		console.log('Error Sync Shopify Data:'+ err);
 	});
-}
+};
 
 var syncData = function syncData(lastUpdated)
-{	
-	var lstDataSet = []
+{
     var resultEvent = {};
-    resultEvent.Result = {}
+    resultEvent.Result = {};
     resultEvent.Result.Success = false;
 	
 	console.log('lastUpdated: '+ lastUpdated.created_at_min);
@@ -71,7 +70,7 @@ var syncData = function syncData(lastUpdated)
 				
     return NumetricCon.getDataSetNumetric().then(currentListDataset=>
 	{	
-		var lstDataSet = currentListDataset 	
+		var lstDataSet = currentListDataset;
 	
 		return syncDataCustomer(lastUpdated,lstDataSet).then(resultCustome=>
 		 {				
@@ -106,7 +105,7 @@ var syncData = function syncData(lastUpdated)
 			 });		   
 		});
 	});
-}
+};
 
 
 
@@ -116,7 +115,7 @@ var syncDataCustomer = function syncDataCustomer(lastUpdated,currentListDataset)
 	utils.WriteFileTxt('Started Sync Shopify Customer Data');
 	
 	var resultEvent = {};
-    resultEvent.Result = {}
+    resultEvent.Result = {};
     resultEvent.Result.Success = false;
 
 	return 	ShopifyData.getCustomers(lastUpdated).then(resultCustomer=>
@@ -172,7 +171,7 @@ var syncDataCustomer = function syncDataCustomer(lastUpdated,currentListDataset)
 			}
 		}
 	});
-}
+};
 
 
 var syncDataSmartCollections = function syncDataSmartCollections(lastUpdated,currentListDataset) 
@@ -181,7 +180,7 @@ var syncDataSmartCollections = function syncDataSmartCollections(lastUpdated,cur
 	utils.WriteFileTxt("Started Sync Shopify Smart Collections Data");
 
 	var resultEvent = {};
-    resultEvent.Result = {}
+    resultEvent.Result = {};
     resultEvent.Result.Success = false;
 	
 	return 	ShopifyData.getSmartCollections(lastUpdated).then(resultSmartCollection=>		
@@ -231,7 +230,7 @@ var syncDataSmartCollections = function syncDataSmartCollections(lastUpdated,cur
 		}
 		
 	});
-}
+};
 
 
 
@@ -241,7 +240,7 @@ var syncDataEvents = function syncDataEvents(lastUpdated,currentListDataset)
 	utils.WriteFileTxt("Started Sync Shopify Events Data");
 
 	var resultEvent = {};
-    resultEvent.Result = {}
+    resultEvent.Result = {};
     resultEvent.Result.Success = false;
 	
 	return 	ShopifyData.getEvents(lastUpdated).then(resultEvents=>	
@@ -291,7 +290,7 @@ var syncDataEvents = function syncDataEvents(lastUpdated,currentListDataset)
 		}
 	})
 	
-}
+};
 
 var syncDataComments = function syncDataComments(lastUpdated,currentListDataset) 
 {
@@ -299,7 +298,7 @@ var syncDataComments = function syncDataComments(lastUpdated,currentListDataset)
 	utils.WriteFileTxt("Started Sync Shopify Comments Data");
 	
 	var resultEvent = {};
-    resultEvent.Result = {}
+    resultEvent.Result = {};
     resultEvent.Result.Success = false;
 	
 	return 	ShopifyData.getComments(lastUpdated).then(resultComments=>		
@@ -350,7 +349,7 @@ var syncDataComments = function syncDataComments(lastUpdated,currentListDataset)
 				return resultEvent;
 		}
 	})
-}
+};
 
 var syncDataBlogs = function syncDataBlogs(lastUpdated,currentListDataset) 
 {
@@ -358,7 +357,7 @@ var syncDataBlogs = function syncDataBlogs(lastUpdated,currentListDataset)
 	utils.WriteFileTxt("Started Sync Shopify Blogs Data");
 	
 	var resultEvent = {};
-    resultEvent.Result = {}
+    resultEvent.Result = {};
     resultEvent.Result.Success = false;
 	
 	return 	ShopifyData.getBlogs(lastUpdated).then(resultBlogs=>		
@@ -409,7 +408,7 @@ var syncDataBlogs = function syncDataBlogs(lastUpdated,currentListDataset)
 				return resultEvent;
 		}
 	})
-}
+};
 
 
 
@@ -420,7 +419,7 @@ var syncDataOrder = function syncDataOrder(lastUpdated,currentListDataset)
 	utils.WriteFileTxt("Started Sync Shopify Orders Data");
 	
 	var resultEvent = {};
-    resultEvent.Result = {}
+    resultEvent.Result = {};
     resultEvent.Result.Success = false;
 	
 	return 	ShopifyData.getOrders(lastUpdated).then(resultOrder=>	
@@ -498,7 +497,7 @@ var syncDataOrder = function syncDataOrder(lastUpdated,currentListDataset)
 			}
 		}
 	});
-}
+};
 
 
 
@@ -508,7 +507,7 @@ var syncDataProducts = function syncDataProducts(lastUpdated,currentListDataset)
 	utils.WriteFileTxt("Started Sync Shopify Products Data");
 	
 	var resultEvent = {};
-    resultEvent.Result = {}
+    resultEvent.Result = {};
     resultEvent.Result.Success = false;
 	
 	return 	ShopifyData.getProducts(lastUpdated).then(resultProducts=>																																																									//{
@@ -557,7 +556,7 @@ var syncDataProducts = function syncDataProducts(lastUpdated,currentListDataset)
 		}
 	})	
 	
-}
+};
 
 
 
@@ -567,7 +566,7 @@ var syncDataCustomCollections = function syncDataCustomCollections(lastUpdated,c
 	utils.WriteFileTxt("Started Sync Shopify Custom Collections Data");
 	
 	var resultEvent = {};
-    resultEvent.Result = {}
+    resultEvent.Result = {};
     resultEvent.Result.Success = false;
 	
 	return 	ShopifyData.getCustomCollections(lastUpdated).then(resultCustomCollection=>		
@@ -616,7 +615,7 @@ var syncDataCustomCollections = function syncDataCustomCollections(lastUpdated,c
 		}
 		
 	});
-}
+};
 
 
 
@@ -626,7 +625,7 @@ var syncDataTransactions = function syncDataTransactions(lastUpdated,currentList
 	utils.WriteFileTxt("Started Sync Shopify Transactions Data");
 	
 	var resultEvent = {};
-    resultEvent.Result = {}
+    resultEvent.Result = {};
     resultEvent.Result.Success = false;
 	
 	return 	ShopifyData.getTransactions(lastUpdated).then(resultTransactions=>									
@@ -677,7 +676,7 @@ var syncDataTransactions = function syncDataTransactions(lastUpdated,currentList
 				
 		}
 	})	
-}
+};
 
 
 var syncDataArticles = function syncDataArticles(lastUpdated,currentListDataset) 
@@ -686,7 +685,7 @@ var syncDataArticles = function syncDataArticles(lastUpdated,currentListDataset)
 	utils.WriteFileTxt("Started Sync Shopify Articles Data");
 	
 	var resultEvent = {};
-    resultEvent.Result = {}
+    resultEvent.Result = {};
     resultEvent.Result.Success = false;
 	
 	return 	ShopifyData.getArticles(lastUpdated).then(resultArticles=>									
@@ -739,7 +738,7 @@ var syncDataArticles = function syncDataArticles(lastUpdated,currentListDataset)
 				
 		}
 	})	
-}
+};
 
 
 

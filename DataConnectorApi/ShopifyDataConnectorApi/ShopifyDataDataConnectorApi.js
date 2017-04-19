@@ -1,7 +1,7 @@
 
 const Shopify = require('./shopify-api-node');
-const config = require("./../../Config/Config")
-const utils = require("./../../Helper/Util")
+const config = require("./../../Config/Config");
+const utils = require("./../../Helper/Util");
 var conf = new config();
 
 
@@ -16,7 +16,7 @@ lastUpdated = {
   created_at_min : '01/01/2017 4:52:48 PM',
   timezone : 'GMT-11:00',
   limit: 250
-}
+};
 
 function toTimeZone(time, zone) {
 	zone = zone.replace('-','+');
@@ -30,7 +30,7 @@ function toTimeZone(time, zone) {
 var getTimeZone = function getTimeZone(callback){
 	
     var resultEvent = {};
-    resultEvent.Result = {}
+    resultEvent.Result = {};
     resultEvent.Result.Success = false;
     shopify.shop.get({ })
     .then(function(shop) 
@@ -54,13 +54,13 @@ var getTimeZone = function getTimeZone(callback){
         resultEvent.Result.Error = err;
         callback(resultEvent);
     });
-}
+};
 
 
 var getOrders = function getOrders(lastUpdated)
 {    
     var resultEvent = {};
-    resultEvent.Result = {}
+    resultEvent.Result = {};
     resultEvent.Result.Success = false;
 
 	resultEvent.Result.Data = {};
@@ -75,7 +75,7 @@ var getOrders = function getOrders(lastUpdated)
         var listInputs=[];
         var countEnd = parseInt(count/lastUpdated.limit) + 1 ;
 	
-		for(i=1; i<=countEnd;i++)
+		for(var i=1; i<=countEnd;i++)
 		{
 			listInputs.push(i);
 		}	
@@ -107,13 +107,13 @@ var getOrders = function getOrders(lastUpdated)
         resultEvent.Result.Error = err;		
 	    return resultEvent;
     });
-}
+};
 
 
 var getEvents = function getEvents(lastUpdated)
 {
     var resultEvent = {};
-    resultEvent.Result = {}
+    resultEvent.Result = {};
     resultEvent.Result.Success = false;
 	 
 	resultEvent.Result.Data = {};
@@ -127,7 +127,7 @@ var getEvents = function getEvents(lastUpdated)
         var listInputs=[];
         var countEnd = parseInt(count/lastUpdated.limit) + 1 ;
 	
-		for(i=1; i<=countEnd;i++)
+		for(var i=1; i<=countEnd;i++)
 		{
 			listInputs.push(i);
 		}	
@@ -160,12 +160,12 @@ var getEvents = function getEvents(lastUpdated)
 			resultEvent.Result.Error = err;		
 			return resultEvent;
 		});
-	}
+	};
 
 var getCustomCollections = function getCustomCollections(lastUpdated)
 {
 	var resultEvent = {};
-    resultEvent.Result = {}
+    resultEvent.Result = {};
     resultEvent.Result.Success = false;
     resultEvent.Result.Data = {};
     resultEvent.Result.Data.custom_collection = [];
@@ -179,7 +179,7 @@ var getCustomCollections = function getCustomCollections(lastUpdated)
         var listInputs=[];
         var countEnd = parseInt(count/lastUpdated.limit) + 1 ;
 	
-		for(i=1; i<=countEnd;i++)
+		for(var i=1; i<=countEnd;i++)
 		{
 			listInputs.push(i);
 		}	
@@ -211,13 +211,13 @@ var getCustomCollections = function getCustomCollections(lastUpdated)
 		resultEvent.Result.Error = err;		
 		return resultEvent;
 	});
-}
+};
 	    
 
 var getComments = function getComments(lastUpdated) 
 {
     var resultEvent = {};
-    resultEvent.Result = {}
+    resultEvent.Result = {};
     resultEvent.Result.Success = false;
 	resultEvent.Result.Data = {};
     resultEvent.Result.Data.comments = [];
@@ -234,7 +234,7 @@ var getComments = function getComments(lastUpdated)
         var listInputs=[];
         var countEnd = parseInt(count/lastUpdated.limit) + 1 ;
 	
-		for(i=1; i<=countEnd;i++)
+		for(var i=1; i<=countEnd;i++)
 		{
 			listInputs.push(i);
 		}	
@@ -266,7 +266,7 @@ var getComments = function getComments(lastUpdated)
 		resultEvent.Result.Error = err;		
 		return resultEvent;
 	});
-}  
+};
 
 
 
@@ -274,7 +274,7 @@ var getComments = function getComments(lastUpdated)
 var getProducts = function getProducts(lastUpdated) 
 {
     var resultEvent = {};
-    resultEvent.Result = {}
+    resultEvent.Result = {};
     resultEvent.Result.Success = false;
 	resultEvent.Result.Data = {};
     resultEvent.Result.Data.products = [];
@@ -288,7 +288,7 @@ var getProducts = function getProducts(lastUpdated)
         var listInputs=[];
         var countEnd = parseInt(count/lastUpdated.limit) + 1 ;
 	
-		for(i=1; i<=countEnd;i++)
+		for(var i=1; i<=countEnd;i++)
 		{
 			listInputs.push(i);
 		}	
@@ -320,13 +320,13 @@ var getProducts = function getProducts(lastUpdated)
 		resultEvent.Result.Error = err;		
 		return resultEvent;
 	});
-}  
+};
   
 
 var getCustomers = function getCustomers(lastUpdated) 
 {
     var resultEvent = {};
-    resultEvent.Result = {}
+    resultEvent.Result = {};
     resultEvent.Result.Success = false;
 
     resultEvent.Result.Data = {};
@@ -343,7 +343,7 @@ var getCustomers = function getCustomers(lastUpdated)
        
         var listInputs=[];
         var countEnd = parseInt(count/lastUpdated.limit) + 1 ;
-		for(i=1; i<=countEnd;i++)
+		for(var i=1; i<=countEnd;i++)
 		{
 			listInputs.push(i);
 		}	
@@ -377,12 +377,12 @@ var getCustomers = function getCustomers(lastUpdated)
         resultEvent.Result.Error = err;		
 	    return resultEvent;
     });
-}
+};
 
 var getTransactions = function getTransactions(lastUpdated)
 {		
     var resultEvent = {};
-    resultEvent.Result = {}
+    resultEvent.Result = {};
 	resultEvent.Result.Data  = {}; 
     resultEvent.Result.Data.transactions = [];
     resultEvent.Result.Success = false;
@@ -393,7 +393,7 @@ var getTransactions = function getTransactions(lastUpdated)
  	return shopify.order.count({updated_at_min: date}).then(function(count){
 		var listInputs=[];
         var countEnd = parseInt(count/lastUpdated.limit) + 1 ;
-		for(i=1; i<=countEnd;i++)
+		for(var i=1; i<=countEnd;i++)
 		{
 			listInputs.push(i);
 		}	
@@ -408,9 +408,9 @@ var getTransactions = function getTransactions(lastUpdated)
 		{	
 			var listInputsIdOrder=[];
 		
-			for(i=0; i<orders.length;i++)
+			for(var i=0; i<orders.length;i++)
 			{
-				for(j=0; j<orders[i].length;j++){
+				for(var j=0; j<orders[i].length;j++){
 					listInputsIdOrder.push(orders[i][j].id);
 				}
 			}	
@@ -446,11 +446,11 @@ var getTransactions = function getTransactions(lastUpdated)
 		return resultEvent;
     });
     
-}
+};
 
 var getArticles = function getArticles(lastUpdated){		
     var resultEvent = {};
-    resultEvent.Result = {}
+    resultEvent.Result = {};
 	resultEvent.Result.Data  = {}; 
     resultEvent.Result.Data.articles = [];
     resultEvent.Result.Success = false;
@@ -463,7 +463,7 @@ var getArticles = function getArticles(lastUpdated){
 	{		
 		var listInputs=[];
 		
-		for(i=0; i<blogs.length;i++)
+		for(var i=0; i<blogs.length;i++)
 		{
 			listInputs.push(blogs[i].id);
 		}	
@@ -500,12 +500,12 @@ var getArticles = function getArticles(lastUpdated){
 		return resultEvent;
     });
     
-}
+};
 
 var getSmartCollections = function getSmartCollections(lastUpdated)
 {
     var resultEvent = {};
-    resultEvent.Result = {}
+    resultEvent.Result = {};
     resultEvent.Result.Success = false;
     resultEvent.Result.Data = {};
     resultEvent.Result.Data.smart_collection = [];
@@ -519,7 +519,7 @@ var getSmartCollections = function getSmartCollections(lastUpdated)
         var listInputs=[];
         var countEnd = parseInt(count/lastUpdated.limit) + 1 ;
 	
-		for(i=1; i<=countEnd;i++)
+		for(var i=1; i<=countEnd;i++)
 		{
 			listInputs.push(i);
 		}	
@@ -551,12 +551,12 @@ var getSmartCollections = function getSmartCollections(lastUpdated)
 		resultEvent.Result.Error = err;		
 		return resultEvent;
 	});
-}  
+};
 
 var getBlogs = function getBlogs(lastUpdated) 
 {
     var resultEvent = {};
-    resultEvent.Result = {}
+    resultEvent.Result = {};
     resultEvent.Result.Success = false;
 
     resultEvent.Result.Data = {};
@@ -568,7 +568,7 @@ var getBlogs = function getBlogs(lastUpdated)
        
         var listInputs=[];
         var countEnd = parseInt(count/lastUpdated.limit) + 1 ;
-		for(i=1; i<=countEnd;i++)
+		for(var i=1; i<=countEnd;i++)
 		{
 			listInputs.push(i);
 		}	
@@ -602,7 +602,7 @@ var getBlogs = function getBlogs(lastUpdated)
         resultEvent.Result.Error = err;		
 	    return resultEvent;
     });
-}
+};
 
 
 
@@ -627,5 +627,5 @@ getTransactions(lastUpdated).then(resultCustomer=>
 { 		
      utils.WriteFileTxt(JSON.stringify(resultCustomer));	
     
- })
+ });
  

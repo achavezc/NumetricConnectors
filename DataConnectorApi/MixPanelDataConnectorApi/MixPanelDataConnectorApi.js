@@ -1,16 +1,17 @@
 //   You put the mat down, and then you jump to conclusions
 module.exports = require('./lib/mixpanel');
 mixpanel = require('./lib/mixpanel');
-const rp = require('request-promise')
-const config = require("./../../Config/Config")
+
+const config = require("./../../Config/Config");
 var conf = new config();
 //ddss
 var configMixPanel = {};
 configMixPanel.apiSecretMixPanel = undefined;
-const utils = require("./../../Helper/Util")
 
 
-var mx = new mixpanel({
+
+var mx;
+mx = new mixpanel({
     api_secret: conf.parameters().apiSecretMixPanel// configMixPanel.apiSecretMixPanel
 });
 
@@ -21,12 +22,12 @@ var mx = new mixpanel({
 //}
 
 
-var getEvents =  function getEvents(lastUpdated,callback)
+var getEvents =  function getEvents(lastUpdated)
 {
 			
 			
                 var resultEvent = {};
-                resultEvent.Result = {}
+                resultEvent.Result = {};
                 resultEvent.Result.Success = false;
                 resultEvent.Result.Data = [];
 	
@@ -58,7 +59,7 @@ var getEvents =  function getEvents(lastUpdated,callback)
                 })
 		});
                 
-}
+};
 
 
 

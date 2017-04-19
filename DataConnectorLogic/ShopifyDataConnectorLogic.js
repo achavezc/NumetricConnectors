@@ -1,14 +1,13 @@
-'use strict'
+'use strict';
 
-const config = require("../Config/Config")
-const utils = require("../Helper/Util")
-const datasetsShopify = require("../Model/datasetsShopify")
-const NumetricCon = require("../DataConnectorApi/NumetricDataConnectorApi/NumetricDataConnectorApi")
-var conf = new config();
+const config = require("../Config/Config");
+const utils = require("../Helper/Util");
+//const datasetsShopify = require("../Model/datasetsShopify");
+const NumetricCon = require("../DataConnectorApi/NumetricDataConnectorApi/NumetricDataConnectorApi");
 
 var NumetricShopifyFormat = function(inputData,namePk,fieldsName){
 	return utils.GenerateDataSetsNumetricFromShopify(inputData,"Shopify",namePk,fieldsName);
-}
+};
 
 function getRowsShopify(inputShopify,jsonListRows,namePrincipalList){ //namesSecondaryList
 	if(utils.isArray(inputShopify)){
@@ -23,7 +22,6 @@ function getRowsShopify(inputShopify,jsonListRows,namePrincipalList){ //namesSec
 //METODO FINAL QUE USARE PARA CARGAR CUALQUIER DATA A SU DATASET CORRESPONDIENTE EN NUMETRIC
 var sendRowsShopifyToNumetric = function(inputsShopify){
 	var conf = new config();
-	var datasetId = "";
 	var JsonResult = {};
 	var props = Object.keys(inputsShopify.Data);
 	
@@ -46,7 +44,6 @@ var sendRowsShopifyToNumetric = function(inputsShopify){
 			{
 				if(inputsShopify[property].id !== '')
 				{
-					var inputRow = {};
  					/*
 					inputRow = utils.CreateProp(inputRow,"id",inputsShopify[property].id);
 					inputRow = utils.CreateProp(inputRow,"rows",JsonResult[property]);
@@ -73,12 +70,11 @@ var sendRowsShopifyToNumetric = function(inputsShopify){
 	
 
 	var actions = listInputs.map(function(input){ return NumetricCon.updateRowsDataSetNumetric(input.id,input.rows);});
-	var results = Promise.all(actions);
-	return results;
-}
+	return Promise.all(actions);
+};
 
 
 module.exports ={
 NumetricShopifyFormat : NumetricShopifyFormat,
 sendRowsShopifyToNumetric : sendRowsShopifyToNumetric
-}
+};
