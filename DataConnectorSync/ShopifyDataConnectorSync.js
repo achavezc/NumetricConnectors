@@ -51,11 +51,13 @@ var syncDataRetry = function syncDataRetry(lastUpdated)
 				return;
 			}
 			console.log('Shopify last updated saved successfully.');
+			utils.WriteFileTxt('Shopify last updated saved successfully.');
+			
 		});
 	}, function (err) 
-	{
-		//aqui grabas si siguio el error despues de los reintentos
+	{		
 		console.log('Error Sync Shopify Data:'+ err);
+		utils.WriteFileTxt('Error Sync Shopify Data: '+ err);	
 	});
 };
 
@@ -64,10 +66,7 @@ var syncData = function syncData(lastUpdated)
     var resultEvent = {};
     resultEvent.Result = {};
     resultEvent.Result.Success = false;
-	
-	console.log('lastUpdated: '+ lastUpdated.created_at_min);
-	 utils.WriteFileTxt('lastUpdated: '+ lastUpdated.created_at_min);	
-				
+					
     return NumetricCon.getDataSetNumetric().then(currentListDataset=>
 	{	
 		var lstDataSet = currentListDataset;
@@ -445,31 +444,7 @@ var syncDataOrder = function syncDataOrder(lastUpdated,currentListDataset)
 				{				
 					datasetNames.push(datasetShopify.DataSetList[i].name);
 				}
-				/*
-				var datasetNames =['orders',
-				'orders_billing_address',
-				'orders_shipping_address',
-				//'orders_discount_codes',   
-				//'orders_note_attributes',
-				'orders_tax_lines',
-				'orders_line_items',
-				//'orders_line_items_properties',
-				//'orders_shipping_lines',
-				//'orders_fulfillments',
-				//'orders_fulfillments_receipt',
-				//'orders_refunds',
-				//'orders_refunds_line_items',
-				//'orders_refunds_line_items_line_item',
-				//'orders_refunds_line_items_line_item_properties',
-				//'orders_refunds_line_items_line_item_tax_lines',
-				//'orders_refunds_transactions',
-				//'orders_refunds_order_adjustments',
-				//'orders_refunds_transactions_receipt',
-				//'orders_payment_details',
-				'orders_customer',
-				'orders_customer_default_address'
-				];
-				*/
+				
 				return numetricDataConnectorLogic.verifyCreateManyDatasetNumetric(datasetNames,currentListDataset,datasetShopify.DataSetList).then(resultVerify=>
 				{				
 					for (var i = 0; i < resultVerify.length; i++ ) {
