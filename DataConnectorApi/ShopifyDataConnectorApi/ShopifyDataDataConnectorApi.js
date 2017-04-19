@@ -457,41 +457,54 @@ var getArticles = function getArticles(lastUpdated){
 
     var date = toTimeZone(lastUpdated.created_at_min,lastUpdated.timezone);
 
-	var articleList = [];	
+	var articleList = [];
 
-	return shopify.blog.list({ updated_at_min: date}).then(function(blogs) 
-	{		
-		var listInputs=[];
-		
-		for(var i=0; i<blogs.length;i++)
-		{
-			listInputs.push(blogs[i].id);
-		}	
-		
-		 var actions = listInputs.map(function(input)
-		 { 			
-			 return shopify.article.list(input,{ updated_at_min: date});		 
-		 });
-		
+	return shopify.blog.count({updated_at_min: date}).then(function(count) {
+		var listInputsPage = [];
+		var countEnd = parseInt(count / lastUpdated.limit) + 1;
+		for (var i = 1; i <= countEnd; i++) {
+			listInputsPage.push(i);
+		}
+
+		var actions = listInputsPage.map(function (input) {
+			return shopify.blog.list({updated_at_min: date, limit: lastUpdated.limit, page: input});
+		});
 		var returns = Promise.all(actions);
-		
-		return returns.then(ArticleListReturn =>
-		{	
-			for(var i = 0; i< ArticleListReturn.length;i++)
-			{					
-				for(var j =0; j < ArticleListReturn[i].length;j++)
-				{	
-					articleList.push(ArticleListReturn[i][j])					
-				}				
-			}			
-			
-					
-			resultEvent.Result.Success =true;
-			resultEvent.Result.Data.articles = articleList;		
+		return returns.then(blogs =>
+		{
+			var listInputs=[];
 
-			return resultEvent;			
+			for(var i=0; i<blogs.length;i++)
+			{
+				listInputs.push(blogs[i].id);
+			}
+
+			var actions = listInputs.map(function(input)
+			{
+				return shopify.article.list(input,{ updated_at_min: date});
+			});
+
+			var returns = Promise.all(actions);
+
+			return returns.then(ArticleListReturn =>
+			{
+				for(var i = 0; i< ArticleListReturn.length;i++)
+				{
+					for(var j =0; j < ArticleListReturn[i].length;j++)
+					{
+						articleList.push(ArticleListReturn[i][j])
+					}
+				}
+
+
+				resultEvent.Result.Success =true;
+				resultEvent.Result.Data.articles = articleList;
+
+				return resultEvent;
+			})
+
 		})
-    })
+	})
     .catch(function(err) 
 	{
         resultEvent.Result.Success = false;
