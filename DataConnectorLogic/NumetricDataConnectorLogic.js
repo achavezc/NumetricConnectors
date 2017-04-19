@@ -37,7 +37,7 @@ var verifyCreateDatasetNumetric = function(datasetName,data,currentListDataset) 
 		{				
 			var datasetBody = SearchDataSet(datasetName,data);				
 			
-			
+
 				return NumetricCon.generateDataSetNumetric(datasetBody.Data).then(res=>
 				{
 					if(res.Result.Success)

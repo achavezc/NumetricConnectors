@@ -56,7 +56,11 @@ var syncData = function syncData(lastUpdated)
 	
 	return NumetricCon.getDataSetNumetric().then(currentListDataset=>{
 		return syncDataEvents(lastUpdated,currentListDataset).then(resultEvents=>{
-			resultEvent.Result.Success = resultEvents.Result.Success;
+			var result = false;
+			if(resultEvents.length>0){
+				result =  resultEvents[0].Result.Success;
+			}
+			resultEvent.Result.Success = result;
 			return resultEvent;
 		});
 	});
@@ -113,9 +117,8 @@ var syncDataEvents = function syncDataEvents(lastUpdated,currentListDataset)
 					{
 						console.log("Completed Sync MixPanel Events");
 						utils.WriteFileTxt("Completed Sync MixPanel Events");
-						console.log("Sync MixPanel Events Data Synchronized:"+ JSON.stringify(resultEvents.Result.Data));
+						//console.log("Sync MixPanel Events Data Synchronized:"+ JSON.stringify(resultEvents.Result.Data));
 						utils.WriteFileTxt("Sync MixPanel Events Data Synchronized:"+ JSON.stringify(resultEvents.Result.Data));
-						return results;
 						return results;
 					});
 				}); 
