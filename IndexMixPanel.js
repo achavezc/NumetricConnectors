@@ -21,7 +21,7 @@ var onJobStarted = function()
 
 	var dateEnd = moment().tz("America/Los_Angeles").format("YYYY-MM-DD");
 	var dateInitial = "";
-	if(nconf.get('lastUpdateMixPanelEvent')!= "")
+	if(nconf.get('lastUpdateMixPanelEvent')!== "")
 	{
 		dateInitial = nconf.get('lastUpdateMixPanelEvent');
 	}

@@ -7,7 +7,7 @@ var conf = new config();
 //ddss
 var configMixPanel = {};
 configMixPanel.apiSecretMixPanel = undefined;
-
+const utils = require("./../../Helper/Util");
 
 
 var mx;
@@ -24,7 +24,7 @@ mx = new mixpanel({
 
 var getEvents =  function getEvents(lastUpdated)
 {
-			
+			utils.WriteFileTxt("getEvents");
 			
                 var resultEvent = {};
                 resultEvent.Result = {};

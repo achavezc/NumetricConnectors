@@ -24,7 +24,7 @@ var verifyCreateDatasetNumetric = function(datasetName,data,currentListDataset) 
 	
 		for (var i = 0; i < currentListDataset.Response.length; i++ )
 		{
-			if(currentListDataset.Response[i].name==datasetName)
+			if(currentListDataset.Response[i].name===datasetName)
 			{										
 				found=true;
 				resultEvent.Result.Id = currentListDataset.Response[i].id;

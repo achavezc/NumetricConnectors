@@ -23,7 +23,7 @@ var onJobStarted = function()
 	
 	var dateInitial = "";
 
-	if(nconf.get('lastUpdateShopify')!= "")
+	if(nconf.get('lastUpdateShopify')!=="")
 	{
 		dateInitial = nconf.get('lastUpdateShopify');
 	}
@@ -48,7 +48,7 @@ var onJobStarted = function()
 	{	
 		if(resultTimeZone.Result.Success) 
 		{
-			if(resultTimeZone.Result.TimeZone != "")
+			if(resultTimeZone.Result.TimeZone !== "")
 			{
 				lastUpdated.timezone = resultTimeZone.Result.TimeZone
 			} 

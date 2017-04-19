@@ -9,7 +9,7 @@ var nconf = require('nconf');
 nconf.use('file', { file: '../ConfigDate/DateTimeLastSync.json' });
 var conf = new config();
 var datetime = require('node-datetime');
-
+const utils = require("../Helper/Util");
 
 var options = {
   retries: conf.parameters().retriesCount//,
@@ -64,6 +64,8 @@ var syncData = function syncData(lastUpdated)
 
 var syncDataEvents = function syncDataEvents(lastUpdated,currentListDataset) 
 {
+	utils.WriteFileTxt('syncDataEvents');	
+	
 	var resultEvent = {};
     resultEvent.Result = {};
     resultEvent.Result.Success = false;
@@ -71,16 +73,33 @@ var syncDataEvents = function syncDataEvents(lastUpdated,currentListDataset)
 		
 	//return 	MixPanelData.getEvents(lastUpdated).then(resultEvents=>
 	return 	MixPanelData.getEvents(lastUpdated).then(resultEvents=>
-	{			
+	{	
+		utils.WriteFileTxt('getEvents.then');
+		utils.WriteFileTxt("resultEvents:"+ JSON.stringify(resultEvents));
+		
 		  if(resultEvents.Result.Success)
 		  {  
+			console.log("MixPanel Events Data to Sync Row Count: "+ resultEvents.Result.Data.length);
+			utils.WriteFileTxt("MixPanel Events Data to Sync Row Count: "+ resultEvents.Result.Data.length);
+			
+			utils.WriteFileTxt('resultEvents.Result.Success');
+				
 			  if(resultEvents.Result.Data.length>0)
 			  {
-					var datasetMixPanel = MixPanelCon.generateDataSetMixPanelAux(resultEvents.Result);	
-					var datos = resultEvents.Result.Data;
-				  var datasetNames =['MixPanelEvent'];
+				utils.WriteFileTxt('resultEvents.Result.Data.length>0');
+				
+				var datasetMixPanel = MixPanelCon.generateDataSetMixPanelAux(resultEvents.Result);	
+				utils.WriteFileTxt("datasetMixPanel:"+ JSON.stringify(datasetMixPanel));
+				
+				var datos = resultEvents.Result.Data;
+				var datasetNames =['MixPanelEvent'];
+				utils.WriteFileTxt("datos:"+ JSON.stringify(datos));
+				
 				return numetricDataConnectorLogic.verifyCreateManyDatasetNumetric(datasetNames,currentListDataset,datasetMixPanel.DataSetList).then(resultVerify=>
 				{
+					utils.WriteFileTxt('verifyCreateManyDatasetNumetric.then');
+					utils.WriteFileTxt("datos:"+ JSON.stringify(resultVerify));
+					
 					
 					for (var i = 0; i < resultVerify.length; i++ ) {
 						if(resultVerify[i].Result.Success){
@@ -92,6 +111,11 @@ var syncDataEvents = function syncDataEvents(lastUpdated,currentListDataset)
 
 					return MixPanelCon.updateRowsMixPanel(resultEvents.Result).then(results=>
 					{
+						console.log("Completed Sync MixPanel Events");
+						utils.WriteFileTxt("Completed Sync MixPanel Events");
+						console.log("Sync MixPanel Events Data Synchronized:"+ JSON.stringify(resultEvents.Result.Data));
+						utils.WriteFileTxt("Sync MixPanel Events Data Synchronized:"+ JSON.stringify(resultEvents.Result.Data));
+						return results;
 						return results;
 					});
 				}); 

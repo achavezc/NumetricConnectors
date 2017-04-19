@@ -78,7 +78,7 @@ config.prototype.parameters = function(data){ return {
     },
 	{
 	run: function (value) {
-		if(value == null){
+		if(value === null){
 			return "";
 		}
       }	

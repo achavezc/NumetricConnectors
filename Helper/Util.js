@@ -37,14 +37,14 @@ var ObtenerTipoDatoJsonObject = function (jsonObject){
 
 var classNameOfThing = typeof jsonObject;
 
-if(classNameOfThing == 'number'){
-	if(jsonObject % 1 != 0){
+if(classNameOfThing === 'number'){
+	if(jsonObject % 1 !== 0){
 		classNameOfThing = 'double';
 	}
 }
 
-if(classNameOfThing == 'object' || classNameOfThing == 'string'){
-	if(jsonObject==null){
+if(classNameOfThing === 'object' || classNameOfThing === 'string'){
+	if(jsonObject===null){
 		classNameOfThing = 'null';
 	}else if(isDate(jsonObject) && jsonObject.toString().indexOf('T') !==-1){ //UTC date
 		classNameOfThing = 'datetime';
@@ -74,7 +74,7 @@ var isArray = function (jsonProperty) {
 };
 
 var isInclude = function (arr,obj) {
-    return (arr.indexOf(obj) != -1);
+    return (arr.indexOf(obj) !== -1);
 };
 
 var CreateProp = function (objectBody, propertyName, propertyValue)
