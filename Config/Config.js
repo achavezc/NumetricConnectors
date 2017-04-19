@@ -19,6 +19,7 @@ config.prototype.parameters = function(data){ return {
 	retriesCount: 1,
 	timezone:'GMT-11:00',
 	limitShopify : 250,
+	timezoneMixPanel: 'America/Los_Angeles',
 	optionsGetDataSet:{
 		uri: 'https://api-qa.numetric.com/v2/dataset',
 		//port:80,

@@ -18,8 +18,8 @@ var onJobStarted = function()
 	var moment = require('moment-timezone');
 	
     console.log('Job started on \t' + date);
-
-	var dateEnd = moment().tz("America/Los_Angeles").format("YYYY-MM-DD");
+	
+	var dateEnd = moment().tz(conf.parameters().timezoneMixPanel).format("YYYY-MM-DD");
 	var dateInitial = "";
 	if(nconf.get('lastUpdateMixPanelEvent')!== "")
 	{
