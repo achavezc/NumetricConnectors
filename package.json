@@ -1,39 +1,39 @@
 {
-  "name": "numetricconnectors",
+  "name": "NumetricConnectors",
   "version": "1.0.0",
-  "description": "numetric connectors",
-  "main": "",
+  "description": "Connector for Numetric Datawarehouse",
+  "main": "index.js",
+  "author": "Jaime Tenorio",
+  "license": "MIT",
   "dependencies": {
     "colors": "^1.1.2",
     "cycle": "^1.0.3",
-    "event-stream": "^3.3.4",
+    "event-stream": "^3.0.20",
     "got": "^6.7.1",
+    "i": "^0.3.5",
     "json2json-transform": "0.0.1",
+    "lodash": "^4.6.0",
     "lodash.assign": "^4.2.0",
     "lodash.camelcase": "^4.3.0",
     "lodash.defaults": "^4.2.0",
-    "moment-timezone": "^0.5.13",
+    "moment": "^2.18.1",
+    "moment-timezone": "^0.5.12",
     "nconf": "^0.8.4",
     "node-cron": "^1.1.3",
     "node-datetime": "^1.0.0",
     "promise-retry": "^1.1.1",
+    "qs": "^6.1.0",
+    "react-moment": "^0.2.2",
     "request": "^2.81.0",
     "request-promise": "^4.2.0",
-    "stack-trace": "0.0.9",
+    "stack-trace": "^0.0.9",
     "valvelet": "^1.1.1"
   },
-  "devDependencies": {},
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/achavezc/NumetricConnectors.git"
-  },
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/achavezc/NumetricConnectors/issues"
-  },
-  "homepage": "https://github.com/achavezc/NumetricConnectors#readme"
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "istanbul": "^0.4.2",
+    "mocha": "^3.0.1",
+    "nock": "^9.0.0",
+    "pre-commit": "^1.1.2"
+  }
 }
