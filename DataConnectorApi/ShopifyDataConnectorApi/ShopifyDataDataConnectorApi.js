@@ -18,18 +18,17 @@ lastUpdated = {
   limit: 250
 };
 
-function toTimeZone(time, zone) {
+function toTimeZone(time, zone) 
+{
 	zone = zone.replace('-','+');
 	var date = new Date(time);
-	var dateLocal = date.getUTCMonth() + 1 + "/" + date.getUTCDate() + "/" + date.getUTCFullYear() 
-					+ " " + date.getUTCHours() + ":" + date.getUTCMinutes() +":" + date.getUTCSeconds() ;
-	
-    return  new Date(dateLocal + ' ' +  zone).toISOString();
+	var dateLocal = date.getUTCMonth() + 1 + "/" + date.getUTCDate() + "/" + date.getUTCFullYear() 	+ " " + date.getUTCHours() + ":" + date.getUTCMinutes() +":" + date.getUTCSeconds() ;
+	return  new Date(dateLocal + ' ' +  zone).toISOString();
 }
 
-var getTimeZone = function getTimeZone(callback){
-	
-    var resultEvent = {};
+var getTimeZone = function getTimeZone(callback)
+{
+	var resultEvent = {};
     resultEvent.Result = {};
     resultEvent.Result.Success = false;
     shopify.shop.get({ })
@@ -39,17 +38,20 @@ var getTimeZone = function getTimeZone(callback){
         var lstEnd = [];
         var lst1 = shop.timezone.split(')');
         
-        if(lst1.length>0){
+        if(lst1.length>0)
+		{
             lstEnd = lst1[0].split('(');
         }
-        if(lstEnd.length>0){
-                timezoneEnd = lstEnd[1]
+        if(lstEnd.length>0)
+		{
+            timezoneEnd = lstEnd[1]
         }
         resultEvent.Result.TimeZone  = timezoneEnd;
         resultEvent.Result.Success = true;
         callback(resultEvent);
     })
-    .catch(function(err) {
+    .catch(function(err) 
+	{
         resultEvent.Result.Success = false;
         resultEvent.Result.Error = err;
         callback(resultEvent);
@@ -141,26 +143,26 @@ var getEvents = function getEvents(lastUpdated)
 		
 	
 	   return returns.then(EventListReturn =>
-			{	
-				for(var i = 0; i< EventListReturn.length;i++)
-				{					
-					for(var j =0; j < EventListReturn [i].length;j++)
-					{	
-						eventList.push(EventListReturn [i][j])					
-					}				
-				}					
-				resultEvent.Result.Success =true;
-				resultEvent.Result.Data.events = eventList;	
-				return resultEvent;			
-			})
+		{	
+			for(var i = 0; i< EventListReturn.length;i++)
+			{					
+				for(var j =0; j < EventListReturn [i].length;j++)
+				{	
+					eventList.push(EventListReturn [i][j])					
+				}				
+			}					
+			resultEvent.Result.Success =true;
+			resultEvent.Result.Data.events = eventList;	
+			return resultEvent;			
 		})
-		.catch(function(err)
-		{      
-			resultEvent.Result.Success = false;
-			resultEvent.Result.Error = err;		
-			return resultEvent;
-		});
-	};
+	})
+	.catch(function(err)
+	{      
+		resultEvent.Result.Success = false;
+		resultEvent.Result.Error = err;		
+		return resultEvent;
+	});
+};
 
 var getCustomCollections = function getCustomCollections(lastUpdated)
 {
@@ -222,10 +224,7 @@ var getComments = function getComments(lastUpdated)
 	resultEvent.Result.Data = {};
     resultEvent.Result.Data.comments = [];
 	
-    var date = toTimeZone(lastUpdated.created_at_min,lastUpdated.timezone);
-	
-	console.log('getComments date: '+ date);
-	utils.WriteFileTxt('getComments date: '+ date);
+    var date = toTimeZone(lastUpdated.created_at_min,lastUpdated.timezone);	
 	
 	var commentList = [];
 	
@@ -333,10 +332,6 @@ var getCustomers = function getCustomers(lastUpdated)
     resultEvent.Result.Data.customers = [];
 
     var date = toTimeZone(lastUpdated.created_at_min,lastUpdated.timezone);
-	
-	console.log('getCustomers date: '+ date);
-	utils.WriteFileTxt('getCustomers date: '+ date);
-	
 	
     var customerList = [];	
     return shopify.customer.count({updated_at_min: date}).then(function(count){
@@ -629,16 +624,11 @@ module.exports = {
     getArticles : getArticles,
     getCustomCollections : getCustomCollections,
 	getBlogs:getBlogs,
-    //getCustomerAddress : getCustomerAddress,
     getTransactions : getTransactions,
     getSmartCollections : getSmartCollections
 
 };
 
 
-getTransactions(lastUpdated).then(resultCustomer=>
-{ 		
-     utils.WriteFileTxt(JSON.stringify(resultCustomer));	
-    
- });
+
  

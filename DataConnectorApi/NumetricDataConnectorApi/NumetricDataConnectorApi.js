@@ -3,7 +3,7 @@
 const config = require("../../Config/Config");
 const rp = require('request-promise');
 const utils = require("./../../Helper/Util");
-//const seq = require("../../sequence").Sequence
+const log=require('./../../Log/Log.js');
 
 var getDataSetNumetric = function(){
 	var conf = new config();
@@ -15,12 +15,7 @@ var getDataSetNumetric = function(){
 		     resultEvent.Response  = response;
         	 resultEvent.Result.Success = true;
 		     return resultEvent;
-			});
-			/*.catch(function(err){ 
-			    resultEvent.Result.Success = false;
-        		resultEvent.Result.Error = err;
-        		return resultEvent;
-			});*/
+			});			
 };
 
 var getDataSetNumetricById = function(datasetId){
@@ -52,13 +47,7 @@ var generateDataSetNumetric = function(data){
      		 resultEvent.Response  = response;
         	 resultEvent.Result.Success = true;
 		     return resultEvent;
-	});
-	/*.catch(function(err){ 
-		    
-			resultEvent.Result.Success = false;
-        	resultEvent.Result.Error = err;
-        	return resultEvent;
-	});*/
+	});	
 };
 
 var updateRowsDataSetNumetric = function(datasetId,data)
@@ -71,20 +60,14 @@ var updateRowsDataSetNumetric = function(datasetId,data)
 		
 	return rp(conf.parameters(data).optionsUpdateRowsDataSet).then(response =>{
      		 resultEvent.Response  = response;
-        	 resultEvent.Result.Success = true;
-			 // console.log("updateRowsDataSetNumetric DataSetId "+ datasetId);
-			 // utils.WriteFileTxt("updateRowsDataSetNumetric DataSetId "+ datasetId);
-	
-				
+        	 resultEvent.Result.Success = true;	 
 		     return resultEvent;
 	}).catch(function(err)
 	{
-			console.log("updateRowsDataSetNumetric error DataSet "+ datasetName + " Error:" + err);
-			utils.WriteFileTxt("updateRowsDataSetNumetric error DataSet "+ datasetName + " Error:" + err);
-		
-			resultEvent.Result.Success = false;
-        	resultEvent.Result.Error = err;
-        	return resultEvent;
+		log.WriteLog('Error','UpdateRowsDataSetNumetric error DataSet '+ datasetName + ' Error:',true,true);	
+		resultEvent.Result.Success = false;
+		resultEvent.Result.Error = err;
+		return resultEvent;
 	});
 	
 	
@@ -101,10 +84,12 @@ var getRowsDataSetNumetric = function(datasetId){
         	 resultEvent.Result.Success = true;
 		     return resultEvent;
 	})
-	.catch(function(err){ 
-			resultEvent.Result.Success = false;
-        	resultEvent.Result.Error = err;
-        	return resultEvent;
+	.catch(function(err)
+	{
+		log.WriteLog('Error','getRowsDataSetNumetric error DataSetId '+ datasetId + ' Error:',true,true);
+		resultEvent.Result.Success = false;
+		resultEvent.Result.Error = err;
+		return resultEvent;
 	});
 };
 

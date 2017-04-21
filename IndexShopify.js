@@ -1,9 +1,10 @@
 'use strict';
 
-const ShopifyData = require("./DataConnectorApi/ShopifyDataConnectorApi/ShopifyDataDataConnectorApi");
+const shopifyData = require("./DataConnectorApi/ShopifyDataConnectorApi/ShopifyDataDataConnectorApi");
 const config = require("./Config/Config");
 const utils = require("./Helper/Util");
-const ShopifyDataConSync = require("./DataConnectorSync/ShopifyDataConnectorSync");
+const shopifyDataConSync = require("./DataConnectorSync/ShopifyDataConnectorSync");
+const log=require('./Log/Log.js');
 var conf = new config();
 var datetime = require('node-datetime');
 var cron = require('node-cron');
@@ -11,15 +12,18 @@ var nconf = require('nconf');
 var shopifyJobFrequency = conf.parameters().shopifyJobFrequency ;
 
 
+
+
+
 var onJobStarted = function()
 {
-
 	nconf.use('file', { file: './ConfigDate/DateTimeLastSync.json' });
 	nconf.load();
 
     var date = new Date();
-    console.log('Shopify Job Sync started on \t' + date);	
-	utils.WriteFileTxt('Shopify Job Sync started on \t' + date);
+	
+	log.WriteLog("Message",'Shopify Job Sync started on \t' + date,true,true);
+	 
 	
 	var dateInitial = "";
 
@@ -44,7 +48,7 @@ var onJobStarted = function()
 
 	//'01/06/2017 4:52:48 PM',
 
-	ShopifyData.getTimeZone(function(resultTimeZone)
+	shopifyData.getTimeZone(function(resultTimeZone)
 	{	
 		if(resultTimeZone.Result.Success) 
 		{
@@ -53,7 +57,7 @@ var onJobStarted = function()
 				lastUpdated.timezone = resultTimeZone.Result.TimeZone
 			} 
 			
-			ShopifyDataConSync.syncDataRetry(lastUpdated);
+			shopifyDataConSync.syncDataRetry(lastUpdated);
 		}
 	});
 };

@@ -1,9 +1,10 @@
 'use strict';
 const config = require("./Config/Config");
-const MixPanelDataConSync = require("./DataConnectorSync/MixPanelDataConnectorSync");
+const mixPanelDataConSync = require("./DataConnectorSync/MixPanelDataConnectorSync");
 var datetime = require('node-datetime');
 var conf = new config();
 var cron = require('node-cron');
+var log=require('./Log/Log.js');
 
 var mixPanelJobFrequency = conf.parameters().mixPanelJobFrequency ;
 
@@ -16,11 +17,12 @@ var onJobStarted = function()
 
 	var date = new Date();
 	var moment = require('moment-timezone');
-	
-    console.log('Job started on \t' + date);
+		
+	log.WriteLog("Message",'MixPanel Job Sync started on \t' + date,true,true);
 
 	var dateEnd = moment().tz(conf.parameters().timezoneMixPanel).format("YYYY-MM-DD");
 	var dateInitial = "";
+	
 	if(nconf.get('lastUpdateMixPanelEvent')!== "")
 	{
 		dateInitial = nconf.get('lastUpdateMixPanelEvent');
@@ -34,7 +36,7 @@ var onJobStarted = function()
 	  from_date :  dateInitial,
 	  to_date : dateEnd
 	};
-	MixPanelDataConSync.syncDataRetry(lastUpdated);
+	mixPanelDataConSync.syncDataRetry(lastUpdated);
 
 };
 

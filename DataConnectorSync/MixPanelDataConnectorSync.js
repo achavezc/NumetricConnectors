@@ -5,6 +5,8 @@ const MixPanelCon = require("../DataConnectorLogic/MixPanelDataConnectorLogic");
 const MixPanelData = require("../DataConnectorApi/MixPanelDataConnectorApi/MixPanelDataConnectorApi");
 const config = require("../Config/Config");
 const promiseRetry = require('promise-retry');
+const log=require('../Log/Log.js');
+
 var nconf = require('nconf');
 nconf.use('file', { file: '../ConfigDate/DateTimeLastSync.json' });
 var conf = new config();
@@ -12,38 +14,48 @@ var datetime = require('node-datetime');
 const utils = require("../Helper/Util");
 
 var options = {
-  retries: conf.parameters().retriesCount//,
-  //factor: 1,
-  //minTimeout: 1000,
-  //maxTimeout: 2000,
-  //randomize: true
+  retries: conf.parameters().retriesCount
 };
 
 
 var syncDataRetry = function syncDataRetry(lastUpdated) 
-{
-	//TODO:syncData
-	//TODO: Config.CountRetry
-	promiseRetry(options,function (retry, number) {
-    console.log('attempt number', number);
-		return syncData(lastUpdated);
+{	
+	promiseRetry(options,function (retry, number) 
+	{		
+		log.WriteLog("Message",'Started Sync MixPanel Data attempt number: '+ number,true,true);
+		
+		return syncData(lastUpdated)
+		.catch(err=>
+		{			
+			log.WriteLog('Error','Error Sync MixPanel Data: '+ err,true,true);		
+		});
 	})
-	.then(function () {
+	.then(function () 
+	{
+		log.WriteLog('Message','Completed Sync MixPanel Data',true,true);
+		
 		// save datetime
+		
 		nconf.load();
+		
 		var dt = datetime.create();
 		var fomratted = dt.format('Y-m-d');
 		//console.log(fomratted);
 		nconf.set('lastUpdateMixPanelEvent',fomratted);
-		nconf.save(function (err) {
-			if (err) {
-			console.error(err.message);
-			return;
-			}
-			console.log('Configuration saved successfully.');
+		
+		nconf.save(function (err) 
+		{
+			if (err) 
+			{				
+				log.WriteLog('Error','Error Sync MixPanel Data: '+err.message,true,true);
+				return;
+			}	
+			
+			log.WriteLog('Message','MixPanel Configuration last updated saved successfully. ' + fomratted,true,true);			
 		});
-	}, function (err) {
-		console.log(err);
+	}, function (err) 
+	{
+		log.WriteLog('Error','Error Sync MixPanel Data: '+err.message,true,true);
 	});
 };
 
@@ -54,82 +66,75 @@ var syncData = function syncData(lastUpdated)
     resultEvent.Result = {};
     resultEvent.Result.Success = false;
 	
-	return NumetricCon.getDataSetNumetric().then(currentListDataset=>{
-		return syncDataEvents(lastUpdated,currentListDataset).then(resultEvents=>{
+	return NumetricCon.getDataSetNumetric().then(currentListDataset=>
+	{
+		return syncDataEvents(lastUpdated,currentListDataset).then(resultEvents=>
+		{
 			var result = false;
-			if(resultEvents.length>0){
+		
+			if(resultEvents.length>0)
+			{
 				result =  resultEvents[0].Result.Success;
 			}
+			
 			resultEvent.Result.Success = result;
 			return resultEvent;
 		});
 	});
 };
 
+
 var syncDataEvents = function syncDataEvents(lastUpdated,currentListDataset) 
-{
-	utils.WriteFileTxt('syncDataEvents');	
-	
+{	
+	log.WriteLog('Message','Started Sync MixPanel Event Data',true,true);
+		
 	var resultEvent = {};
     resultEvent.Result = {};
     resultEvent.Result.Success = false;
-	
 		
-	//return 	MixPanelData.getEvents(lastUpdated).then(resultEvents=>
 	return 	MixPanelData.getEvents(lastUpdated).then(resultEvents=>
 	{	
-		utils.WriteFileTxt('getEvents.then');
-		utils.WriteFileTxt("resultEvents:"+ JSON.stringify(resultEvents));
-		
-		  if(resultEvents.Result.Success)
-		  {  
-			console.log("MixPanel Events Data to Sync Row Count: "+ resultEvents.Result.Data.length);
-			utils.WriteFileTxt("MixPanel Events Data to Sync Row Count: "+ resultEvents.Result.Data.length);
+	  if(resultEvents.Result.Success)
+	  { 			
+		  log.WriteLog("Message",'MixPanel Events Data to Sync Row Count: ' + resultEvents.Result.Data.length,true,true);
 			
-			utils.WriteFileTxt('resultEvents.Result.Success');
-				
-			  if(resultEvents.Result.Data.length>0)
-			  {
-				utils.WriteFileTxt('resultEvents.Result.Data.length>0');
-				
-				var datasetMixPanel = MixPanelCon.generateDataSetMixPanelAux(resultEvents.Result);	
-				utils.WriteFileTxt("datasetMixPanel:"+ JSON.stringify(datasetMixPanel));
-				
-				var datos = resultEvents.Result.Data;
-				var datasetNames =['MixPanelEvent'];
-				utils.WriteFileTxt("datos:"+ JSON.stringify(datos));
-				
-				return numetricDataConnectorLogic.verifyCreateManyDatasetNumetric(datasetNames,currentListDataset,datasetMixPanel.DataSetList).then(resultVerify=>
+		  if(resultEvents.Result.Data.length>0)
+		  {			
+			var datasetMixPanel = MixPanelCon.generateDataSetMixPanelAux(resultEvents.Result);	
+						
+			var datos = resultEvents.Result.Data;
+			var datasetNames =['MixPanelEvent'];
+					
+			log.WriteLog("Message",'MixPanel Events Data to Sync: ' + JSON.stringify(datos),false,true);
+					
+			return numetricDataConnectorLogic.verifyCreateManyDatasetNumetric(datasetNames,currentListDataset,datasetMixPanel.DataSetList).then(resultVerify=>
+			{				
+				for (var i = 0; i < resultVerify.length; i++ ) 
 				{
-					utils.WriteFileTxt('verifyCreateManyDatasetNumetric.then');
-					utils.WriteFileTxt("datos:"+ JSON.stringify(resultVerify));
-					
-					
-					for (var i = 0; i < resultVerify.length; i++ ) {
-						if(resultVerify[i].Result.Success){
-							resultEvents.Result[resultVerify[i].Result.datasetName] = {};
-							resultEvents.Result[resultVerify[i].Result.datasetName].id=resultVerify[i].Result.Id;
-						}
-					}
-					resultEvents.Result.Data = datos;
-
-					return MixPanelCon.updateRowsMixPanel(resultEvents.Result).then(results=>
+					if(resultVerify[i].Result.Success)
 					{
-						console.log("Completed Sync MixPanel Events");
-						utils.WriteFileTxt("Completed Sync MixPanel Events");
-						console.log("Sync MixPanel Events Data Synchronized:"+ JSON.stringify(resultEvents.Result.Data));
-						utils.WriteFileTxt("Sync MixPanel Events Data Synchronized:"+ JSON.stringify(resultEvents.Result.Data));
-						return results;
-					});
-				}); 
-			  }
+						resultEvents.Result[resultVerify[i].Result.datasetName] = {};
+						resultEvents.Result[resultVerify[i].Result.datasetName].id=resultVerify[i].Result.Id;
+					}
+				}
+				
+				resultEvents.Result.Data = datos;
+
+				return MixPanelCon.updateRowsMixPanel(resultEvents.Result).then(results=>
+				{
+					log.WriteLog('Message','Completed Sync MixPanel Events Data',true,true);
+					log.WriteLog("Message",'MixPanel Events Data Synchronized:' + JSON.stringify(resultEvents.Result.Data),false,true);
+											
+					return results;
+				});
+			}); 
 		  }
+	  }
 	})
 };
 
 
 module.exports = 
-{
-    syncData : syncData,
+{   
 	syncDataRetry : syncDataRetry
 };
