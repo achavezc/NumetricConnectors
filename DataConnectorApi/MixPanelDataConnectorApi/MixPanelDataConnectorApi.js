@@ -26,7 +26,11 @@ var getEvents =  function getEvents(lastUpdated)
 	return mx.events({ 
 			  from_date: lastUpdated.from_date, 
 			  to_date: lastUpdated.to_date 
-			 });             
+			 }).then(data=>{
+	   resultEvent.Result.Success = true;
+	   resultEvent.Result.Data = data;
+	   return resultEvent;
+	});             
 };
 
 module.exports = 
