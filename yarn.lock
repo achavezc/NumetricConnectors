@@ -77,7 +77,7 @@ bcrypt-pbkdf@^1.0.0:
   dependencies:
     tweetnacl "^0.14.3"
 
-bluebird@^3.5.0:
+bluebird@^3.1.1, bluebird@^3.5.0:
   version "3.5.0"
   resolved "https://registry.yarnpkg.com/bluebird/-/bluebird-3.5.0.tgz#791420d7f551eea2897453a8a77653f96606d67c"
 
@@ -219,7 +219,7 @@ dashdash@^1.12.0:
   dependencies:
     assert-plus "^1.0.0"
 
-debug@2.2.0, debug@^2.2.0:
+debug@2.2.0, debug@^2.1.2, debug@^2.2.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/debug/-/debug-2.2.0.tgz#f87057e995b1a1f6ae6a4960664137bc56f039da"
   dependencies:
@@ -375,7 +375,7 @@ glob@^5.0.15:
     once "^1.3.0"
     path-is-absolute "^1.0.0"
 
-got@^6.7.1:
+got@^6.1.2, got@^6.7.1:
   version "6.7.1"
   resolved "https://registry.yarnpkg.com/got/-/got-6.7.1.tgz#240cd05785a9a18e561dc1b44b41c763ef1e8db0"
   dependencies:
@@ -448,6 +448,10 @@ http-signature@~1.1.0:
 i@^0.3.5:
   version "0.3.5"
   resolved "https://registry.yarnpkg.com/i/-/i-0.3.5.tgz#1d2b854158ec8169113c6cb7f6b6801e99e211d5"
+
+iconv-lite@^0.4.4:
+  version "0.4.16"
+  resolved "https://registry.yarnpkg.com/iconv-lite/-/iconv-lite-0.4.16.tgz#65de3beeb39e2960d67f049f1634ffcbcde9014b"
 
 inflight@^1.0.4:
   version "1.0.6"
@@ -709,6 +713,13 @@ minimist@0.0.8, minimist@~0.0.1:
   version "0.0.8"
   resolved "https://registry.yarnpkg.com/minimist/-/minimist-0.0.8.tgz#857fcabfc3397d2625b8228262e86aa7a011b05d"
 
+mixpanel-data-export-node@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/mixpanel-data-export-node/-/mixpanel-data-export-node-2.0.0.tgz#17a4cddd530d1fe05c59a59e9c4d5f1b3feb203d"
+  dependencies:
+    bluebird "^3.1.1"
+    needle "^1.0.0"
+
 mkdirp@0.5.1, mkdirp@0.5.x, mkdirp@^0.5.0:
   version "0.5.1"
   resolved "https://registry.yarnpkg.com/mkdirp/-/mkdirp-0.5.1.tgz#30057438eac6cf7f8c4767f38648d6697d75c903"
@@ -753,6 +764,13 @@ nconf@^0.8.4:
     ini "^1.3.0"
     secure-keys "^1.0.0"
     yargs "^3.19.0"
+
+needle@^1.0.0:
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/needle/-/needle-1.6.0.tgz#f52a5858972121618e002f8e6384cadac22d624f"
+  dependencies:
+    debug "^2.1.2"
+    iconv-lite "^0.4.4"
 
 nock@^9.0.0:
   version "9.0.13"
@@ -973,6 +991,15 @@ shebang-regex@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/shebang-regex/-/shebang-regex-1.0.0.tgz#da42f49740c0b42db2ca9728571cb190c98efea3"
 
+shopify-api-node@^2.4.0:
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/shopify-api-node/-/shopify-api-node-2.4.0.tgz#66d677adafbdbba7c9a73a0705c157307acfb456"
+  dependencies:
+    got "^6.1.2"
+    lodash "^4.6.0"
+    qs "^6.1.0"
+    valvelet "^1.1.0"
+
 sntp@1.x.x:
   version "1.0.9"
   resolved "https://registry.yarnpkg.com/sntp/-/sntp-1.0.9.tgz#6541184cc90aeea6c6e7b35e2659082443c66198"
@@ -1154,7 +1181,7 @@ uuid@^3.0.0:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.0.1.tgz#6544bba2dfda8c1cf17e629a3a305e2bb1fee6c1"
 
-valvelet@^1.1.1:
+valvelet@^1.1.0, valvelet@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/valvelet/-/valvelet-1.1.1.tgz#39bd66a732266d45c5918fbbcd3479db5602ad36"
 

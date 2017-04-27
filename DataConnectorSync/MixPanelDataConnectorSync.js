@@ -11,7 +11,6 @@ var nconf = require('nconf');
 nconf.use('file', { file: '../ConfigDate/DateTimeLastSync.json' });
 var conf = new config();
 var datetime = require('node-datetime');
-const utils = require("../Helper/Util");
 
 var options = {
   retries: conf.parameters().retriesCount

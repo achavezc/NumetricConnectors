@@ -70,29 +70,29 @@ var syncData = function syncData(lastUpdated)
 	{	
 		var lstDataSet = currentListDataset;
 	
-		return syncDataCustomer(lastUpdated,lstDataSet).then(resultCustome=>
-		 {				
-			 return syncDataComments(lastUpdated,lstDataSet).then(resultComments=>
+		return syncDataCustomer(lastUpdated,lstDataSet).then(resultCustomer=>
+		{				
+			 return syncDataEntity(lastUpdated,lstDataSet,'comment').then(resultComments=>
 			{					
-				 return syncDataProducts(lastUpdated,lstDataSet).then(resultProducts=>
+				 return syncDataEntity(lastUpdated,lstDataSet,'product').then(resultProducts=>
 				 {
-					 return syncDataBlogs(lastUpdated,lstDataSet).then(resultBlogs=>
-					 {
+					 return syncDataEntity(lastUpdated,lstDataSet,'blog').then(resultBlogs=>
+					 {						
 						 return syncDataArticles(lastUpdated,lstDataSet).then(resultArticles=>
 						 {			
-							 return syncDataSmartCollections(lastUpdated,lstDataSet).then(resultSmartCollections=>
+							 return syncDataEntity(lastUpdated,lstDataSet,'smartCollection').then(resultSmartCollections=>
 							 {
-								 return syncDataCustomCollections(lastUpdated,lstDataSet).then(resultCustomCollections=>
+								 return syncDataEntity(lastUpdated,lstDataSet,'customCollection').then(resultCustomCollections=>
 								 {
 									  return syncDataTransactions(lastUpdated,lstDataSet).then(resultTransactions=>
 									  {											
-										return syncDataEvents(lastUpdated,lstDataSet).then(resultEvents=>
-											 {	
-												return syncDataOrder(lastUpdated,lstDataSet).then(resultOrder=>
-												{												
-													return resultEvent.Result.Success= true;
-												});
-											 });	
+										return syncDataEntity(lastUpdated,lstDataSet,'event').then(resultEvents=>
+										 {												
+											return syncDataOrder(lastUpdated,lstDataSet).then(resultOrder=>
+											{												
+												return resultEvent.Result.Success= true;
+											});
+										 });	
 										
 									  });											
 								 });
@@ -106,293 +106,6 @@ var syncData = function syncData(lastUpdated)
 };
 
 
-
-var syncDataCustomer = function syncDataCustomer(lastUpdated,currentListDataset) 
-{	
-	log.WriteLog('Message','Started Sync Shopify Customer Data',true,true);
-		
-	var resultEvent = {};
-    resultEvent.Result = {};
-    resultEvent.Result.Success = false;
-
-	return 	shopifyData.getCustomers(lastUpdated).then(resultCustomer=>
-	{ 				
-		if(resultCustomer.Result.Success)
-		{				
-			log.WriteLog("Message",'Shopify Customer Data to Sync Row Count: ' + resultCustomer.Result.Data.customers.length,true,true);
-			
-			if(resultCustomer.Result.Data.customers.length>0)
-			{				
-				var datos = resultCustomer.Result.Data;
-						
-				log.WriteLog("Message",'Shopify Customer Data to Sync: ' + JSON.stringify(datos),false,true);		
-								
-				var datasetShopify = shopifyCon.NumetricShopifyFormat(resultCustomer.Result.Data,"id","customers");
-												
-				var datasetNames =[];
-				
-				for(var i=0; i<datasetShopify.DataSetList.length; i++)
-				{				
-					datasetNames.push(datasetShopify.DataSetList[i].name);
-				}
-				
-				return numetricDataConnectorLogic.verifyCreateManyDatasetNumetric(datasetNames,currentListDataset,datasetShopify.DataSetList).then(resultVerify=>
-				{					
-					for (var i = 0; i < resultVerify.length; i++ ) 
-					{
-						if(resultVerify[i].Result.Success)
-						{
-							resultCustomer.Result[resultVerify[i].Result.datasetName] = {};
-							resultCustomer.Result[resultVerify[i].Result.datasetName].id=resultVerify[i].Result.Id;
-						}
-					}
-					resultCustomer.Result.Data = datos;									
-					
-					return shopifyCon.sendRowsShopifyToNumetric(resultCustomer.Result).then(results=>
-					{
-						log.WriteLog('Message','Completed Sync Shopify Customer Data',true,true);
-					
-						log.WriteLog("Message",'Shopify Customer Data Synchronized:' + JSON.stringify(resultCustomer.Result.Data),false,true);
-											
-						return results;
-					});
-
-				});
-			}
-			else{
-				resultEvent.Result.Success = true;
-				return resultEvent;
-			}
-		}
-	});
-};
-
-
-var syncDataSmartCollections = function syncDataSmartCollections(lastUpdated,currentListDataset) 
-{
-	log.WriteLog('Message','Started Sync Shopify Smart Collections Data',true,true);
-	
-	var resultEvent = {};
-    resultEvent.Result = {};
-    resultEvent.Result.Success = false;
-	
-	return 	shopifyData.getSmartCollections(lastUpdated).then(resultSmartCollection=>		
-	{ 
-		if(resultSmartCollection.Result.Success)
-		{			
-			log.WriteLog('Message','Shopify Smart Collections Data to Sync Row Count: ' + resultSmartCollection.Result.Data.smart_collection.length,true,true);
-									
-			if(resultSmartCollection.Result.Data.smart_collection.length>0)
-			{					
-				var datos = resultSmartCollection.Result.Data;
-						
-				log.WriteLog('Message','Shopify Smart Collections Data to Sync:'+ JSON.stringify(datos),false,true);
-				
-				var datasetShopify = shopifyCon.NumetricShopifyFormat(resultSmartCollection.Result.Data,"id","smart_collection");
-				
-				var datasetNames =['smart_collection'];				
-				
-				return numetricDataConnectorLogic.verifyCreateManyDatasetNumetric(datasetNames,currentListDataset,datasetShopify.DataSetList).then(resultVerify=>
-				{
-					for (var i = 0; i < resultVerify.length; i++ ) 
-					{
-						if(resultVerify[i].Result.Success)
-						{
-							resultSmartCollection.Result[resultVerify[i].Result.datasetName] = {};
-							resultSmartCollection.Result[resultVerify[i].Result.datasetName].id=resultVerify[i].Result.Id;
-						}
-					}
-					resultSmartCollection.Result.Data = datos;
-					
-					return shopifyCon.sendRowsShopifyToNumetric(resultSmartCollection.Result).then(results=>
-					{						
-						log.WriteLog('Message','Completed Sync Shopify Smart Collections Data',true,true);
-						log.WriteLog('Message','Shopify Smart Collections Data Synchronized:' + JSON.stringify(resultSmartCollection.Result.Data),false,true);					
-					
-						return results;
-					});
-
-				});   
-			}
-		}
-		else
-		{
-				resultEvent.Result.Success = true;
-				return resultEvent;
-		}
-		
-	});
-};
-
-var syncDataEvents = function syncDataEvents(lastUpdated,currentListDataset) 
-{	
-	log.WriteLog('Message','Started Sync Shopify Events Data',true,true);
-
-	var resultEvent = {};
-    resultEvent.Result = {};
-    resultEvent.Result.Success = false;
-	
-	return 	shopifyData.getEvents(lastUpdated).then(resultEvents=>	
-	{ 
-		if(resultEvents.Result.Success)
-		{	
-			log.WriteLog('Message','Shopify Events Data to Sync Row Count:' + resultEvents.Result.Data.events.length,true,true);			
-			
-			if(resultEvents.Result.Data.events.length>0)
-			{				
-				var datos = resultEvents.Result.Data;
-								
-				log.WriteLog('Message','Shopify Events Data to Sync:'+ JSON.stringify(datos),false,true);
-							
-				var datasetShopify = shopifyCon.NumetricShopifyFormat(resultEvents.Result.Data,"id","events");
-				
-				var datasetNames =['events'];
-				
-				return numetricDataConnectorLogic.verifyCreateManyDatasetNumetric(datasetNames,currentListDataset,datasetShopify.DataSetList).then(resultVerify=>
-				{
-					for (var i = 0; i < resultVerify.length; i++ ) 
-					{
-						if(resultVerify[i].Result.Success)
-						{
-							resultEvents.Result[resultVerify[i].Result.datasetName] = {};
-							resultEvents.Result[resultVerify[i].Result.datasetName].id=resultVerify[i].Result.Id;
-						}
-					}
-					resultEvents.Result.Data = datos;
-					
-					return shopifyCon.sendRowsShopifyToNumetric(resultEvents.Result).then(results=>
-					{						
-						log.WriteLog('Message','Completed Sync Shopify Events Data',true,true);
-						log.WriteLog('Message','Shopify Events Data Synchronized:' + JSON.stringify(resultEvents.Result.Data),false,true);							
-						
-						return results;
-					});
-
-				}); 
-			} 
-		}
-		else
-		{
-				resultEvent.Result.Success = true;
-				return resultEvent;
-		}
-	})
-	
-};
-
-var syncDataComments = function syncDataComments(lastUpdated,currentListDataset) 
-{
-	log.WriteLog('Message','Started Sync Shopify Comments Data',true,true);	
-	
-	var resultEvent = {};
-    resultEvent.Result = {};
-    resultEvent.Result.Success = false;
-	
-	return 	shopifyData.getComments(lastUpdated).then(resultComments=>		
-	{ 
-		if(resultComments.Result.Success)
-		{			
-			log.WriteLog('Message','Shopify Comments Data to Sync Row Count:' + resultComments.Result.Data.comments.length,true,true);
-			
-			if(resultComments.Result.Data.comments.length>0)
-			{				
-				var datos = resultComments.Result.Data;
-			
-				log.WriteLog('Message','Shopify Comments Data to Sync:'+ JSON.stringify(datos),false,true);				
-			
-				var datasetShopify = shopifyCon.NumetricShopifyFormat(resultComments.Result.Data,"id","comments");
-				
-				var datasetNames =['comments'];
-				
-				return numetricDataConnectorLogic.verifyCreateManyDatasetNumetric(datasetNames,currentListDataset,datasetShopify.DataSetList).then(resultVerify=>
-				{
-					for (var i = 0; i < resultVerify.length; i++ ) 
-					{
-						if(resultVerify[i].Result.Success)
-						{
-							resultComments.Result[resultVerify[i].Result.datasetName] = {};
-							resultComments.Result[resultVerify[i].Result.datasetName].id=resultVerify[i].Result.Id;
-						}
-					}
-					resultComments.Result.Data = datos;
-					
-					return shopifyCon.sendRowsShopifyToNumetric(resultComments.Result).then(results=>
-					{						
-						log.WriteLog('Message','Completed Sync Shopify Comments Data',true,true);
-						log.WriteLog('Message','Shopify Comments Data Synchronized:' + JSON.stringify(resultComments.Result.Data),false,true);	
-						
-						return results;
-					});
-
-				});  
-			} 
-		}
-		else
-		{
-				resultEvent.Result.Success = true;
-				return resultEvent;
-		}
-	})
-};
-
-var syncDataBlogs = function syncDataBlogs(lastUpdated,currentListDataset) 
-{
-	log.WriteLog('Message','Started Sync Shopify Blogs Data',true,true);
-	
-	var resultEvent = {};
-    resultEvent.Result = {};
-    resultEvent.Result.Success = false;
-	
-	return 	shopifyData.getBlogs(lastUpdated).then(resultBlogs=>		
-	{ 
-		if(resultBlogs.Result.Success)
-		{			
-			log.WriteLog('Message','Shopify Blogs Data to Sync Row Count:' + resultBlogs.Result.Data.blogs.length,true,true);
-			
-			if(resultBlogs.Result.Data.blogs.length>0)
-			{				
-				var datos = resultBlogs.Result.Data;
-				
-				log.WriteLog('Message','Shopify Blogs Data to Sync:'+ JSON.stringify(datos),false,true);	
-				
-				var datasetShopify = shopifyCon.NumetricShopifyFormat(resultBlogs.Result.Data,"id","blogs");
-				
-				var datasetNames =['blogs'];
-				
-				return numetricDataConnectorLogic.verifyCreateManyDatasetNumetric(datasetNames,currentListDataset,datasetShopify.DataSetList).then(resultVerify=>
-				{
-					for (var i = 0; i < resultVerify.length; i++ ) 
-					{
-						if(resultVerify[i].Result.Success)
-						{
-							resultBlogs.Result[resultVerify[i].Result.datasetName] = {};
-							resultBlogs.Result[resultVerify[i].Result.datasetName].id=resultVerify[i].Result.Id;
-						}
-					}
-					resultBlogs.Result.Data = datos;
-					
-					return shopifyCon.sendRowsShopifyToNumetric(resultBlogs.Result).then(results=>
-					{						
-						log.WriteLog('Message','Completed Sync Shopify Blogs Data',true,true);
-						log.WriteLog('Message','Shopify Blogs Data Synchronized:' + JSON.stringify(resultBlogs.Result.Data),false,true);						
-						
-						return results;
-					});
-
-				});  
-			} 
-		}
-		else
-		{
-				resultEvent.Result.Success = true;
-				return resultEvent;
-		}
-	})
-};
-
-
-
-
 var syncDataOrder = function syncDataOrder(lastUpdated,currentListDataset) 
 {	
 	log.WriteLog('Message','Started Sync Shopify Orders Data',true,true);
@@ -401,20 +114,19 @@ var syncDataOrder = function syncDataOrder(lastUpdated,currentListDataset)
     resultEvent.Result = {};
     resultEvent.Result.Success = false;
 	
-	return 	shopifyData.getOrders(lastUpdated).then(resultOrder=>	
-	{ 
-	
+	return 	shopifyData.getData(lastUpdated,'order').then(resultOrder=>	
+	{ 	
 		if(resultOrder.Result.Success)
 		{
-			log.WriteLog('Message','Shopify Order Data to Sync Row Count: ' + resultOrder.Result.Data.orders.length,true,true);
+			log.WriteLog('Message','Shopify Order Data to Sync Row Count: ' + resultOrder.Result.Data.order.length,true,true);
 			
-			if(resultOrder.Result.Data.orders.length>0)
+			if(resultOrder.Result.Data.order.length>0)
 			{								
 				var datos = resultOrder.Result.Data;	
 				
 				log.WriteLog('Message','Shopify Orders Data to Sync:'+ JSON.stringify(datos),false,true);
 							
-				var datasetShopify = shopifyCon.NumetricShopifyFormat(resultOrder.Result.Data,"id","orders");
+				var datasetShopify = shopifyCon.NumetricShopifyFormat(resultOrder.Result.Data,"id","order");
 	
 				var datasetNames =[];
 				
@@ -454,117 +166,6 @@ var syncDataOrder = function syncDataOrder(lastUpdated,currentListDataset)
 };
 
 
-
-var syncDataProducts = function syncDataProducts(lastUpdated,currentListDataset) 
-{	
-	log.WriteLog('Message','Started Sync Shopify Products Data',true,true);	
-	
-	var resultEvent = {};
-    resultEvent.Result = {};
-    resultEvent.Result.Success = false;
-	
-	return 	shopifyData.getProducts(lastUpdated).then(resultProducts=>																																																									//{
-	{ 
-		if(resultProducts.Result.Success)
-		{	
-			log.WriteLog('Message','Shopify Products Data to Sync Row Count: ' + resultProducts.Result.Data.products.length,true,true);
-						
-			if(resultProducts.Result.Data.products.length>0)
-			{				
-				var datos = resultProducts.Result.Data;
-				
-				log.WriteLog('Message','Shopify Products Data to Sync:'+ JSON.stringify(datos),false,true);
-				
-				var datasetShopify = shopifyCon.NumetricShopifyFormat(resultProducts.Result.Data,"id","products");
-				
-				var datasetNames =['products'];
-				
-				return numetricDataConnectorLogic.verifyCreateManyDatasetNumetric(datasetNames,currentListDataset,datasetShopify.DataSetList).then(resultVerify=>
-				{
-					for (var i = 0; i < resultVerify.length; i++ ) {
-						if(resultVerify[i].Result.Success){
-							resultProducts.Result[resultVerify[i].Result.datasetName] = {};
-							resultProducts.Result[resultVerify[i].Result.datasetName].id=resultVerify[i].Result.Id;
-						}
-					}
-					resultProducts.Result.Data = datos;
-					return shopifyCon.sendRowsShopifyToNumetric(resultProducts.Result).then(results=>
-					{
-						log.WriteLog('Message','Completed Sync Shopify Products Data',true,true);
-						log.WriteLog('Message','Shopify Products Data Synchronized:' + JSON.stringify(resultProducts.Result.Data),false,true);						
-						
-						return results;
-					});
-
-				});  
-			}  
-		}
-		else
-		{
-				resultEvent.Result.Success = true;
-				return resultEvent;
-		}
-	})	
-	
-};
-
-
-
-var syncDataCustomCollections = function syncDataCustomCollections(lastUpdated,currentListDataset) 
-{	
-	log.WriteLog('Message','Started Sync Shopify Custom Collections Data',true,true);		
-	
-	var resultEvent = {};
-    resultEvent.Result = {};
-    resultEvent.Result.Success = false;
-	
-	return 	shopifyData.getCustomCollections(lastUpdated).then(resultCustomCollection=>		
-	{ 
-		if(resultCustomCollection.Result.Success)
-		{			
-			log.WriteLog('Message','Shopify Custom Collections Data to Sync Row Count: ' + resultCustomCollection.Result.Data.custom_collection.length,true,true);
-			
-			if(resultCustomCollection.Result.Data.custom_collection.length>0)
-			{				
-				var datos = resultCustomCollection.Result.Data;
-				
-				log.WriteLog('Message','Shopify Custom Collections Data to Sync:'+ JSON.stringify(datos),false,true);
-								
-				var datasetShopify = shopifyCon.NumetricShopifyFormat(resultCustomCollection.Result.Data,"id","custom_collection");
-				
-				var datasetNames =['custom_collection'];
-				
-				return numetricDataConnectorLogic.verifyCreateManyDatasetNumetric(datasetNames,currentListDataset,datasetShopify.DataSetList).then(resultVerify=>
-				{
-					for (var i = 0; i < resultVerify.length; i++ ) {
-						if(resultVerify[i].Result.Success){
-							resultCustomCollection.Result[resultVerify[i].Result.datasetName] = {};
-							resultCustomCollection.Result[resultVerify[i].Result.datasetName].id=resultVerify[i].Result.Id;
-						}
-					}
-					resultCustomCollection.Result.Data = datos;
-					return shopifyCon.sendRowsShopifyToNumetric(resultCustomCollection.Result).then(results=>
-					{						
-						log.WriteLog('Message','Completed Sync Shopify Custom Collections Data',true,true);
-						log.WriteLog('Message','Shopify Custom Collections Data Synchronized:' + JSON.stringify(resultCustomCollection.Result.Data),false,true);						
-						
-						return results;
-					});
-
-				});    
-			}
-		}
-		else
-		{
-				resultEvent.Result.Success = true;
-				return resultEvent;
-		}
-		
-	});
-};
-
-
-
 var syncDataTransactions = function syncDataTransactions(lastUpdated,currentListDataset) 
 {		
 	log.WriteLog('Message','Started Sync Shopify Transactions Data',true,true);	
@@ -577,17 +178,17 @@ var syncDataTransactions = function syncDataTransactions(lastUpdated,currentList
 	{ 
 		if(resultTransactions.Result.Success)
 		{	
-			log.WriteLog('Message','Shopify Transactions Data to Sync Row Count: ' + resultTransactions.Result.Data.transactions.length,true,true);
+			log.WriteLog('Message','Shopify Transactions Data to Sync Row Count: ' + resultTransactions.Result.Data.transaction.length,true,true);
 						
-			if(resultTransactions.Result.Data.transactions.length>0)
+			if(resultTransactions.Result.Data.transaction.length>0)
 			{										
 				var datos = resultTransactions.Result.Data;
 								
 				log.WriteLog('Message','Shopify Transactions Data to Sync:'+ JSON.stringify(datos),false,true);				
 				
-				var datasetShopify = shopifyCon.NumetricShopifyFormat(resultTransactions.Result.Data,"id","transactions");
+				var datasetShopify = shopifyCon.NumetricShopifyFormat(resultTransactions.Result.Data,"id","transaction");
 				
-				var datasetNames =['transactions'];
+				var datasetNames =['transaction'];
 				return numetricDataConnectorLogic.verifyCreateManyDatasetNumetric(datasetNames,currentListDataset,datasetShopify.DataSetList).then(resultVerify=>
 				{
 					for (var i = 0; i < resultVerify.length; i++ ) 
@@ -629,21 +230,21 @@ var syncDataArticles = function syncDataArticles(lastUpdated,currentListDataset)
     resultEvent.Result = {};
     resultEvent.Result.Success = false;
 	
-	return 	shopifyData.getArticles(lastUpdated).then(resultArticles=>									
+	return 	shopifyData.getData(lastUpdated,'article').then(resultArticles=>									
 	{ 
 		if(resultArticles.Result.Success)
 		{	
-			log.WriteLog('Message','Shopify Articles Data to Sync Row Count: ' + resultArticles.Result.Data.articles.length,true,true);
+			log.WriteLog('Message','Shopify Articles Data to Sync Row Count: ' + resultArticles.Result.Data.article.length,true,true);
 						
-			if(resultArticles.Result.Data.articles.length>0)
+			if(resultArticles.Result.Data.article.length>0)
 			{	
 				var datos = resultArticles.Result.Data;					
 
 				log.WriteLog('Message','Shopify Articles Data to Sync:'+ JSON.stringify(datos),false,true);		
 				
-				var datasetShopify = shopifyCon.NumetricShopifyFormat(resultArticles.Result.Data,"id","articles");
+				var datasetShopify = shopifyCon.NumetricShopifyFormat(resultArticles.Result.Data,"id","article");
 				
-				var datasetNames =['articles'];
+				var datasetNames =['article'];
 				
 				return numetricDataConnectorLogic.verifyCreateManyDatasetNumetric(datasetNames,currentListDataset,datasetShopify.DataSetList).then(resultVerify=>
 				{
@@ -679,6 +280,58 @@ var syncDataArticles = function syncDataArticles(lastUpdated,currentListDataset)
 };
 
 
+var syncDataEntity = function syncDataEntity(lastUpdated,currentListDataset,entity) 
+{	
+	log.WriteLog('Message','Started Sync Shopify ' + entity + ' Data',true,true);		
+	
+	var resultEvent = {};
+    resultEvent.Result = {};
+    resultEvent.Result.Success = false;
+	
+	return 	shopifyData.getData(lastUpdated,entity).then(resultEntity=>		
+	{ 
+		if(resultEntity.Result.Success)
+		{			
+			log.WriteLog('Message','Shopify ' + entity + ' Data to Sync Row Count: ' + resultEntity.Result.Data[entity].length,true,true);
+			
+			if(resultEntity.Result.Data[entity].length>0)
+			{				
+				var datos = resultEntity.Result.Data;
+				
+				log.WriteLog('Message','Shopify ' + entity + ' Data to Sync:'+ JSON.stringify(datos),false,true);
+								
+				var datasetShopify = shopifyCon.NumetricShopifyFormat(resultEntity.Result.Data,'id',entity);
+				
+				var datasetNames =[entity];
+				
+				return numetricDataConnectorLogic.verifyCreateManyDatasetNumetric(datasetNames,currentListDataset,datasetShopify.DataSetList).then(resultVerify=>
+				{
+					for (var i = 0; i < resultVerify.length; i++ ) {
+						if(resultVerify[i].Result.Success){
+							resultEntity.Result[resultVerify[i].Result.datasetName] = {};
+							resultEntity.Result[resultVerify[i].Result.datasetName].id=resultVerify[i].Result.Id;
+						}
+					}
+					resultEntity.Result.Data = datos;
+					return shopifyCon.sendRowsShopifyToNumetric(resultEntity.Result).then(results=>
+					{						
+						log.WriteLog('Message','Completed Sync Shopify ' + entity + ' Data',true,true);
+						log.WriteLog('Message','Shopify ' + entity + ' Data Synchronized:' + JSON.stringify(resultEntity.Result.Data),false,true);						
+						
+						return results;
+					});
+
+				});    
+			}
+		}
+		else
+		{
+				resultEvent.Result.Success = true;
+				return resultEvent;
+		}
+		
+	});
+};
 
 
 module.exports = 

@@ -12,9 +12,6 @@ var nconf = require('nconf');
 var shopifyJobFrequency = conf.parameters().shopifyJobFrequency ;
 
 
-
-
-
 var onJobStarted = function()
 {
 	nconf.use('file', { file: './ConfigDate/DateTimeLastSync.json' });
@@ -48,7 +45,7 @@ var onJobStarted = function()
 
 	//'01/06/2017 4:52:48 PM',
 
-	shopifyData.getTimeZone(function(resultTimeZone)
+	shopifyData.getTimeZone().then(resultTimeZone=>
 	{	
 		if(resultTimeZone.Result.Success) 
 		{

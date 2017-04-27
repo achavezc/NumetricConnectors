@@ -2,11 +2,13 @@
 
 const config = require("../Config/Config");
 const utils = require("../Helper/Util");
+const log = require("../Log/log");
 //const datasetsShopify = require("../Model/datasetsShopify");
 const NumetricCon = require("../DataConnectorApi/NumetricDataConnectorApi/NumetricDataConnectorApi");
 
 var NumetricShopifyFormat = function(inputData,namePk,fieldsName)
 {
+	log.WriteLog("Message",'NumetricShopifyFormat to Sync: ' + JSON.stringify(inputData),false,true);
 	return utils.GenerateDataSetsNumetricFromShopify(inputData,"Shopify",namePk,fieldsName);
 };
 
