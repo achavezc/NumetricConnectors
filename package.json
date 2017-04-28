@@ -29,10 +29,13 @@
     "request-promise": "^4.2.0",
     "shopify-api-node": "^2.4.0",
     "stack-trace": "^0.0.9",
-    "valvelet": "^1.1.1"
+    "valvelet": "^1.1.1",
+    "winston": "^2.3.1"
   },
   "devDependencies": {
     "chai": "^3.5.0",
+    "eslint": "^3.19.0",
+    "eslint-plugin-react": "^6.10.3",
     "istanbul": "^0.4.2",
     "mocha": "^3.0.1",
     "nock": "^9.0.0",
